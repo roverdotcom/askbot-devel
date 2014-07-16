@@ -1925,13 +1925,711 @@ class AskbotUser(models.Model):
                 activity__activity_type=const.TYPE_ACTIVITY_MARK_OFFENSIVE
             ).update(status=ActivityAuditStatus.STATUS_SEEN)
 
+    def user_is_administrator(self):
+        """checks whether user in the forum site administrator
+        the admin must be both superuser and staff member
+        the latter is because staff membership is required
+        to access the live settings"""
+        return self.is_superuser and self.is_staff
 
-#django 1.4.1 and above
+    def user_remove_admin_status(self):
+        self.is_staff = False
+        self.is_superuser = False
+
+    def user_set_admin_status(self):
+        self.is_staff = True
+        self.is_superuser = True
+
+    def user_add_missing_askbot_subscriptions(self):
+        from askbot import forms  # need to avoid circular dependency
+        form = forms.EditUserEmailFeedsForm()
+        need_feed_types = form.get_db_model_subscription_type_names()
+        have_feed_types = EmailFeedSetting.objects.filter(
+            subscriber=self
+        ).values_list('feed_type', flat=True)
+        missing_feed_types = set(need_feed_types) - set(have_feed_types)
+        for missing_feed_type in missing_feed_types:
+            attr_key = 'DEFAULT_NOTIFICATION_DELIVERY_SCHEDULE_%s' % \
+                missing_feed_type.upper()
+            freq = getattr(askbot_settings, attr_key)
+            feed_setting = EmailFeedSetting(
+                subscriber=self,
+                feed_type=missing_feed_type,
+                frequency=freq
+            )
+            feed_setting.save()
+
+    def user_is_moderator(self):
+        return (self.status == 'm' and self.is_administrator() is False)
+
+    def user_is_post_moderator(self, post):
+        """True, if user and post have common groups
+        with moderation privilege"""
+        if askbot_settings.GROUPS_ENABLED:
+            group_ids = self.get_groups().values_list('id', flat=True)
+            post_groups = PostToGroup.objects.filter(
+                post=post,
+                group__id__in=group_ids
+            )
+            return post_groups.filter(group__is_vip=True).count() > 0
+        else:
+            return False
+
+    def user_is_administrator_or_moderator(self):
+        return (self.is_administrator() or self.is_moderator())
+
+    def user_is_suspended(self):
+        return (self.status == 's')
+
+    def user_is_blocked(self):
+        return (self.status == 'b')
+
+    def user_is_watched(self):
+        return (self.status == 'w')
+
+    def user_is_approved(self):
+        return (self.status == 'a')
+
+    def user_is_owner_of(self, obj):
+        """True if user owns object
+        False otherwise
+        """
+        if isinstance(obj, Post) and obj.post_type == 'question':
+            return self == obj.author
+        else:
+            raise NotImplementedError()
+
+    def user_get_anonymous_name(self):
+        """Returns name of anonymous user
+        - convinience method for use in the template
+        macros that accept user as parameter
+        """
+        return get_name_of_anonymous_user()
+
+    def user_set_status(self, new_status):
+        """sets new status to user
+
+        this method understands that administrator status is
+        stored in the User.is_superuser field, but
+        everything else in User.status field
+
+        there is a slight aberration - administrator status
+        can be removed, but not added yet
+
+        if new status is applied to user, then the record is
+        committed to the database
+        """
+        # d - administrator
+        # m - moderator
+        # s - suspended
+        # b - blocked
+        # w - watched
+        # a - approved (regular user)
+        assert(new_status in ('d', 'm', 's', 'b', 'w', 'a'))
+        if new_status == self.status:
+            return
+
+        # clear admin status if user was an administrator
+        # because this function is not dealing with the site admins
+
+        if new_status == 'd':
+            # create a new admin
+            self.set_admin_status()
+        else:
+            # This was the old method, kept in the else clause when changing
+            # to admin, so if you change the status to another thing that
+            # is not Administrator it will simply remove admin if the user have
+            # that permission, it will mostly be false.
+            if self.is_administrator():
+                self.remove_admin_status()
+
+        # when toggling between blocked and non-blocked status
+        # we need to invalidate question page caches, b/c they contain
+        # user's url, which must be hidden in the blocked state
+        if 'b' in (new_status, self.status) and new_status != self.status:
+            threads = Thread.objects.get_for_user(self)
+            for thread in threads:
+                thread.invalidate_cached_post_data()
+
+        self.status = new_status
+        self.save()
+
+    @auto_now_timestamp
+    def user_moderate_user_reputation(
+        self,
+        user=None,
+        reputation_change=0,
+        comment=None,
+        timestamp=None
+    ):
+        """add or subtract reputation of other user
+        """
+        if reputation_change == 0:
+            return
+        if comment is None:
+            raise ValueError('comment is required to moderate user reputation')
+
+        new_rep = user.reputation + reputation_change
+        if new_rep < 1:
+            new_rep = 1  # todo: magic number
+            reputation_change = 1 - user.reputation
+
+        user.reputation = new_rep
+        user.save()
+
+        # any question. This is necessary because reputes are read in the
+        # user_reputation view with select_related('question__title') and it
+        # fails if ForeignKey is nullable even though it should work
+        # (according to the manual)
+        # probably a bug in the Django ORM
+        # fake_question = Question.objects.all()[:1][0]
+        # so in cases where reputation_type == 10
+        # question record is fake and is ignored
+        # this bug is hidden in call Repute.get_explanation_snippet()
+        repute = Repute(
+            user=user,
+            comment=comment,
+            # question = fake_question,
+            reputed_at=timestamp,
+            reputation_type=10,  # todo: fix magic number
+            reputation=user.reputation
+        )
+        if reputation_change < 0:
+            repute.negative = -1 * reputation_change
+        else:
+            repute.positive = reputation_change
+        repute.save()
+
+    def user_get_status_display(self, soft=False):
+        if self.is_administrator():
+            return _('Site Adminstrator')
+        elif self.is_moderator():
+            return _('Forum Moderator')
+        elif self.is_suspended():
+            return _('Suspended User')
+        elif self.is_blocked():
+            return _('Blocked User')
+        elif soft is True:
+            return _('Registered User')
+        elif self.is_watched():
+            return _('Watched User')
+        elif self.is_approved():
+            return _('Approved User')
+        else:
+            raise ValueError('Unknown user status')
+
+    def user_can_moderate_user(self, other):
+        if self.is_administrator():
+            return True
+        elif self.is_moderator():
+            if other.is_moderator() or other.is_administrator():
+                return False
+            else:
+                return True
+        else:
+            return False
+
+    def user_get_followed_question_alert_frequency(self):
+        feed_setting, created = EmailFeedSetting.objects.get_or_create(
+            subscriber=self,
+            feed_type='q_sel'
+        )
+        return feed_setting.frequency
+
+    def user_subscribe_for_followed_question_alerts(self):
+        """turns on daily subscription for selected questions
+        otherwise does nothing
+
+        Returns ``True`` if the subscription was turned on and
+        ``False`` otherwise
+        """
+        feed_setting, created = EmailFeedSetting.objects.get_or_create(
+            subscriber=self,
+            feed_type='q_sel'
+        )
+        if feed_setting.frequency == 'n':
+            feed_setting.frequency = 'd'
+            feed_setting.save()
+            return True
+        return False
+
+    def user_get_tag_filtered_questions(self, questions=None):
+        """Returns a query set of questions, tag filtered according
+        to the user choices. Parameter ``questions`` can be either ``None``
+        or a starting query set.
+        """
+        if questions is None:
+            questions = Post.objects.get_questions()
+
+        language_code = get_language()
+
+        if self.email_tag_filter_strategy == const.EXCLUDE_IGNORED:
+
+            ignored_tags = Tag.objects.filter(
+                user_selections__reason='bad',
+                user_selections__user=self,
+                language_code=language_code
+            )
+
+            wk = self.ignored_tags.strip().split()
+            ignored_by_wildcards = Tag.objects.get_by_wildcards(wk)
+
+            return questions.exclude(thread__tags__in=ignored_tags). \
+                exclude(thread__tags__in=ignored_by_wildcards).distinct()
+
+        elif self.email_tag_filter_strategy == const.INCLUDE_INTERESTING:
+            if askbot_settings.SUBSCRIBED_TAG_SELECTOR_ENABLED:
+                reason = 'subscribed'
+                wk = self.subscribed_tags.strip().split()
+            else:
+                reason = 'good'
+                wk = self.interesting_tags.strip().split()
+
+            selected_tags = Tag.objects.filter(
+                user_selections__reason=reason,
+                user_selections__user=self,
+                language_code=language_code
+            )
+
+            selected_by_wildcards = Tag.objects.get_by_wildcards(wk)
+
+            tag_filter = models.Q(thread__tags__in=list(selected_tags)) | \
+                models.Q(thread__tags__in=list(selected_by_wildcards))
+
+            return questions.filter(tag_filter).distinct()
+        else:
+            return questions
+
+    def get_messages(self):
+        messages = []
+        for m in self.message_set.all():
+            messages.append(m.message)
+        return messages
+
+    def delete_messages(self):
+        self.message_set.all().delete()
+
+    # todo: find where this is used and replace with get_absolute_url
+    def user_get_profile_url(self, profile_section=None):
+        """Returns the URL for this User's profile."""
+        url = reverse(
+            'user_profile',
+            kwargs={'id': self.id, 'slug': slugify(self.username)}
+        )
+        if profile_section:
+            url += "?sort=" + profile_section
+        return url
+
+    def user_get_absolute_url(self):
+        return self.get_profile_url()
+
+    def user_get_primary_language(self):
+        if getattr(django_settings, 'ASKBOT_MULTILINGUAL', False):
+            return django_settings.LANGUAGE_CODE
+        else:
+            return self.languages.split()[0]
+
+    def get_profile_link(self):
+        profile_link = u'<a href="%s">%s</a>' \
+            % (self.get_profile_url(), escape(self.username))
+
+        return mark_safe(profile_link)
+
+    def user_get_groups(self, private=False):
+        """returns a query set of groups to which user belongs"""
+        # todo: maybe cache this query
+        return Group.objects.get_for_user(self, private=private)
+
+    def user_get_personal_group(self):
+        group_name = format_personal_group_name(self)
+        return Group.objects.get(name=group_name)
+
+    def user_get_foreign_groups(self):
+        """returns a query set of groups to which user does not belong"""
+        # todo: maybe cache this query
+        user_group_ids = self.get_groups().values_list('id', flat=True)
+        return Group.objects.exclude(id__in=user_group_ids)
+
+    def user_get_primary_group(self):
+        """a temporary function - returns ether None or
+        first non-personal non-everyone group
+        works only for one real private group per-person
+        """
+        if askbot_settings.GROUPS_ENABLED:
+            groups = self.get_groups(private=True)
+            for group in groups:
+                if group.is_personal():
+                    continue
+                return group
+        return None
+
+    def user_can_make_group_private_posts(self):
+        """simplest implementation: user belongs to at least one group"""
+        return self.get_primary_group() is not None
+
+    def user_get_group_membership(self, group):
+        """returns a group membership object or None
+        if it is not there
+        """
+        try:
+            return GroupMembership.objects.get(user=self, group=group)
+        except GroupMembership.DoesNotExist:
+            return None
+
+    def user_get_groups_membership_info(self, groups):
+        """returns a defaultdict with values that are
+        dictionaries with the following keys and values:
+        * key: acceptance_level, value: 'closed', 'moderated', 'open'
+        * key: membership_level, value: 'none', 'pending', 'full'
+
+        ``groups`` is a group tag query set
+        """
+        group_ids = groups.values_list('id', flat=True)
+        memberships = GroupMembership.objects.filter(
+            user__id=self.id,
+            group__id__in=group_ids
+        )
+
+        info = collections.defaultdict(
+            lambda: {'acceptance_level': 'closed', 'membership_level': 'none'}
+        )
+        for membership in memberships:
+            membership_level = membership.get_level_display()
+            info[membership.group_id]['membership_level'] = membership_level
+
+        for group in groups:
+            info[group.id]['acceptance_level'] = \
+                group.get_openness_level_for_user(self)
+
+        return info
+
+    def user_get_karma_summary(self):
+        """returns human readable sentence about
+        status of user's karma"""
+        return _("%(username)s karma is %(reputation)s") % {
+            'username': self.username,
+            'reputation': self.reputation
+        }
+
+    def user_get_badge_summary(self):
+        """returns human readable sentence about
+        number of badges of different levels earned
+        by the user. It is assumed that user has some badges"""
+        if self.gold + self.silver + self.bronze == 0:
+            return ''
+
+        badge_bits = list()
+        if self.gold:
+            bit = ungettext(
+                'one gold badge',
+                '%(count)d gold badges',
+                self.gold
+            ) % {'count': self.gold}
+            badge_bits.append(bit)
+        if self.silver:
+            bit = ungettext(
+                'one silver badge',
+                '%(count)d silver badges',
+                self.silver
+            ) % {'count': self.silver}
+            badge_bits.append(bit)
+        if self.bronze:
+            bit = ungettext(
+                'one bronze badge',
+                '%(count)d bronze badges',
+                self.bronze
+            ) % {'count': self.bronze}
+            badge_bits.append(bit)
+
+        if len(badge_bits) == 1:
+            badge_str = badge_bits[0]
+        elif len(badge_bits) > 1:
+            last_bit = badge_bits.pop()
+            badge_str = ', '.join(badge_bits)
+            badge_str = _('%(item1)s and %(item2)s') % {
+                'item1': badge_str,
+                'item2': last_bit
+            }
+        return _("%(user)s has %(badges)s") % {
+            'user': self.username,
+            'badges': badge_str
+        }
+
+    # series of methods for user vote-type commands
+    # same call signature func(self, post, timestamp=None, cancel=None)
+    # note that none of these have business logic checks internally
+    # these functions are used by the askbot app and
+    # by the data importer jobs from say stackexchange, where internal rules
+    # may be different
+    # maybe if we do use business rule checks here - we should add
+    # some flag allowing to bypass them for things like the data importers
+    def toggle_favorite_question(
+        self,
+        question,
+        timestamp=None,
+        cancel=False,
+        force=False  # this parameter is not used yet
+    ):
+        """cancel has no effect here, but is important for the SE loader
+        it is hoped that toggle will work and data will be consistent
+        but there is no guarantee, maybe it's better to be more strict
+        about processing the "cancel" option
+        another strange thing is that this function unlike others below
+        returns a value
+
+        todo: the on-screen follow and email subscription is not fully merged
+        yet - see use of FavoriteQuestion and follow/unfollow question
+        btw, names of the objects/methods is quite misleading ATM
+        """
+        try:
+            # this attempts to remove the on-screen follow
+            fave = FavoriteQuestion.objects.get(
+                thread=question.thread,
+                user=self
+            )
+            fave.delete()
+            result = False
+            question.thread.update_favorite_count()
+            # this removes email subscription
+            if question.thread.is_followed_by(self):
+                self.unfollow_question(question)
+
+        except FavoriteQuestion.DoesNotExist:
+            if timestamp is None:
+                timestamp = datetime.datetime.now()
+            fave = FavoriteQuestion(
+                thread=question.thread,
+                user=self,
+                added_at=timestamp,
+            )
+            fave.save()
+
+            # this removes email subscription
+            if question.thread.is_followed_by(self) is False:
+                self.follow_question(question)
+
+            result = True
+            question.thread.update_favorite_count()
+            award_badges_signal.send(
+                None,
+                event='select_favorite_question',
+                actor=self,
+                context_object=question,
+                timestamp=timestamp
+            )
+        return result
+
+    def user_fix_html_links(self, text):
+        """depending on the user's privilege, allow links
+        and hotlinked images or replace them with plain text
+        url
+        """
+        is_simple_user = not self.is_administrator_or_moderator()
+        has_low_rep = self.reputation < askbot_settings.MIN_REP_TO_INSERT_LINK
+        if is_simple_user and has_low_rep:
+            result = replace_links_with_text(text)
+            if result != text:
+                message = ungettext(
+                    'At least %d karma point is required to post links',
+                    'At least %d karma points are required to post links',
+                    askbot_settings.MIN_REP_TO_INSERT_LINK
+                ) % askbot_settings.MIN_REP_TO_INSERT_LINK
+                self.message_set.create(message=message)
+            return result
+        return text
+
+    def user_unfollow_question(self, question=None):
+        self.followed_threads.remove(question.thread)
+
+    def user_follow_question(self, question=None):
+        self.followed_threads.add(question.thread)
+
+    def upvote(self, post, timestamp=None, cancel=False, force=False):
+        # force parameter not used yet
+        return _process_vote(
+            self,
+            post,
+            timestamp=timestamp,
+            cancel=cancel,
+            vote_type=Vote.VOTE_UP
+        )
+
+    def downvote(self, post, timestamp=None, cancel=False, force=False):
+        # force not used yet
+        return _process_vote(
+            self,
+            post,
+            timestamp=timestamp,
+            cancel=cancel,
+            vote_type=Vote.VOTE_DOWN
+        )
+
+    def user_get_flags(self):
+        """return flag Activity query set
+        for all flags set by te user"""
+        return Activity.objects.filter(
+            user=self,
+            activity_type=const.TYPE_ACTIVITY_MARK_OFFENSIVE
+        )
+
+    def user_get_flag_count_posted_today(self):
+        """return number of flags the user has posted
+        within last 24 hours"""
+        today = datetime.date.today()
+        time_frame = (today, today + datetime.timedelta(1))
+        flags = self.get_flags()
+        return flags.filter(active_at__range=time_frame).count()
+
+    def user_get_flags_for_post(self, post):
+        """return query set for flag Activity items
+        posted by users for a given post obeject
+        """
+        post_content_type = ContentType.objects.get_for_model(post)
+        flags = self.get_flags()
+        return flags.filter(content_type=post_content_type, object_id=post.id)
+
+    def user_receive_reputation(self, num_points):
+        old_points = self.reputation
+        new_points = old_points + num_points
+        if new_points > 0:
+            self.reputation = new_points
+        else:
+            self.reputation = const.MIN_REPUTATION
+        signals.reputation_received.send(
+            None,
+            user=self,
+            reputation_before=old_points
+        )
+
+    def user_update_wildcard_tag_selections(
+        self,
+        action=None,
+        reason=None,
+        wildcards=None,
+    ):
+        """updates the user selection of wildcard tags
+        and saves the user object to the database
+        """
+        if askbot_settings.SUBSCRIBED_TAG_SELECTOR_ENABLED:
+            assert reason in ('good', 'bad', 'subscribed')
+        else:
+            assert reason in ('good', 'bad')
+
+        new_tags = set(wildcards)
+        interesting = set(self.interesting_tags.split())
+        ignored = set(self.ignored_tags.split())
+        subscribed = set(self.subscribed_tags.split())
+
+        if reason == 'good':
+            target_set = interesting
+            other_set = ignored
+        elif reason == 'bad':
+            target_set = ignored
+            other_set = interesting
+        elif reason == 'subscribed':
+            target_set = subscribed
+            other_set = None
+        else:
+            assert(action == 'remove')
+
+        if action == 'add':
+            target_set.update(new_tags)
+            if reason in ('good', 'bad'):
+                other_set.difference_update(new_tags)
+        else:
+            target_set.difference_update(new_tags)
+            if reason in ('good', 'bad'):
+                other_set.difference_update(new_tags)
+
+        self.interesting_tags = ' '.join(interesting)
+        self.ignored_tags = ' '.join(ignored)
+        self.subscribed_tags = ' '.join(subscribed)
+        self.save()
+        return new_tags
+
+    def user_edit_group_membership(
+        self,
+        user=None,
+        group=None,
+        action=None,
+        force=False
+    ):
+        """allows one user to add another to a group
+        or remove user from group.
+
+        If when adding, the group does not exist, it will be created
+        the delete function is not symmetric, the group will remain
+        even if it becomes empty
+
+        returns instance of GroupMembership (if action is "add") or None
+        """
+        if action == 'add':
+            # calculate new level
+            openness = group.get_openness_level_for_user(user)
+
+            # let people join these special groups, but not leave
+            if not force:
+                if group.name == askbot_settings.GLOBAL_GROUP_NAME:
+                    openness = 'open'
+                elif group.name == format_personal_group_name(user):
+                    openness = 'open'
+
+                if openness == 'open':
+                    level = GroupMembership.FULL
+                elif openness == 'moderated':
+                    level = GroupMembership.PENDING
+                elif openness == 'closed':
+                    raise django_exceptions.PermissionDenied()
+            else:
+                level = GroupMembership.FULL
+
+            membership, created = GroupMembership.objects.get_or_create(
+                user=user,
+                group=group,
+                level=level
+            )
+            return membership
+
+        elif action == 'remove':
+            GroupMembership.objects.get(user=user, group=group).delete()
+            return None
+        else:
+            raise ValueError('invalid action')
+
+    def user_join_group(self, group, force=False):
+        return self.edit_group_membership(
+            group=group,
+            user=self,
+            action='add',
+            force=force
+        )
+
+    def user_leave_group(self, group):
+        self.edit_group_membership(group=group, user=self, action='remove')
+
+    def user_is_group_member(self, group=None):
+        """True if user is member of group,
+        where group can be instance of Group
+        or name of group as string
+        """
+        if isinstance(group, str):
+            return GroupMembership.objects.filter(
+                user=self,
+                group__name=group
+            ).count() == 1
+        else:
+            return GroupMembership.objects.filter(
+                user=self,
+                group=group
+            ).count() == 1
+
+
+# django 1.4.1 and above
 @property
 def user_message_set(self):
     return RelatedObjectSimulator(self, Message)
 
-#django 1.4.1 and above
+# django 1.4.1 and above
 def user_get_and_delete_messages(self):
     messages = []
     for message in Message.objects.filter(user=self):
@@ -3861,77 +4559,77 @@ def user_is_username_taken(cls,username):
     except cls.DoesNotExist:
         return False
 
-def user_is_administrator(self):
-    """checks whether user in the forum site administrator
-    the admin must be both superuser and staff member
-    the latter is because staff membership is required
-    to access the live settings"""
-    return (self.is_superuser and self.is_staff)
+# def user_is_administrator(self):
+#     """checks whether user in the forum site administrator
+#     the admin must be both superuser and staff member
+#     the latter is because staff membership is required
+#     to access the live settings"""
+#     return (self.is_superuser and self.is_staff)
 
-def user_remove_admin_status(self):
-    self.is_staff = False
-    self.is_superuser = False
+# def user_remove_admin_status(self):
+#     self.is_staff = False
+#     self.is_superuser = False
 
-def user_set_admin_status(self):
-    self.is_staff = True
-    self.is_superuser = True
+# def user_set_admin_status(self):
+#     self.is_staff = True
+#     self.is_superuser = True
 
-def user_add_missing_askbot_subscriptions(self):
-    from askbot import forms#need to avoid circular dependency
-    form = forms.EditUserEmailFeedsForm()
-    need_feed_types = form.get_db_model_subscription_type_names()
-    have_feed_types = EmailFeedSetting.objects.filter(
-                                            subscriber = self
-                                        ).values_list(
-                                            'feed_type', flat = True
-                                        )
-    missing_feed_types = set(need_feed_types) - set(have_feed_types)
-    for missing_feed_type in missing_feed_types:
-        attr_key = 'DEFAULT_NOTIFICATION_DELIVERY_SCHEDULE_%s' % missing_feed_type.upper()
-        freq = getattr(askbot_settings, attr_key)
-        feed_setting = EmailFeedSetting(
-                            subscriber = self,
-                            feed_type = missing_feed_type,
-                            frequency = freq
-                        )
-        feed_setting.save()
+# def user_add_missing_askbot_subscriptions(self):
+#     from askbot import forms#need to avoid circular dependency
+#     form = forms.EditUserEmailFeedsForm()
+#     need_feed_types = form.get_db_model_subscription_type_names()
+#     have_feed_types = EmailFeedSetting.objects.filter(
+#                                             subscriber = self
+#                                         ).values_list(
+#                                             'feed_type', flat = True
+#                                         )
+#     missing_feed_types = set(need_feed_types) - set(have_feed_types)
+#     for missing_feed_type in missing_feed_types:
+#         attr_key = 'DEFAULT_NOTIFICATION_DELIVERY_SCHEDULE_%s' % missing_feed_type.upper()
+#         freq = getattr(askbot_settings, attr_key)
+#         feed_setting = EmailFeedSetting(
+#                             subscriber = self,
+#                             feed_type = missing_feed_type,
+#                             frequency = freq
+#                         )
+#         feed_setting.save()
 
-def user_is_moderator(self):
-    return (self.status == 'm' and self.is_administrator() == False)
+# def user_is_moderator(self):
+#     return (self.status == 'm' and self.is_administrator() == False)
 
-def user_is_post_moderator(self, post):
-    """True, if user and post have common groups
-    with moderation privilege"""
-    if askbot_settings.GROUPS_ENABLED:
-        group_ids = self.get_groups().values_list('id', flat=True)
-        post_groups = PostToGroup.objects.filter(post=post, group__id__in=group_ids)
-        return post_groups.filter(group__is_vip=True).count() > 0
-    else:
-        return False
+# def user_is_post_moderator(self, post):
+#     """True, if user and post have common groups
+#     with moderation privilege"""
+#     if askbot_settings.GROUPS_ENABLED:
+#         group_ids = self.get_groups().values_list('id', flat=True)
+#         post_groups = PostToGroup.objects.filter(post=post, group__id__in=group_ids)
+#         return post_groups.filter(group__is_vip=True).count() > 0
+#     else:
+#         return False
 
-def user_is_administrator_or_moderator(self):
-    return (self.is_administrator() or self.is_moderator())
+# def user_is_administrator_or_moderator(self):
+#     return (self.is_administrator() or self.is_moderator())
 
-def user_is_suspended(self):
-    return (self.status == 's')
+# def user_is_suspended(self):
+#     return (self.status == 's')
 
-def user_is_blocked(self):
-    return (self.status == 'b')
+# def user_is_blocked(self):
+#     return (self.status == 'b')
 
-def user_is_watched(self):
-    return (self.status == 'w')
+# def user_is_watched(self):
+#     return (self.status == 'w')
 
-def user_is_approved(self):
-    return (self.status == 'a')
+# def user_is_approved(self):
+#     return (self.status == 'a')
 
-def user_is_owner_of(self, obj):
-    """True if user owns object
-    False otherwise
-    """
-    if isinstance(obj, Post) and obj.post_type == 'question':
-        return self == obj.author
-    else:
-        raise NotImplementedError()
+# def user_is_owner_of(self, obj):
+#     """True if user owns object
+#     False otherwise
+#     """
+#     if isinstance(obj, Post) and obj.post_type == 'question':
+#         return self == obj.author
+#     else:
+#         raise NotImplementedError()
 
 def get_name_of_anonymous_user():
     """Returns name of the anonymous user
@@ -3945,416 +4643,416 @@ def get_name_of_anonymous_user():
     else:
         return _('Anonymous')
 
-def user_get_anonymous_name(self):
-    """Returns name of anonymous user
-    - convinience method for use in the template
-    macros that accept user as parameter
-    """
-    return get_name_of_anonymous_user()
+# def user_get_anonymous_name(self):
+#     """Returns name of anonymous user
+#     - convinience method for use in the template
+#     macros that accept user as parameter
+#     """
+#     return get_name_of_anonymous_user()
 
-def user_set_status(self, new_status):
-    """sets new status to user
+# def user_set_status(self, new_status):
+#     """sets new status to user
 
-    this method understands that administrator status is
-    stored in the User.is_superuser field, but
-    everything else in User.status field
+#     this method understands that administrator status is
+#     stored in the User.is_superuser field, but
+#     everything else in User.status field
 
-    there is a slight aberration - administrator status
-    can be removed, but not added yet
+#     there is a slight aberration - administrator status
+#     can be removed, but not added yet
 
-    if new status is applied to user, then the record is
-    committed to the database
-    """
-    #d - administrator
-    #m - moderator
-    #s - suspended
-    #b - blocked
-    #w - watched
-    #a - approved (regular user)
-    assert(new_status in ('d', 'm', 's', 'b', 'w', 'a'))
-    if new_status == self.status:
-        return
+#     if new status is applied to user, then the record is
+#     committed to the database
+#     """
+#     #d - administrator
+#     #m - moderator
+#     #s - suspended
+#     #b - blocked
+#     #w - watched
+#     #a - approved (regular user)
+#     assert(new_status in ('d', 'm', 's', 'b', 'w', 'a'))
+#     if new_status == self.status:
+#         return
 
-    #clear admin status if user was an administrator
-    #because this function is not dealing with the site admins
+#     #clear admin status if user was an administrator
+#     #because this function is not dealing with the site admins
 
-    if new_status == 'd':
-        #create a new admin
-        self.set_admin_status()
-    else:
-        #This was the old method, kept in the else clause when changing
-        #to admin, so if you change the status to another thing that
-        #is not Administrator it will simply remove admin if the user have
-        #that permission, it will mostly be false.
-        if self.is_administrator():
-            self.remove_admin_status()
+#     if new_status == 'd':
+#         #create a new admin
+#         self.set_admin_status()
+#     else:
+#         #This was the old method, kept in the else clause when changing
+#         #to admin, so if you change the status to another thing that
+#         #is not Administrator it will simply remove admin if the user have
+#         #that permission, it will mostly be false.
+#         if self.is_administrator():
+#             self.remove_admin_status()
 
-    #when toggling between blocked and non-blocked status
-    #we need to invalidate question page caches, b/c they contain
-    #user's url, which must be hidden in the blocked state
-    if 'b' in (new_status, self.status) and new_status != self.status:
-        threads = Thread.objects.get_for_user(self)
-        for thread in threads:
-            thread.invalidate_cached_post_data()
+#     #when toggling between blocked and non-blocked status
+#     #we need to invalidate question page caches, b/c they contain
+#     #user's url, which must be hidden in the blocked state
+#     if 'b' in (new_status, self.status) and new_status != self.status:
+#         threads = Thread.objects.get_for_user(self)
+#         for thread in threads:
+#             thread.invalidate_cached_post_data()
 
-    self.status = new_status
-    self.save()
+#     self.status = new_status
+#     self.save()
 
-@auto_now_timestamp
-def user_moderate_user_reputation(
-                                self,
-                                user = None,
-                                reputation_change = 0,
-                                comment = None,
-                                timestamp = None
-                            ):
-    """add or subtract reputation of other user
-    """
-    if reputation_change == 0:
-        return
-    if comment == None:
-        raise ValueError('comment is required to moderate user reputation')
+# @auto_now_timestamp
+# def user_moderate_user_reputation(
+#                                 self,
+#                                 user = None,
+#                                 reputation_change = 0,
+#                                 comment = None,
+#                                 timestamp = None
+#                             ):
+#     """add or subtract reputation of other user
+#     """
+#     if reputation_change == 0:
+#         return
+#     if comment == None:
+#         raise ValueError('comment is required to moderate user reputation')
 
-    new_rep = user.reputation + reputation_change
-    if new_rep < 1:
-        new_rep = 1 #todo: magic number
-        reputation_change = 1 - user.reputation
+#     new_rep = user.reputation + reputation_change
+#     if new_rep < 1:
+#         new_rep = 1 #todo: magic number
+#         reputation_change = 1 - user.reputation
 
-    user.reputation = new_rep
-    user.save()
+#     user.reputation = new_rep
+#     user.save()
 
-    #any question. This is necessary because reputes are read in the
-    #user_reputation view with select_related('question__title') and it fails if
-    #ForeignKey is nullable even though it should work (according to the manual)
-    #probably a bug in the Django ORM
-    #fake_question = Question.objects.all()[:1][0]
-    #so in cases where reputation_type == 10
-    #question record is fake and is ignored
-    #this bug is hidden in call Repute.get_explanation_snippet()
-    repute = Repute(
-                        user = user,
-                        comment = comment,
-                        #question = fake_question,
-                        reputed_at = timestamp,
-                        reputation_type = 10, #todo: fix magic number
-                        reputation = user.reputation
-                    )
-    if reputation_change < 0:
-        repute.negative = -1 * reputation_change
-    else:
-        repute.positive = reputation_change
-    repute.save()
+#     #any question. This is necessary because reputes are read in the
+#     #user_reputation view with select_related('question__title') and it fails if
+#     #ForeignKey is nullable even though it should work (according to the manual)
+#     #probably a bug in the Django ORM
+#     #fake_question = Question.objects.all()[:1][0]
+#     #so in cases where reputation_type == 10
+#     #question record is fake and is ignored
+#     #this bug is hidden in call Repute.get_explanation_snippet()
+#     repute = Repute(
+#                         user = user,
+#                         comment = comment,
+#                         #question = fake_question,
+#                         reputed_at = timestamp,
+#                         reputation_type = 10, #todo: fix magic number
+#                         reputation = user.reputation
+#                     )
+#     if reputation_change < 0:
+#         repute.negative = -1 * reputation_change
+#     else:
+#         repute.positive = reputation_change
+#     repute.save()
 
-def user_get_status_display(self, soft = False):
-    if self.is_administrator():
-        return _('Site Adminstrator')
-    elif self.is_moderator():
-        return _('Forum Moderator')
-    elif self.is_suspended():
-        return  _('Suspended User')
-    elif self.is_blocked():
-        return _('Blocked User')
-    elif soft == True:
-        return _('Registered User')
-    elif self.is_watched():
-        return _('Watched User')
-    elif self.is_approved():
-        return _('Approved User')
-    else:
-        raise ValueError('Unknown user status')
-
-
-def user_can_moderate_user(self, other):
-    if self.is_administrator():
-        return True
-    elif self.is_moderator():
-        if other.is_moderator() or other.is_administrator():
-            return False
-        else:
-            return True
-    else:
-        return False
+# def user_get_status_display(self, soft = False):
+#     if self.is_administrator():
+#         return _('Site Adminstrator')
+#     elif self.is_moderator():
+#         return _('Forum Moderator')
+#     elif self.is_suspended():
+#         return  _('Suspended User')
+#     elif self.is_blocked():
+#         return _('Blocked User')
+#     elif soft == True:
+#         return _('Registered User')
+#     elif self.is_watched():
+#         return _('Watched User')
+#     elif self.is_approved():
+#         return _('Approved User')
+#     else:
+#         raise ValueError('Unknown user status')
 
 
-def user_get_followed_question_alert_frequency(self):
-    feed_setting, created = EmailFeedSetting.objects.get_or_create(
-                                    subscriber=self,
-                                    feed_type='q_sel'
-                                )
-    return feed_setting.frequency
-
-def user_subscribe_for_followed_question_alerts(self):
-    """turns on daily subscription for selected questions
-    otherwise does nothing
-
-    Returns ``True`` if the subscription was turned on and
-    ``False`` otherwise
-    """
-    feed_setting, created = EmailFeedSetting.objects.get_or_create(
-                                                        subscriber = self,
-                                                        feed_type = 'q_sel'
-                                                    )
-    if feed_setting.frequency == 'n':
-        feed_setting.frequency = 'd'
-        feed_setting.save()
-        return True
-    return False
-
-def user_get_tag_filtered_questions(self, questions = None):
-    """Returns a query set of questions, tag filtered according
-    to the user choices. Parameter ``questions`` can be either ``None``
-    or a starting query set.
-    """
-    if questions is None:
-        questions = Post.objects.get_questions()
-
-    language_code = get_language()
-
-    if self.email_tag_filter_strategy == const.EXCLUDE_IGNORED:
-
-        ignored_tags = Tag.objects.filter(
-                                user_selections__reason = 'bad',
-                                user_selections__user = self,
-                                language_code=language_code
-                            )
-
-        wk = self.ignored_tags.strip().split()
-        ignored_by_wildcards = Tag.objects.get_by_wildcards(wk)
-
-        return questions.exclude(
-                        thread__tags__in = ignored_tags
-                    ).exclude(
-                        thread__tags__in = ignored_by_wildcards
-                    ).distinct()
-    elif self.email_tag_filter_strategy == const.INCLUDE_INTERESTING:
-        if askbot_settings.SUBSCRIBED_TAG_SELECTOR_ENABLED:
-            reason = 'subscribed'
-            wk = self.subscribed_tags.strip().split()
-        else:
-            reason = 'good'
-            wk = self.interesting_tags.strip().split()
-
-        selected_tags = Tag.objects.filter(
-                                user_selections__reason = reason,
-                                user_selections__user = self,
-                                language_code=language_code
-                            )
-
-        selected_by_wildcards = Tag.objects.get_by_wildcards(wk)
-
-        tag_filter = models.Q(thread__tags__in = list(selected_tags)) \
-                    | models.Q(thread__tags__in = list(selected_by_wildcards))
-
-        return questions.filter( tag_filter ).distinct()
-    else:
-        return questions
-
-def get_messages(self):
-    messages = []
-    for m in self.message_set.all():
-        messages.append(m.message)
-    return messages
-
-def delete_messages(self):
-    self.message_set.all().delete()
-
-#todo: find where this is used and replace with get_absolute_url
-def user_get_profile_url(self, profile_section=None):
-    """Returns the URL for this User's profile."""
-    url = reverse(
-            'user_profile',
-            kwargs={'id':self.id, 'slug':slugify(self.username)}
-        )
-    if profile_section:
-        url += "?sort=" + profile_section
-    return url
-
-def user_get_absolute_url(self):
-    return self.get_profile_url()
-
-def user_get_primary_language(self):
-    if getattr(django_settings, 'ASKBOT_MULTILINGUAL', False):
-        return django_settings.LANGUAGE_CODE
-    else:
-        return self.languages.split()[0]
-
-def get_profile_link(self):
-    profile_link = u'<a href="%s">%s</a>' \
-        % (self.get_profile_url(), escape(self.username))
-
-    return mark_safe(profile_link)
-
-def user_get_groups(self, private=False):
-    """returns a query set of groups to which user belongs"""
-    #todo: maybe cache this query
-    return Group.objects.get_for_user(self, private=private)
-
-def user_get_personal_group(self):
-    group_name = format_personal_group_name(self)
-    return Group.objects.get(name=group_name)
-
-def user_get_foreign_groups(self):
-    """returns a query set of groups to which user does not belong"""
-    #todo: maybe cache this query
-    user_group_ids = self.get_groups().values_list('id', flat = True)
-    return Group.objects.exclude(id__in = user_group_ids)
-
-def user_get_primary_group(self):
-    """a temporary function - returns ether None or
-    first non-personal non-everyone group
-    works only for one real private group per-person
-    """
-    if askbot_settings.GROUPS_ENABLED:
-        groups = self.get_groups(private=True)
-        for group in groups:
-            if group.is_personal():
-                continue
-            return group
-    return None
-
-def user_can_make_group_private_posts(self):
-    """simplest implementation: user belongs to at least one group"""
-    return (self.get_primary_group() != None)
-
-def user_get_group_membership(self, group):
-    """returns a group membership object or None
-    if it is not there
-    """
-    try:
-        return GroupMembership.objects.get(user=self, group=group)
-    except GroupMembership.DoesNotExist:
-        return None
+# def user_can_moderate_user(self, other):
+#     if self.is_administrator():
+#         return True
+#     elif self.is_moderator():
+#         if other.is_moderator() or other.is_administrator():
+#             return False
+#         else:
+#             return True
+#     else:
+#         return False
 
 
-def user_get_groups_membership_info(self, groups):
-    """returns a defaultdict with values that are
-    dictionaries with the following keys and values:
-    * key: acceptance_level, value: 'closed', 'moderated', 'open'
-    * key: membership_level, value: 'none', 'pending', 'full'
+# def user_get_followed_question_alert_frequency(self):
+#     feed_setting, created = EmailFeedSetting.objects.get_or_create(
+#                                     subscriber=self,
+#                                     feed_type='q_sel'
+#                                 )
+#     return feed_setting.frequency
 
-    ``groups`` is a group tag query set
-    """
-    group_ids = groups.values_list('id', flat = True)
-    memberships = GroupMembership.objects.filter(
-                                user__id = self.id,
-                                group__id__in = group_ids
-                            )
+# def user_subscribe_for_followed_question_alerts(self):
+#     """turns on daily subscription for selected questions
+#     otherwise does nothing
 
-    info = collections.defaultdict(
-        lambda: {'acceptance_level': 'closed', 'membership_level': 'none'}
-    )
-    for membership in memberships:
-        membership_level = membership.get_level_display()
-        info[membership.group_id]['membership_level'] = membership_level
+#     Returns ``True`` if the subscription was turned on and
+#     ``False`` otherwise
+#     """
+#     feed_setting, created = EmailFeedSetting.objects.get_or_create(
+#                                                         subscriber = self,
+#                                                         feed_type = 'q_sel'
+#                                                     )
+#     if feed_setting.frequency == 'n':
+#         feed_setting.frequency = 'd'
+#         feed_setting.save()
+#         return True
+#     return False
 
-    for group in groups:
-        info[group.id]['acceptance_level'] = group.get_openness_level_for_user(self)
+# def user_get_tag_filtered_questions(self, questions = None):
+#     """Returns a query set of questions, tag filtered according
+#     to the user choices. Parameter ``questions`` can be either ``None``
+#     or a starting query set.
+#     """
+#     if questions is None:
+#         questions = Post.objects.get_questions()
 
-    return info
+#     language_code = get_language()
 
-def user_get_karma_summary(self):
-    """returns human readable sentence about
-    status of user's karma"""
-    return _("%(username)s karma is %(reputation)s") % \
-            {'username': self.username, 'reputation': self.reputation}
+#     if self.email_tag_filter_strategy == const.EXCLUDE_IGNORED:
 
-def user_get_badge_summary(self):
-    """returns human readable sentence about
-    number of badges of different levels earned
-    by the user. It is assumed that user has some badges"""
-    if self.gold + self.silver + self.bronze == 0:
-        return ''
+#         ignored_tags = Tag.objects.filter(
+#                                 user_selections__reason = 'bad',
+#                                 user_selections__user = self,
+#                                 language_code=language_code
+#                             )
 
-    badge_bits = list()
-    if self.gold:
-        bit = ungettext(
-                'one gold badge',
-                '%(count)d gold badges',
-                self.gold
-            ) % {'count': self.gold}
-        badge_bits.append(bit)
-    if self.silver:
-        bit = ungettext(
-                'one silver badge',
-                '%(count)d silver badges',
-                self.silver
-            ) % {'count': self.silver}
-        badge_bits.append(bit)
-    if self.bronze:
-        bit = ungettext(
-                'one bronze badge',
-                '%(count)d bronze badges',
-                self.bronze
-            ) % {'count': self.bronze}
-        badge_bits.append(bit)
+#         wk = self.ignored_tags.strip().split()
+#         ignored_by_wildcards = Tag.objects.get_by_wildcards(wk)
 
-    if len(badge_bits) == 1:
-        badge_str = badge_bits[0]
-    elif len(badge_bits) > 1:
-        last_bit = badge_bits.pop()
-        badge_str = ', '.join(badge_bits)
-        badge_str = _('%(item1)s and %(item2)s') % \
-                    {'item1': badge_str, 'item2': last_bit}
-    return _("%(user)s has %(badges)s") % {'user': self.username, 'badges':badge_str}
+#         return questions.exclude(
+#                         thread__tags__in = ignored_tags
+#                     ).exclude(
+#                         thread__tags__in = ignored_by_wildcards
+#                     ).distinct()
+#     elif self.email_tag_filter_strategy == const.INCLUDE_INTERESTING:
+#         if askbot_settings.SUBSCRIBED_TAG_SELECTOR_ENABLED:
+#             reason = 'subscribed'
+#             wk = self.subscribed_tags.strip().split()
+#         else:
+#             reason = 'good'
+#             wk = self.interesting_tags.strip().split()
 
-#series of methods for user vote-type commands
-#same call signature func(self, post, timestamp=None, cancel=None)
-#note that none of these have business logic checks internally
-#these functions are used by the askbot app and
-#by the data importer jobs from say stackexchange, where internal rules
-#may be different
-#maybe if we do use business rule checks here - we should add
-#some flag allowing to bypass them for things like the data importers
-def toggle_favorite_question(
-                        self, question,
-                        timestamp = None,
-                        cancel = False,
-                        force = False#this parameter is not used yet
-                    ):
-    """cancel has no effect here, but is important for the SE loader
-    it is hoped that toggle will work and data will be consistent
-    but there is no guarantee, maybe it's better to be more strict
-    about processing the "cancel" option
-    another strange thing is that this function unlike others below
-    returns a value
+#         selected_tags = Tag.objects.filter(
+#                                 user_selections__reason = reason,
+#                                 user_selections__user = self,
+#                                 language_code=language_code
+#                             )
 
-    todo: the on-screen follow and email subscription is not
-    fully merged yet - see use of FavoriteQuestion and follow/unfollow question
-    btw, names of the objects/methods is quite misleading ATM
-    """
-    try:
-        #this attempts to remove the on-screen follow
-        fave = FavoriteQuestion.objects.get(thread=question.thread, user=self)
-        fave.delete()
-        result = False
-        question.thread.update_favorite_count()
-        #this removes email subscription
-        if question.thread.is_followed_by(self):
-            self.unfollow_question(question)
+#         selected_by_wildcards = Tag.objects.get_by_wildcards(wk)
 
-    except FavoriteQuestion.DoesNotExist:
-        if timestamp is None:
-            timestamp = datetime.datetime.now()
-        fave = FavoriteQuestion(
-            thread = question.thread,
-            user = self,
-            added_at = timestamp,
-        )
-        fave.save()
+#         tag_filter = models.Q(thread__tags__in = list(selected_tags)) \
+#                     | models.Q(thread__tags__in = list(selected_by_wildcards))
 
-        #this removes email subscription
-        if question.thread.is_followed_by(self) is False:
-            self.follow_question(question)
+#         return questions.filter( tag_filter ).distinct()
+#     else:
+#         return questions
 
-        result = True
-        question.thread.update_favorite_count()
-        award_badges_signal.send(None,
-            event = 'select_favorite_question',
-            actor = self,
-            context_object = question,
-            timestamp = timestamp
-        )
-    return result
+# def get_messages(self):
+#     messages = []
+#     for m in self.message_set.all():
+#         messages.append(m.message)
+#     return messages
+
+# def delete_messages(self):
+#     self.message_set.all().delete()
+
+# #todo: find where this is used and replace with get_absolute_url
+# def user_get_profile_url(self, profile_section=None):
+#     """Returns the URL for this User's profile."""
+#     url = reverse(
+#             'user_profile',
+#             kwargs={'id':self.id, 'slug':slugify(self.username)}
+#         )
+#     if profile_section:
+#         url += "?sort=" + profile_section
+#     return url
+
+# def user_get_absolute_url(self):
+#     return self.get_profile_url()
+
+# def user_get_primary_language(self):
+#     if getattr(django_settings, 'ASKBOT_MULTILINGUAL', False):
+#         return django_settings.LANGUAGE_CODE
+#     else:
+#         return self.languages.split()[0]
+
+# def get_profile_link(self):
+#     profile_link = u'<a href="%s">%s</a>' \
+#         % (self.get_profile_url(), escape(self.username))
+
+#     return mark_safe(profile_link)
+
+# def user_get_groups(self, private=False):
+#     """returns a query set of groups to which user belongs"""
+#     #todo: maybe cache this query
+#     return Group.objects.get_for_user(self, private=private)
+
+# def user_get_personal_group(self):
+#     group_name = format_personal_group_name(self)
+#     return Group.objects.get(name=group_name)
+
+# def user_get_foreign_groups(self):
+#     """returns a query set of groups to which user does not belong"""
+#     #todo: maybe cache this query
+#     user_group_ids = self.get_groups().values_list('id', flat = True)
+#     return Group.objects.exclude(id__in = user_group_ids)
+
+# def user_get_primary_group(self):
+#     """a temporary function - returns ether None or
+#     first non-personal non-everyone group
+#     works only for one real private group per-person
+#     """
+#     if askbot_settings.GROUPS_ENABLED:
+#         groups = self.get_groups(private=True)
+#         for group in groups:
+#             if group.is_personal():
+#                 continue
+#             return group
+#     return None
+
+# def user_can_make_group_private_posts(self):
+#     """simplest implementation: user belongs to at least one group"""
+#     return (self.get_primary_group() != None)
+
+# def user_get_group_membership(self, group):
+#     """returns a group membership object or None
+#     if it is not there
+#     """
+#     try:
+#         return GroupMembership.objects.get(user=self, group=group)
+#     except GroupMembership.DoesNotExist:
+#         return None
+
+
+# def user_get_groups_membership_info(self, groups):
+#     """returns a defaultdict with values that are
+#     dictionaries with the following keys and values:
+#     * key: acceptance_level, value: 'closed', 'moderated', 'open'
+#     * key: membership_level, value: 'none', 'pending', 'full'
+
+#     ``groups`` is a group tag query set
+#     """
+#     group_ids = groups.values_list('id', flat = True)
+#     memberships = GroupMembership.objects.filter(
+#                                 user__id = self.id,
+#                                 group__id__in = group_ids
+#                             )
+
+#     info = collections.defaultdict(
+#         lambda: {'acceptance_level': 'closed', 'membership_level': 'none'}
+#     )
+#     for membership in memberships:
+#         membership_level = membership.get_level_display()
+#         info[membership.group_id]['membership_level'] = membership_level
+
+#     for group in groups:
+#         info[group.id]['acceptance_level'] = group.get_openness_level_for_user(self)
+
+#     return info
+
+# def user_get_karma_summary(self):
+#     """returns human readable sentence about
+#     status of user's karma"""
+#     return _("%(username)s karma is %(reputation)s") % \
+#             {'username': self.username, 'reputation': self.reputation}
+
+# def user_get_badge_summary(self):
+#     """returns human readable sentence about
+#     number of badges of different levels earned
+#     by the user. It is assumed that user has some badges"""
+#     if self.gold + self.silver + self.bronze == 0:
+#         return ''
+
+#     badge_bits = list()
+#     if self.gold:
+#         bit = ungettext(
+#                 'one gold badge',
+#                 '%(count)d gold badges',
+#                 self.gold
+#             ) % {'count': self.gold}
+#         badge_bits.append(bit)
+#     if self.silver:
+#         bit = ungettext(
+#                 'one silver badge',
+#                 '%(count)d silver badges',
+#                 self.silver
+#             ) % {'count': self.silver}
+#         badge_bits.append(bit)
+#     if self.bronze:
+#         bit = ungettext(
+#                 'one bronze badge',
+#                 '%(count)d bronze badges',
+#                 self.bronze
+#             ) % {'count': self.bronze}
+#         badge_bits.append(bit)
+
+#     if len(badge_bits) == 1:
+#         badge_str = badge_bits[0]
+#     elif len(badge_bits) > 1:
+#         last_bit = badge_bits.pop()
+#         badge_str = ', '.join(badge_bits)
+#         badge_str = _('%(item1)s and %(item2)s') % \
+#                     {'item1': badge_str, 'item2': last_bit}
+#     return _("%(user)s has %(badges)s") % {'user': self.username, 'badges':badge_str}
+
+# #series of methods for user vote-type commands
+# #same call signature func(self, post, timestamp=None, cancel=None)
+# #note that none of these have business logic checks internally
+# #these functions are used by the askbot app and
+# #by the data importer jobs from say stackexchange, where internal rules
+# #may be different
+# #maybe if we do use business rule checks here - we should add
+# #some flag allowing to bypass them for things like the data importers
+# def toggle_favorite_question(
+#                         self, question,
+#                         timestamp = None,
+#                         cancel = False,
+#                         force = False#this parameter is not used yet
+#                     ):
+#     """cancel has no effect here, but is important for the SE loader
+#     it is hoped that toggle will work and data will be consistent
+#     but there is no guarantee, maybe it's better to be more strict
+#     about processing the "cancel" option
+#     another strange thing is that this function unlike others below
+#     returns a value
+
+#     todo: the on-screen follow and email subscription is not
+#     fully merged yet - see use of FavoriteQuestion and follow/unfollow question
+#     btw, names of the objects/methods is quite misleading ATM
+#     """
+#     try:
+#         #this attempts to remove the on-screen follow
+#         fave = FavoriteQuestion.objects.get(thread=question.thread, user=self)
+#         fave.delete()
+#         result = False
+#         question.thread.update_favorite_count()
+#         #this removes email subscription
+#         if question.thread.is_followed_by(self):
+#             self.unfollow_question(question)
+
+#     except FavoriteQuestion.DoesNotExist:
+#         if timestamp is None:
+#             timestamp = datetime.datetime.now()
+#         fave = FavoriteQuestion(
+#             thread = question.thread,
+#             user = self,
+#             added_at = timestamp,
+#         )
+#         fave.save()
+
+#         #this removes email subscription
+#         if question.thread.is_followed_by(self) is False:
+#             self.follow_question(question)
+
+#         result = True
+#         question.thread.update_favorite_count()
+#         award_badges_signal.send(None,
+#             event = 'select_favorite_question',
+#             actor = self,
+#             context_object = question,
+#             timestamp = timestamp
+#         )
+#     return result
 
 VOTES_TO_EVENTS = {
     (Vote.VOTE_UP, 'answer'): 'upvote_answer',
@@ -4431,55 +5129,55 @@ def _process_vote(user, post, timestamp=None, cancel=False, vote_type=None):
                 )
     return vote
 
-def user_fix_html_links(self, text):
-    """depending on the user's privilege, allow links
-    and hotlinked images or replace them with plain text
-    url
-    """
-    is_simple_user = not self.is_administrator_or_moderator()
-    has_low_rep = self.reputation < askbot_settings.MIN_REP_TO_INSERT_LINK
-    if is_simple_user and has_low_rep:
-        result = replace_links_with_text(text)
-        if result != text:
-            message = ungettext(
-                'At least %d karma point is required to post links',
-                'At least %d karma points is required to post links',
-                askbot_settings.MIN_REP_TO_INSERT_LINK
-            ) % askbot_settings.MIN_REP_TO_INSERT_LINK
-            self.message_set.create(message=message)
-        return result
-    return text
+# def user_fix_html_links(self, text):
+#     """depending on the user's privilege, allow links
+#     and hotlinked images or replace them with plain text
+#     url
+#     """
+#     is_simple_user = not self.is_administrator_or_moderator()
+#     has_low_rep = self.reputation < askbot_settings.MIN_REP_TO_INSERT_LINK
+#     if is_simple_user and has_low_rep:
+#         result = replace_links_with_text(text)
+#         if result != text:
+#             message = ungettext(
+#                 'At least %d karma point is required to post links',
+#                 'At least %d karma points is required to post links',
+#                 askbot_settings.MIN_REP_TO_INSERT_LINK
+#             ) % askbot_settings.MIN_REP_TO_INSERT_LINK
+#             self.message_set.create(message=message)
+#         return result
+#     return text
 
-def user_unfollow_question(self, question = None):
-    self.followed_threads.remove(question.thread)
+# def user_unfollow_question(self, question = None):
+#     self.followed_threads.remove(question.thread)
 
-def user_follow_question(self, question = None):
-    self.followed_threads.add(question.thread)
+# def user_follow_question(self, question = None):
+#     self.followed_threads.add(question.thread)
 
 def user_is_following_question(user, question):
     """True if user is following a question"""
     return question.thread.followed_by.filter(id=user.id).exists()
 
 
-def upvote(self, post, timestamp=None, cancel=False, force=False):
-    #force parameter not used yet
-    return _process_vote(
-        self,
-        post,
-        timestamp=timestamp,
-        cancel=cancel,
-        vote_type=Vote.VOTE_UP
-    )
+# def upvote(self, post, timestamp=None, cancel=False, force=False):
+#     #force parameter not used yet
+#     return _process_vote(
+#         self,
+#         post,
+#         timestamp=timestamp,
+#         cancel=cancel,
+#         vote_type=Vote.VOTE_UP
+#     )
 
-def downvote(self, post, timestamp=None, cancel=False, force=False):
-    #force not used yet
-    return _process_vote(
-        self,
-        post,
-        timestamp=timestamp,
-        cancel=cancel,
-        vote_type=Vote.VOTE_DOWN
-    )
+# def downvote(self, post, timestamp=None, cancel=False, force=False):
+#     #force not used yet
+#     return _process_vote(
+#         self,
+#         post,
+#         timestamp=timestamp,
+#         cancel=cancel,
+#         vote_type=Vote.VOTE_DOWN
+#     )
 
 @auto_now_timestamp
 def user_approve_post_revision(user, post_revision, timestamp = None):
@@ -4555,29 +5253,29 @@ def flag_post(
             timestamp = timestamp
         )
 
-def user_get_flags(self):
-    """return flag Activity query set
-    for all flags set by te user"""
-    return Activity.objects.filter(
-                        user = self,
-                        activity_type = const.TYPE_ACTIVITY_MARK_OFFENSIVE
-                    )
+# def user_get_flags(self):
+#     """return flag Activity query set
+#     for all flags set by te user"""
+#     return Activity.objects.filter(
+#                         user = self,
+#                         activity_type = const.TYPE_ACTIVITY_MARK_OFFENSIVE
+#                     )
 
-def user_get_flag_count_posted_today(self):
-    """return number of flags the user has posted
-    within last 24 hours"""
-    today = datetime.date.today()
-    time_frame = (today, today + datetime.timedelta(1))
-    flags = self.get_flags()
-    return flags.filter(active_at__range = time_frame).count()
+# def user_get_flag_count_posted_today(self):
+#     """return number of flags the user has posted
+#     within last 24 hours"""
+#     today = datetime.date.today()
+#     time_frame = (today, today + datetime.timedelta(1))
+#     flags = self.get_flags()
+#     return flags.filter(active_at__range = time_frame).count()
 
-def user_get_flags_for_post(self, post):
-    """return query set for flag Activity items
-    posted by users for a given post obeject
-    """
-    post_content_type = ContentType.objects.get_for_model(post)
-    flags = self.get_flags()
-    return flags.filter(content_type = post_content_type, object_id=post.id)
+# def user_get_flags_for_post(self, post):
+#     """return query set for flag Activity items
+#     posted by users for a given post obeject
+#     """
+#     post_content_type = ContentType.objects.get_for_model(post)
+#     flags = self.get_flags()
+#     return flags.filter(content_type = post_content_type, object_id=post.id)
 
 def user_update_response_counts(user):
     """Recount number of responses to the user.
@@ -4598,124 +5296,124 @@ def user_update_response_counts(user):
     user.save()
 
 
-def user_receive_reputation(self, num_points):
-    old_points = self.reputation
-    new_points = old_points + num_points
-    if new_points > 0:
-        self.reputation = new_points
-    else:
-        self.reputation = const.MIN_REPUTATION
-    signals.reputation_received.send(None, user=self, reputation_before=old_points)
+# def user_receive_reputation(self, num_points):
+#     old_points = self.reputation
+#     new_points = old_points + num_points
+#     if new_points > 0:
+#         self.reputation = new_points
+#     else:
+#         self.reputation = const.MIN_REPUTATION
+#     signals.reputation_received.send(None, user=self, reputation_before=old_points)
 
-def user_update_wildcard_tag_selections(
-                                    self,
-                                    action = None,
-                                    reason = None,
-                                    wildcards = None,
-                                ):
-    """updates the user selection of wildcard tags
-    and saves the user object to the database
-    """
-    if askbot_settings.SUBSCRIBED_TAG_SELECTOR_ENABLED:
-        assert reason in ('good', 'bad', 'subscribed')
-    else:
-        assert reason in ('good', 'bad')
+# def user_update_wildcard_tag_selections(
+#                                     self,
+#                                     action = None,
+#                                     reason = None,
+#                                     wildcards = None,
+#                                 ):
+#     """updates the user selection of wildcard tags
+#     and saves the user object to the database
+#     """
+#     if askbot_settings.SUBSCRIBED_TAG_SELECTOR_ENABLED:
+#         assert reason in ('good', 'bad', 'subscribed')
+#     else:
+#         assert reason in ('good', 'bad')
 
-    new_tags = set(wildcards)
-    interesting = set(self.interesting_tags.split())
-    ignored = set(self.ignored_tags.split())
-    subscribed = set(self.subscribed_tags.split())
+#     new_tags = set(wildcards)
+#     interesting = set(self.interesting_tags.split())
+#     ignored = set(self.ignored_tags.split())
+#     subscribed = set(self.subscribed_tags.split())
 
-    if reason == 'good':
-        target_set = interesting
-        other_set = ignored
-    elif reason == 'bad':
-        target_set = ignored
-        other_set = interesting
-    elif reason == 'subscribed':
-        target_set = subscribed
-        other_set = None
-    else:
-        assert(action == 'remove')
+#     if reason == 'good':
+#         target_set = interesting
+#         other_set = ignored
+#     elif reason == 'bad':
+#         target_set = ignored
+#         other_set = interesting
+#     elif reason == 'subscribed':
+#         target_set = subscribed
+#         other_set = None
+#     else:
+#         assert(action == 'remove')
 
-    if action == 'add':
-        target_set.update(new_tags)
-        if reason in ('good', 'bad'):
-            other_set.difference_update(new_tags)
-    else:
-        target_set.difference_update(new_tags)
-        if reason in ('good', 'bad'):
-            other_set.difference_update(new_tags)
+#     if action == 'add':
+#         target_set.update(new_tags)
+#         if reason in ('good', 'bad'):
+#             other_set.difference_update(new_tags)
+#     else:
+#         target_set.difference_update(new_tags)
+#         if reason in ('good', 'bad'):
+#             other_set.difference_update(new_tags)
 
-    self.interesting_tags = ' '.join(interesting)
-    self.ignored_tags = ' '.join(ignored)
-    self.subscribed_tags = ' '.join(subscribed)
-    self.save()
-    return new_tags
+#     self.interesting_tags = ' '.join(interesting)
+#     self.ignored_tags = ' '.join(ignored)
+#     self.subscribed_tags = ' '.join(subscribed)
+#     self.save()
+#     return new_tags
 
 
-def user_edit_group_membership(self, user=None, group=None,
-                               action=None, force=False):
-    """allows one user to add another to a group
-    or remove user from group.
+# def user_edit_group_membership(self, user=None, group=None,
+#                                action=None, force=False):
+#     """allows one user to add another to a group
+#     or remove user from group.
 
-    If when adding, the group does not exist, it will be created
-    the delete function is not symmetric, the group will remain
-    even if it becomes empty
+#     If when adding, the group does not exist, it will be created
+#     the delete function is not symmetric, the group will remain
+#     even if it becomes empty
 
-    returns instance of GroupMembership (if action is "add") or None
-    """
-    if action == 'add':
-        #calculate new level
-        openness = group.get_openness_level_for_user(user)
+#     returns instance of GroupMembership (if action is "add") or None
+#     """
+#     if action == 'add':
+#         #calculate new level
+#         openness = group.get_openness_level_for_user(user)
 
-        #let people join these special groups, but not leave
-        if not force:
-            if group.name == askbot_settings.GLOBAL_GROUP_NAME:
-                openness = 'open'
-            elif group.name == format_personal_group_name(user):
-                openness = 'open'
+#         #let people join these special groups, but not leave
+#         if not force:
+#             if group.name == askbot_settings.GLOBAL_GROUP_NAME:
+#                 openness = 'open'
+#             elif group.name == format_personal_group_name(user):
+#                 openness = 'open'
 
-            if openness == 'open':
-                level = GroupMembership.FULL
-            elif openness == 'moderated':
-                level = GroupMembership.PENDING
-            elif openness == 'closed':
-                raise django_exceptions.PermissionDenied()
-        else:
-            level = GroupMembership.FULL
+#             if openness == 'open':
+#                 level = GroupMembership.FULL
+#             elif openness == 'moderated':
+#                 level = GroupMembership.PENDING
+#             elif openness == 'closed':
+#                 raise django_exceptions.PermissionDenied()
+#         else:
+#             level = GroupMembership.FULL
 
-        membership, created = GroupMembership.objects.get_or_create(
-                        user=user, group=group, level=level
-                    )
-        return membership
+#         membership, created = GroupMembership.objects.get_or_create(
+#                         user=user, group=group, level=level
+#                     )
+#         return membership
 
-    elif action == 'remove':
-        GroupMembership.objects.get(user = user, group = group).delete()
-        return None
-    else:
-        raise ValueError('invalid action')
+#     elif action == 'remove':
+#         GroupMembership.objects.get(user = user, group = group).delete()
+#         return None
+#     else:
+#         raise ValueError('invalid action')
 
-def user_join_group(self, group, force=False):
-    return self.edit_group_membership(group=group, user=self,
-                                      action='add', force=force)
+# def user_join_group(self, group, force=False):
+#     return self.edit_group_membership(group=group, user=self,
+#                                       action='add', force=force)
 
-def user_leave_group(self, group):
-    self.edit_group_membership(group=group, user=self, action='remove')
+# def user_leave_group(self, group):
+#     self.edit_group_membership(group=group, user=self, action='remove')
 
-def user_is_group_member(self, group=None):
-    """True if user is member of group,
-    where group can be instance of Group
-    or name of group as string
-    """
-    if isinstance(group, str):
-        return GroupMembership.objects.filter(
-                user=self, group__name=group
-            ).count() == 1
-    else:
-        return GroupMembership.objects.filter(
-                                user=self, group=group
-                            ).count() == 1
+# def user_is_group_member(self, group=None):
+#     """True if user is member of group,
+#     where group can be instance of Group
+#     or name of group as string
+#     """
+#     if isinstance(group, str):
+#         return GroupMembership.objects.filter(
+#                 user=self, group__name=group
+#             ).count() == 1
+#     else:
+#         return GroupMembership.objects.filter(
+#                                 user=self, group=group
+#                             ).count() == 1
 
 User.add_to_class(
     'add_missing_askbot_subscriptions',
