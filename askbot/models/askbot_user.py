@@ -154,6 +154,83 @@ class RelatedObjectSimulator(object):
         return self.model_class.objects.filter(*args, **kwargs)
 
 
+class AskbotUser(models.Model):
+    """Model which encapsulates askbot user functionality.
+    Replaces monkey-patching of contrib.auth User model.
+    """
+    user = models.OneToOneField(User)
+
+    status = models.CharField(
+        max_length=2,
+        default=const.DEFAULT_USER_STATUS,
+        choices=const.USER_STATUS_CHOICES
+    )
+    is_fake = models.BooleanField(default=False)
+    email_isvalid = models.BooleanField(default=False)
+    email_key = models.CharField(max_length=32, null=True)
+    # hardcoded initial reputaion of 1, no setting for this one
+    reputation = models.PositiveIntegerField(default=const.MIN_REPUTATION)
+    gravatar = models.CharField(max_length=32)
+    # User.add_to_class('has_custom_avatar', models.BooleanField(default=False))
+    avatar_type = models.CharField(
+        max_length=1,
+        choices=const.AVATAR_STATUS_CHOICE,
+        default='n'
+    )
+    gold = models.SmallIntegerField(default=0)
+    silver = models.SmallIntegerField(default=0)
+    bronze = models.SmallIntegerField(default=0)
+
+    # TODO: remove me and const.QUESTIONS_PER_PAGE_USER_CHOICES, we're no longer used!
+    questions_per_page = models.SmallIntegerField(
+        choices=const.QUESTIONS_PER_PAGE_USER_CHOICES,
+        default=10
+    )
+    last_seen = models.DateTimeField(default=datetime.datetime.now)
+    real_name = models.CharField(max_length=100, blank=True)
+    website = models.URLField(max_length=200, blank=True)
+    # location field is actually city
+    location = models.CharField(max_length=100, blank=True)
+    country = CountryField(blank=True)
+    show_country = models.BooleanField(default=False)
+
+    date_of_birth = models.DateField(null=True, blank=True)
+    about = models.TextField(blank=True)
+    # interesting tags and ignored tags are to store wildcard tag selections only
+    interesting_tags = models.TextField(blank=True)
+    ignored_tags = models.TextField(blank=True)
+    subscribed_tags = models.TextField(blank=True)
+    email_signature = models.TextField(blank=True)
+    show_marked_tags = models.BooleanField(default=True)
+
+    email_tag_filter_strategy = models.SmallIntegerField(
+        choices=const.TAG_EMAIL_FILTER_FULL_STRATEGY_CHOICES,
+        default=const.EXCLUDE_IGNORED
+    )
+    display_tag_filter_strategy = models.SmallIntegerField(
+        choices=const.TAG_DISPLAY_FILTER_STRATEGY_CHOICES,
+        default=const.INCLUDE_ALL
+    )
+
+    new_response_count = models.IntegerField(default=0)
+    seen_response_count = models.IntegerField(default=0)
+    consecutive_days_visit_count = models.IntegerField(default=0)
+    # list of languages for which user should receive email alerts
+    languages = models.CharField(
+        max_length=128,
+        default=django_settings.LANGUAGE_CODE
+    )
+
+    twitter_access_token = models.CharField(max_length=256, default='')
+
+    twitter_handle = models.CharField(max_length=32, default='')
+
+    social_sharing_mode = models.IntegerField(
+        default=const.SHARE_NOTHING,
+        choices=const.SOCIAL_SHARING_MODE_CHOICES
+    )
+
+
 #django 1.4.1 and above
 @property
 def user_message_set(self):
@@ -171,99 +248,99 @@ if DJANGO_VERSION > (1, 3):
     User.add_to_class('message_set', user_message_set)
     User.add_to_class('get_and_delete_messages', user_get_and_delete_messages)
 
-User.add_to_class(
-            'status',
-            models.CharField(
-                        max_length = 2,
-                        default = const.DEFAULT_USER_STATUS,
-                        choices = const.USER_STATUS_CHOICES
-                    )
-        )
-User.add_to_class('is_fake', models.BooleanField(default=False))
+# User.add_to_class(
+#             'status',
+#             models.CharField(
+#                         max_length = 2,
+#                         default = const.DEFAULT_USER_STATUS,
+#                         choices = const.USER_STATUS_CHOICES
+#                     )
+#         )
+# User.add_to_class('is_fake', models.BooleanField(default=False))
 
-User.add_to_class('email_isvalid', models.BooleanField(default=False)) #@UndefinedVariable
-User.add_to_class('email_key', models.CharField(max_length=32, null=True))
-#hardcoded initial reputaion of 1, no setting for this one
-User.add_to_class('reputation',
-    models.PositiveIntegerField(default=const.MIN_REPUTATION)
-)
-User.add_to_class('gravatar', models.CharField(max_length=32))
-#User.add_to_class('has_custom_avatar', models.BooleanField(default=False))
-User.add_to_class(
-    'avatar_type',
-    models.CharField(max_length=1,
-        choices=const.AVATAR_STATUS_CHOICE,
-        default='n')
-)
-User.add_to_class('gold', models.SmallIntegerField(default=0))
-User.add_to_class('silver', models.SmallIntegerField(default=0))
-User.add_to_class('bronze', models.SmallIntegerField(default=0))
-User.add_to_class(
-    'questions_per_page',  # TODO: remove me and const.QUESTIONS_PER_PAGE_USER_CHOICES, we're no longer used!
-    models.SmallIntegerField(
-        choices=const.QUESTIONS_PER_PAGE_USER_CHOICES,
-        default=10
-    )
-)
-User.add_to_class('last_seen',
-                  models.DateTimeField(default=datetime.datetime.now))
-User.add_to_class('real_name', models.CharField(max_length=100, blank=True))
-User.add_to_class('website', models.URLField(max_length=200, blank=True))
-#location field is actually city
-User.add_to_class('location', models.CharField(max_length=100, blank=True))
-User.add_to_class('country', CountryField(blank = True))
-User.add_to_class('show_country', models.BooleanField(default = False))
+# User.add_to_class('email_isvalid', models.BooleanField(default=False)) #@UndefinedVariable
+# User.add_to_class('email_key', models.CharField(max_length=32, null=True))
+# #hardcoded initial reputaion of 1, no setting for this one
+# User.add_to_class('reputation',
+#     models.PositiveIntegerField(default=const.MIN_REPUTATION)
+# )
+# User.add_to_class('gravatar', models.CharField(max_length=32))
+# #User.add_to_class('has_custom_avatar', models.BooleanField(default=False))
+# User.add_to_class(
+#     'avatar_type',
+#     models.CharField(max_length=1,
+#         choices=const.AVATAR_STATUS_CHOICE,
+#         default='n')
+# )
+# User.add_to_class('gold', models.SmallIntegerField(default=0))
+# User.add_to_class('silver', models.SmallIntegerField(default=0))
+# User.add_to_class('bronze', models.SmallIntegerField(default=0))
+# User.add_to_class(
+#     'questions_per_page',  # TODO: remove me and const.QUESTIONS_PER_PAGE_USER_CHOICES, we're no longer used!
+#     models.SmallIntegerField(
+#         choices=const.QUESTIONS_PER_PAGE_USER_CHOICES,
+#         default=10
+#     )
+# )
+# User.add_to_class('last_seen',
+#                   models.DateTimeField(default=datetime.datetime.now))
+# User.add_to_class('real_name', models.CharField(max_length=100, blank=True))
+# User.add_to_class('website', models.URLField(max_length=200, blank=True))
+# #location field is actually city
+# User.add_to_class('location', models.CharField(max_length=100, blank=True))
+# User.add_to_class('country', CountryField(blank = True))
+# User.add_to_class('show_country', models.BooleanField(default = False))
 
-User.add_to_class('date_of_birth', models.DateField(null=True, blank=True))
-User.add_to_class('about', models.TextField(blank=True))
-#interesting tags and ignored tags are to store wildcard tag selections only
-User.add_to_class('interesting_tags', models.TextField(blank = True))
-User.add_to_class('ignored_tags', models.TextField(blank = True))
-User.add_to_class('subscribed_tags', models.TextField(blank = True))
-User.add_to_class('email_signature', models.TextField(blank = True))
-User.add_to_class('show_marked_tags', models.BooleanField(default = True))
+# User.add_to_class('date_of_birth', models.DateField(null=True, blank=True))
+# User.add_to_class('about', models.TextField(blank=True))
+# #interesting tags and ignored tags are to store wildcard tag selections only
+# User.add_to_class('interesting_tags', models.TextField(blank = True))
+# User.add_to_class('ignored_tags', models.TextField(blank = True))
+# User.add_to_class('subscribed_tags', models.TextField(blank = True))
+# User.add_to_class('email_signature', models.TextField(blank = True))
+# User.add_to_class('show_marked_tags', models.BooleanField(default = True))
 
-User.add_to_class(
-    'email_tag_filter_strategy',
-    models.SmallIntegerField(
-        choices=const.TAG_EMAIL_FILTER_FULL_STRATEGY_CHOICES,
-        default=const.EXCLUDE_IGNORED
-    )
-)
-User.add_to_class(
-    'display_tag_filter_strategy',
-    models.SmallIntegerField(
-        choices=const.TAG_DISPLAY_FILTER_STRATEGY_CHOICES,
-        default=const.INCLUDE_ALL
-    )
-)
+# User.add_to_class(
+#     'email_tag_filter_strategy',
+#     models.SmallIntegerField(
+#         choices=const.TAG_EMAIL_FILTER_FULL_STRATEGY_CHOICES,
+#         default=const.EXCLUDE_IGNORED
+#     )
+# )
+# User.add_to_class(
+#     'display_tag_filter_strategy',
+#     models.SmallIntegerField(
+#         choices=const.TAG_DISPLAY_FILTER_STRATEGY_CHOICES,
+#         default=const.INCLUDE_ALL
+#     )
+# )
 
-User.add_to_class('new_response_count', models.IntegerField(default=0))
-User.add_to_class('seen_response_count', models.IntegerField(default=0))
-User.add_to_class('consecutive_days_visit_count', models.IntegerField(default = 0))
-#list of languages for which user should receive email alerts
-User.add_to_class(
-    'languages',
-    models.CharField(max_length=128, default=django_settings.LANGUAGE_CODE)
-)
+# User.add_to_class('new_response_count', models.IntegerField(default=0))
+# User.add_to_class('seen_response_count', models.IntegerField(default=0))
+# User.add_to_class('consecutive_days_visit_count', models.IntegerField(default = 0))
+# #list of languages for which user should receive email alerts
+# User.add_to_class(
+#     'languages',
+#     models.CharField(max_length=128, default=django_settings.LANGUAGE_CODE)
+# )
 
-User.add_to_class(
-    'twitter_access_token',
-    models.CharField(max_length=256, default='')
-)
+# User.add_to_class(
+#     'twitter_access_token',
+#     models.CharField(max_length=256, default='')
+# )
 
-User.add_to_class(
-    'twitter_handle',
-    models.CharField(max_length=32, default='')
-)
+# User.add_to_class(
+#     'twitter_handle',
+#     models.CharField(max_length=32, default='')
+# )
 
-User.add_to_class(
-    'social_sharing_mode',
-    models.IntegerField(
-        default=const.SHARE_NOTHING,
-        choices = const.SOCIAL_SHARING_MODE_CHOICES
-    )
-)
+# User.add_to_class(
+#     'social_sharing_mode',
+#     models.IntegerField(
+#         default=const.SHARE_NOTHING,
+#         choices = const.SOCIAL_SHARING_MODE_CHOICES
+#     )
+# )
 
 GRAVATAR_TEMPLATE = "%(gravatar_url)s/%(gravatar)s?" + \
     "s=%(size)d&amp;d=%(type)s&amp;r=PG"
