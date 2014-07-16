@@ -230,6 +230,398 @@ class AskbotUser(models.Model):
         choices=const.SOCIAL_SHARING_MODE_CHOICES
     )
 
+    def user_get_gravatar_url(self, size):
+        """returns gravatar url
+        """
+        return GRAVATAR_TEMPLATE % {
+            'gravatar_url': askbot_settings.GRAVATAR_BASE_URL,
+            'gravatar': self.gravatar,
+            'type': askbot_settings.GRAVATAR_TYPE,
+            'size': size,
+        }
+
+    def user_get_default_avatar_url(self, size):
+        """returns default avatar url
+        """
+        return skin_utils.get_media_url(askbot_settings.DEFAULT_AVATAR_URL)
+
+    def user_get_avatar_url(self, size=48):
+        """returns avatar url - by default - gravatar,
+        but if application django-avatar is installed
+        it will use avatar provided through that app
+        """
+        if 'avatar' in django_settings.INSTALLED_APPS:
+            if self.avatar_type == 'n':
+                import avatar
+                if askbot_settings.ENABLE_GRAVATAR: #avatar.settings.AVATAR_GRAVATAR_BACKUP:
+                    return self.get_gravatar_url(size)
+                else:
+                    return self.get_default_avatar_url(size)
+            elif self.avatar_type == 'a':
+                kwargs = {'user_id': self.id, 'size': size}
+                try:
+                    return reverse('avatar_render_primary', kwargs=kwargs)
+                except NoReverseMatch:
+                    message = 'Please, make sure that avatar urls are in the urls.py '\
+                              'or update your django-avatar app, '\
+                              'currently it is impossible to serve avatars.'
+                    logging.critical(message)
+                    raise django_exceptions.ImproperlyConfigured(message)
+            else:
+                return self.get_gravatar_url(size)
+        if askbot_settings.ENABLE_GRAVATAR:
+            return self.get_gravatar_url(size)
+        else:
+            return self.get_default_avatar_url(size)
+
+    def user_get_top_answers_paginator(self, visitor=None):
+        """get paginator for top answers by the user for a
+        specific visitor"""
+        answers = self.posts.get_answers(visitor).filter(
+            deleted=False,
+            thread__deleted=False
+        ).select_related('thread').order_by('-points', '-added_at')
+        return Paginator(answers, const.USER_POSTS_PAGE_SIZE)
+
+    def user_update_avatar_type(self):
+        """counts number of custom avatars
+        and if zero, sets avatar_type to False,
+        True otherwise. The method is called only if
+        avatar application is installed.
+        Saves the object.
+        """
+
+        if 'avatar' in django_settings.INSTALLED_APPS:
+            if self.avatar_set.count() > 0:
+                self.avatar_type = 'a'
+            else:
+                self.avatar_type = _check_gravatar(self.gravatar)
+        else:
+                self.avatar_type = _check_gravatar(self.gravatar)
+        self.save()
+
+    def user_strip_email_signature(self, text):
+        """strips email signature from the end of the text"""
+        if self.email_signature.strip() == '':
+            return text
+
+        text = '\n'.join(text.splitlines())  # normalize the line endings
+        while text.endswith(self.email_signature):
+            text = text[0:-len(self.email_signature)]
+        return text
+
+    def user_get_old_vote_for_post(self, post):
+        """returns previous vote for this post
+        by the user or None, if does not exist
+
+        raises assertion_error is number of old votes is > 1
+        which is illegal
+        """
+        try:
+            return Vote.objects.get(user=self, voted_post=post)
+        except Vote.DoesNotExist:
+            return None
+        except Vote.MultipleObjectsReturned:
+            raise AssertionError
+
+    def user_get_marked_tags(self, reason):
+        """reason is a type of mark: good, bad or subscribed"""
+        assert(reason in ('good', 'bad', 'subscribed'))
+        if reason == 'subscribed':
+            if askbot_settings.SUBSCRIBED_TAG_SELECTOR_ENABLED is False:
+                return Tag.objects.none()
+
+        return Tag.objects.filter(
+            user_selections__user=self,
+            user_selections__reason=reason,
+            language_code=get_language()
+        )
+
+    def user_get_marked_tag_names(self, reason):
+        """returns list of marked tag names for a give
+        reason: good, bad, or subscribed
+        will add wildcard tags as well, if used
+        """
+        if reason == 'subscribed':
+            if askbot_settings.SUBSCRIBED_TAG_SELECTOR_ENABLED is False:
+                return list()
+
+        tags = self.get_marked_tags(reason)
+        tag_names = list(tags.values_list('name', flat=True))
+
+        if askbot_settings.USE_WILDCARD_TAGS:
+            attr_name = MARKED_TAG_PROPERTY_MAP[reason]
+            wildcard_tags = getattr(self, attr_name).split()
+            tag_names.extend(wildcard_tags)
+
+        return tag_names
+
+    def user_has_affinity_to_question(self, question=None, affinity_type=None):
+        """returns True if number of tag overlap of the user tag
+        selection with the question is 0 and False otherwise
+        affinity_type can be either "like" or "dislike"
+        """
+        if affinity_type == 'like':
+            if askbot_settings.SUBSCRIBED_TAG_SELECTOR_ENABLED:
+                tag_selection_type = 'subscribed'
+                wildcards = self.subscribed_tags.split()
+            else:
+                tag_selection_type = 'good'
+                wildcards = self.interesting_tags.split()
+        elif affinity_type == 'dislike':
+            tag_selection_type = 'bad'
+            wildcards = self.ignored_tags.split()
+        else:
+            raise ValueError(
+                'unexpected affinity type %s' % str(affinity_type)
+            )
+
+        question_tags = question.thread.tags.all()
+        intersecting_tag_selections = self.tag_selections.filter(
+            tag__in=question_tags,
+            reason=tag_selection_type
+        )
+        # count number of overlapping tags
+        if intersecting_tag_selections.count() > 0:
+            return True
+        elif askbot_settings.USE_WILDCARD_TAGS is False:
+            return False
+
+        # match question tags against wildcards
+        for tag in question_tags:
+            for wildcard in wildcards:
+                if tag.name.startswith(wildcard[:-1]):
+                    return True
+        return False
+
+    def user_has_ignored_wildcard_tags(self):
+        """True if wildcard tags are on and
+        user has some"""
+        return askbot_settings.USE_WILDCARD_TAGS and self.ignored_tags != ''
+
+    def user_has_interesting_wildcard_tags(self):
+        """True in wildcard tags aro on and
+        user has nome interesting wildcard tags selected
+        """
+        return askbot_settings.USE_WILDCARD_TAGS and self.interesting_tags != ''
+
+    def user_has_badge(self, badge):
+        """True, if user was awarded a given badge,
+        ``badge`` is instance of BadgeData
+        """
+        return Award.objects.filter(user=self, badge=badge).count() > 0
+
+    def user_can_create_tags(self):
+        """true if user can create tags"""
+        if askbot_settings.ENABLE_TAG_MODERATION:
+            return self.is_administrator_or_moderator()
+        else:
+            return True
+
+    def user_can_have_strong_url(self):
+        """True if user's homepage url can be
+        followed by the search engine crawlers"""
+        return (self.reputation >= askbot_settings.MIN_REP_TO_HAVE_STRONG_URL)
+
+    def user_can_post_by_email(self):
+        """True, if reply by email is enabled
+        and user has sufficient reputatiton"""
+
+        if askbot_settings.REPLY_BY_EMAIL:
+            if self.is_administrator_or_moderator():
+                return True
+            else:
+                return \
+                    self.reputation >= askbot_settings.MIN_REP_TO_POST_BY_EMAIL
+        else:
+            return False
+
+    def user_get_social_sharing_mode(self):
+        """returns what user wants to share on his/her channels"""
+        mode = self.social_sharing_mode
+        if mode == const.SHARE_NOTHING:
+            return 'share-nothing'
+        elif mode == const.SHARE_MY_POSTS:
+            return 'share-my-posts'
+        else:
+            assert(mode == const.SHARE_EVERYTHING)
+            return 'share-everything'
+
+    def user_get_social_sharing_status(self, channel):
+        """channel is only 'twitter' for now"""
+        assert(channel == 'twitter')
+        if self.twitter_handle:
+            if self.get_social_sharing_mode() == 'share-nothing':
+                return 'inactive'
+            else:
+                return 'enabled'
+        else:
+            return 'disabled'
+
+    def user_get_or_create_fake_user(self, username, email):
+        """
+        Get's or creates a user, most likely with the purpose
+        of posting under that account.
+        """
+        assert(self.is_administrator())
+
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            user = User()
+            user.username = username
+            user.email = email
+            user.is_fake = True
+            user.set_unusable_password()
+            user.save()
+        return user
+
+    def user_needs_moderation(self):
+        if self.status not in ('a', 'm', 'd'):
+            choices = ('audit', 'premoderation')
+            return askbot_settings.CONTENT_MODERATION_MODE in choices
+        return False
+
+    def user_notify_users(
+        self,
+        notification_type=None,
+        recipients=None,
+        content_object=None
+    ):
+        """A utility function that creates instance
+        of :class:`Activity` and adds recipients
+        * `notification_type` - value should be one of TYPE_ACTIVITY_...
+        * `recipients` - an iterable of user objects
+        * `content_object` - any object related to the notification
+
+        todo: possibly add checks on the content_object, depending on the
+        notification_type
+        """
+        activity = Activity(
+            user=self,
+            activity_type=notification_type,
+            content_object=content_object
+        )
+        activity.save()
+        activity.add_recipients(recipients)
+
+    def user_is_read_only(self):
+        """True if user is allowed to change content on the site"""
+        if askbot_settings.GROUPS_ENABLED:
+            return bool(self.get_groups().filter(read_only=True).count())
+        else:
+            return False
+
+    def user_get_notifications(self, notification_types=None, **kwargs):
+        """returns query set of activity audit status objects"""
+        return ActivityAuditStatus.objects.filter(
+            user=self,
+            activity__activity_type__in=notification_types,
+            **kwargs
+        )
+
+    def user_assert_can_approve_post_revision(self, post_revision=None):
+        _assert_user_can(
+            user=self,
+            admin_or_moderator_required=True
+        )
+
+    def user_assert_can_unaccept_best_answer(self, answer=None):
+        assert getattr(answer, 'post_type', '') == 'answer'
+        suspended_error_message = \
+            _(message_keys.ACCOUNT_CANNOT_PERFORM_ACTION) % {
+                'perform_action':
+                    askbot_settings.WORDS_ACCEPT_OR_UNACCEPT_THE_BEST_ANSWER,
+                'your_account_is': _('your account is suspended')
+            }
+        blocked_error_message = \
+            _(message_keys.ACCOUNT_CANNOT_PERFORM_ACTION) % {
+                'perform_action':
+                    askbot_settings.WORDS_ACCEPT_OR_UNACCEPT_THE_BEST_ANSWER,
+                'your_account_is': _('your account is blocked')
+            }
+
+        if self.is_blocked():
+            error_message = blocked_error_message
+        elif self.is_suspended():
+            error_message = suspended_error_message
+        elif self == answer.thread._question_post().get_owner():
+            if self == answer.get_owner():
+                if not self.is_administrator():
+                    # check rep
+                    _assert_user_can(
+                        user=self,
+                        action_display=askbot_settings.WORDS_ACCEPT_OR_UNACCEPT_OWN_ANSWER,
+                        blocked_user_cannot=True,
+                        suspended_owner_cannot=True,
+                        min_rep_setting=askbot_settings.MIN_REP_TO_ACCEPT_OWN_ANSWER
+                    )
+            return  # success
+
+        elif self.reputation >= askbot_settings.MIN_REP_TO_ACCEPT_ANY_ANSWER \
+                or self.is_administrator() or self.is_moderator() or \
+                self.is_post_moderator(answer):
+
+            will_be_able_at = (
+                answer.added_at +
+                datetime.timedelta(
+                    days=askbot_settings.MIN_DAYS_FOR_STAFF_TO_ACCEPT_ANSWER)
+            )
+
+            if datetime.datetime.now() < will_be_able_at:
+                error_message = _(message_keys.CANNOT_PERFORM_ACTION_UNTIL) % {
+                    'perform_action':
+                        askbot_settings.WORDS_ACCEPT_OR_UNACCEPT_OWN_ANSWER,
+                    'until': will_be_able_at.strftime('%d/%m/%Y')
+                }
+            else:
+                return
+
+        else:
+            question_owner = answer.thread._question_post().get_owner()
+            error_message = \
+                _(message_keys.MODERATORS_OR_AUTHOR_CAN_PEFROM_ACTION) % {
+                    'post_author':
+                        askbot_settings.WORDS_AUTHOR_OF_THE_QUESTION,
+                    'perform_action':
+                        askbot_settings.WORDS_ACCEPT_OR_UNACCEPT_THE_BEST_ANSWER,
+                }
+
+        raise django_exceptions.PermissionDenied(error_message)
+
+    def user_assert_can_accept_best_answer(self, answer=None):
+        assert getattr(answer, 'post_type', '') == 'answer'
+        self.assert_can_unaccept_best_answer(answer)
+
+    def user_assert_can_vote_for_post(self, post=None, direction=None):
+        """raises exceptions.PermissionDenied exception
+        if user can't in fact upvote
+
+        :param:direction can be 'up' or 'down'
+        :param:post can be instance of question or answer
+        """
+        if self == post.author:
+            raise django_exceptions.PermissionDenied(
+                _('Sorry, you cannot vote for your own posts')
+            )
+
+        assert(direction in ('up', 'down'))
+
+        if direction == 'up':
+            min_rep_setting = askbot_settings.MIN_REP_TO_VOTE_UP
+            action_display = _('upvote')
+        else:
+            min_rep_setting = askbot_settings.MIN_REP_TO_VOTE_DOWN
+            action_display = _('downvote')
+
+        _assert_user_can(
+            user=self,
+            action_display=action_display,
+            blocked_user_cannot=True,
+            suspended_user_cannot=True,
+            min_rep_setting=min_rep_setting,
+        )
+
 
 #django 1.4.1 and above
 @property
@@ -345,91 +737,91 @@ if DJANGO_VERSION > (1, 3):
 GRAVATAR_TEMPLATE = "%(gravatar_url)s/%(gravatar)s?" + \
     "s=%(size)d&amp;d=%(type)s&amp;r=PG"
 
-def user_get_gravatar_url(self, size):
-    """returns gravatar url
-    """
-    return GRAVATAR_TEMPLATE % {
-                'gravatar_url': askbot_settings.GRAVATAR_BASE_URL,
-                'gravatar': self.gravatar,
-                'type': askbot_settings.GRAVATAR_TYPE,
-                'size': size,
-            }
+# def user_get_gravatar_url(self, size):
+#     """returns gravatar url
+#     """
+#     return GRAVATAR_TEMPLATE % {
+#                 'gravatar_url': askbot_settings.GRAVATAR_BASE_URL,
+#                 'gravatar': self.gravatar,
+#                 'type': askbot_settings.GRAVATAR_TYPE,
+#                 'size': size,
+#             }
 
-def user_get_default_avatar_url(self, size):
-    """returns default avatar url
-    """
-    return skin_utils.get_media_url(askbot_settings.DEFAULT_AVATAR_URL)
+# def user_get_default_avatar_url(self, size):
+#     """returns default avatar url
+#     """
+#     return skin_utils.get_media_url(askbot_settings.DEFAULT_AVATAR_URL)
 
-def user_get_avatar_url(self, size=48):
-    """returns avatar url - by default - gravatar,
-    but if application django-avatar is installed
-    it will use avatar provided through that app
-    """
-    if 'avatar' in django_settings.INSTALLED_APPS:
-        if self.avatar_type == 'n':
-            import avatar
-            if askbot_settings.ENABLE_GRAVATAR: #avatar.settings.AVATAR_GRAVATAR_BACKUP:
-                return self.get_gravatar_url(size)
-            else:
-                return self.get_default_avatar_url(size)
-        elif self.avatar_type == 'a':
-            kwargs = {'user_id': self.id, 'size': size}
-            try:
-                return reverse('avatar_render_primary', kwargs = kwargs)
-            except NoReverseMatch:
-                message = 'Please, make sure that avatar urls are in the urls.py '\
-                          'or update your django-avatar app, '\
-                          'currently it is impossible to serve avatars.'
-                logging.critical(message)
-                raise django_exceptions.ImproperlyConfigured(message)
-        else:
-            return self.get_gravatar_url(size)
-    if askbot_settings.ENABLE_GRAVATAR:
-        return self.get_gravatar_url(size)
-    else:
-        return self.get_default_avatar_url(size)
+# def user_get_avatar_url(self, size=48):
+#     """returns avatar url - by default - gravatar,
+#     but if application django-avatar is installed
+#     it will use avatar provided through that app
+#     """
+#     if 'avatar' in django_settings.INSTALLED_APPS:
+#         if self.avatar_type == 'n':
+#             import avatar
+#             if askbot_settings.ENABLE_GRAVATAR: #avatar.settings.AVATAR_GRAVATAR_BACKUP:
+#                 return self.get_gravatar_url(size)
+#             else:
+#                 return self.get_default_avatar_url(size)
+#         elif self.avatar_type == 'a':
+#             kwargs = {'user_id': self.id, 'size': size}
+#             try:
+#                 return reverse('avatar_render_primary', kwargs = kwargs)
+#             except NoReverseMatch:
+#                 message = 'Please, make sure that avatar urls are in the urls.py '\
+#                           'or update your django-avatar app, '\
+#                           'currently it is impossible to serve avatars.'
+#                 logging.critical(message)
+#                 raise django_exceptions.ImproperlyConfigured(message)
+#         else:
+#             return self.get_gravatar_url(size)
+#     if askbot_settings.ENABLE_GRAVATAR:
+#         return self.get_gravatar_url(size)
+#     else:
+#         return self.get_default_avatar_url(size)
 
-def user_get_top_answers_paginator(self, visitor=None):
-    """get paginator for top answers by the user for a
-    specific visitor"""
-    answers = self.posts.get_answers(
-                                visitor
-                            ).filter(
-                                deleted=False,
-                                thread__deleted=False
-                            ).select_related(
-                                'thread'
-                            ).order_by(
-                                '-points', '-added_at'
-                            )
-    return Paginator(answers, const.USER_POSTS_PAGE_SIZE)
+# def user_get_top_answers_paginator(self, visitor=None):
+#     """get paginator for top answers by the user for a
+#     specific visitor"""
+#     answers = self.posts.get_answers(
+#                                 visitor
+#                             ).filter(
+#                                 deleted=False,
+#                                 thread__deleted=False
+#                             ).select_related(
+#                                 'thread'
+#                             ).order_by(
+#                                 '-points', '-added_at'
+#                             )
+#     return Paginator(answers, const.USER_POSTS_PAGE_SIZE)
 
-def user_update_avatar_type(self):
-    """counts number of custom avatars
-    and if zero, sets avatar_type to False,
-    True otherwise. The method is called only if
-    avatar application is installed.
-    Saves the object.
-    """
+# def user_update_avatar_type(self):
+#     """counts number of custom avatars
+#     and if zero, sets avatar_type to False,
+#     True otherwise. The method is called only if
+#     avatar application is installed.
+#     Saves the object.
+#     """
 
-    if 'avatar' in django_settings.INSTALLED_APPS:
-        if self.avatar_set.count() > 0:
-            self.avatar_type = 'a'
-        else:
-            self.avatar_type = _check_gravatar(self.gravatar)
-    else:
-            self.avatar_type = _check_gravatar(self.gravatar)
-    self.save()
+#     if 'avatar' in django_settings.INSTALLED_APPS:
+#         if self.avatar_set.count() > 0:
+#             self.avatar_type = 'a'
+#         else:
+#             self.avatar_type = _check_gravatar(self.gravatar)
+#     else:
+#             self.avatar_type = _check_gravatar(self.gravatar)
+#     self.save()
 
-def user_strip_email_signature(self, text):
-    """strips email signature from the end of the text"""
-    if self.email_signature.strip() == '':
-        return text
+# def user_strip_email_signature(self, text):
+#     """strips email signature from the end of the text"""
+#     if self.email_signature.strip() == '':
+#         return text
 
-    text = '\n'.join(text.splitlines())#normalize the line endings
-    while text.endswith(self.email_signature):
-        text = text[0:-len(self.email_signature)]
-    return text
+#     text = '\n'.join(text.splitlines())#normalize the line endings
+#     while text.endswith(self.email_signature):
+#         text = text[0:-len(self.email_signature)]
+#     return text
 
 def _check_gravatar(gravatar):
     return 'n'
@@ -442,183 +834,183 @@ def _check_gravatar(gravatar):
     else:
         return 'n' #none
 
-def user_get_old_vote_for_post(self, post):
-    """returns previous vote for this post
-    by the user or None, if does not exist
+# def user_get_old_vote_for_post(self, post):
+#     """returns previous vote for this post
+#     by the user or None, if does not exist
 
-    raises assertion_error is number of old votes is > 1
-    which is illegal
-    """
-    try:
-        return Vote.objects.get(user=self, voted_post=post)
-    except Vote.DoesNotExist:
-        return None
-    except Vote.MultipleObjectsReturned:
-        raise AssertionError
+#     raises assertion_error is number of old votes is > 1
+#     which is illegal
+#     """
+#     try:
+#         return Vote.objects.get(user=self, voted_post=post)
+#     except Vote.DoesNotExist:
+#         return None
+#     except Vote.MultipleObjectsReturned:
+#         raise AssertionError
 
-def user_get_marked_tags(self, reason):
-    """reason is a type of mark: good, bad or subscribed"""
-    assert(reason in ('good', 'bad', 'subscribed'))
-    if reason == 'subscribed':
-        if askbot_settings.SUBSCRIBED_TAG_SELECTOR_ENABLED == False:
-            return Tag.objects.none()
+# def user_get_marked_tags(self, reason):
+#     """reason is a type of mark: good, bad or subscribed"""
+#     assert(reason in ('good', 'bad', 'subscribed'))
+#     if reason == 'subscribed':
+#         if askbot_settings.SUBSCRIBED_TAG_SELECTOR_ENABLED == False:
+#             return Tag.objects.none()
 
-    return Tag.objects.filter(
-        user_selections__user=self,
-        user_selections__reason=reason,
-        language_code=get_language()
-    )
+#     return Tag.objects.filter(
+#         user_selections__user=self,
+#         user_selections__reason=reason,
+#         language_code=get_language()
+#     )
 
 MARKED_TAG_PROPERTY_MAP = {
     'good': 'interesting_tags',
     'bad': 'ignored_tags',
     'subscribed': 'subscribed_tags'
 }
-def user_get_marked_tag_names(self, reason):
-    """returns list of marked tag names for a give
-    reason: good, bad, or subscribed
-    will add wildcard tags as well, if used
-    """
-    if reason == 'subscribed':
-        if askbot_settings.SUBSCRIBED_TAG_SELECTOR_ENABLED == False:
-            return list()
+# def user_get_marked_tag_names(self, reason):
+#     """returns list of marked tag names for a give
+#     reason: good, bad, or subscribed
+#     will add wildcard tags as well, if used
+#     """
+#     if reason == 'subscribed':
+#         if askbot_settings.SUBSCRIBED_TAG_SELECTOR_ENABLED == False:
+#             return list()
 
-    tags = self.get_marked_tags(reason)
-    tag_names = list(tags.values_list('name', flat = True))
+#     tags = self.get_marked_tags(reason)
+#     tag_names = list(tags.values_list('name', flat = True))
 
-    if askbot_settings.USE_WILDCARD_TAGS:
-        attr_name = MARKED_TAG_PROPERTY_MAP[reason]
-        wildcard_tags = getattr(self, attr_name).split()
-        tag_names.extend(wildcard_tags)
+#     if askbot_settings.USE_WILDCARD_TAGS:
+#         attr_name = MARKED_TAG_PROPERTY_MAP[reason]
+#         wildcard_tags = getattr(self, attr_name).split()
+#         tag_names.extend(wildcard_tags)
 
-    return tag_names
+#     return tag_names
 
-def user_has_affinity_to_question(self, question = None, affinity_type = None):
-    """returns True if number of tag overlap of the user tag
-    selection with the question is 0 and False otherwise
-    affinity_type can be either "like" or "dislike"
-    """
-    if affinity_type == 'like':
-        if askbot_settings.SUBSCRIBED_TAG_SELECTOR_ENABLED:
-            tag_selection_type = 'subscribed'
-            wildcards = self.subscribed_tags.split()
-        else:
-            tag_selection_type = 'good'
-            wildcards = self.interesting_tags.split()
-    elif affinity_type == 'dislike':
-        tag_selection_type = 'bad'
-        wildcards = self.ignored_tags.split()
-    else:
-        raise ValueError('unexpected affinity type %s' % str(affinity_type))
+# def user_has_affinity_to_question(self, question = None, affinity_type = None):
+#     """returns True if number of tag overlap of the user tag
+#     selection with the question is 0 and False otherwise
+#     affinity_type can be either "like" or "dislike"
+#     """
+#     if affinity_type == 'like':
+#         if askbot_settings.SUBSCRIBED_TAG_SELECTOR_ENABLED:
+#             tag_selection_type = 'subscribed'
+#             wildcards = self.subscribed_tags.split()
+#         else:
+#             tag_selection_type = 'good'
+#             wildcards = self.interesting_tags.split()
+#     elif affinity_type == 'dislike':
+#         tag_selection_type = 'bad'
+#         wildcards = self.ignored_tags.split()
+#     else:
+#         raise ValueError('unexpected affinity type %s' % str(affinity_type))
 
-    question_tags = question.thread.tags.all()
-    intersecting_tag_selections = self.tag_selections.filter(
-                                                tag__in = question_tags,
-                                                reason = tag_selection_type
-                                            )
-    #count number of overlapping tags
-    if intersecting_tag_selections.count() > 0:
-        return True
-    elif askbot_settings.USE_WILDCARD_TAGS == False:
-        return False
+#     question_tags = question.thread.tags.all()
+#     intersecting_tag_selections = self.tag_selections.filter(
+#                                                 tag__in = question_tags,
+#                                                 reason = tag_selection_type
+#                                             )
+#     #count number of overlapping tags
+#     if intersecting_tag_selections.count() > 0:
+#         return True
+#     elif askbot_settings.USE_WILDCARD_TAGS == False:
+#         return False
 
-    #match question tags against wildcards
-    for tag in question_tags:
-        for wildcard in wildcards:
-            if tag.name.startswith(wildcard[:-1]):
-                return True
-    return False
-
-
-def user_has_ignored_wildcard_tags(self):
-    """True if wildcard tags are on and
-    user has some"""
-    return (
-        askbot_settings.USE_WILDCARD_TAGS \
-        and self.ignored_tags != ''
-    )
+#     #match question tags against wildcards
+#     for tag in question_tags:
+#         for wildcard in wildcards:
+#             if tag.name.startswith(wildcard[:-1]):
+#                 return True
+#     return False
 
 
-def user_has_interesting_wildcard_tags(self):
-    """True in wildcard tags aro on and
-    user has nome interesting wildcard tags selected
-    """
-    return (
-        askbot_settings.USE_WILDCARD_TAGS \
-        and self.interesting_tags != ''
-    )
-
-def user_has_badge(self, badge):
-    """True, if user was awarded a given badge,
-    ``badge`` is instance of BadgeData
-    """
-    return Award.objects.filter(user=self, badge=badge).count() > 0
+# def user_has_ignored_wildcard_tags(self):
+#     """True if wildcard tags are on and
+#     user has some"""
+#     return (
+#         askbot_settings.USE_WILDCARD_TAGS \
+#         and self.ignored_tags != ''
+#     )
 
 
-def user_can_create_tags(self):
-    """true if user can create tags"""
-    if askbot_settings.ENABLE_TAG_MODERATION:
-        return self.is_administrator_or_moderator()
-    else:
-        return True
+# def user_has_interesting_wildcard_tags(self):
+#     """True in wildcard tags aro on and
+#     user has nome interesting wildcard tags selected
+#     """
+#     return (
+#         askbot_settings.USE_WILDCARD_TAGS \
+#         and self.interesting_tags != ''
+#     )
 
-def user_can_have_strong_url(self):
-    """True if user's homepage url can be
-    followed by the search engine crawlers"""
-    return (self.reputation >= askbot_settings.MIN_REP_TO_HAVE_STRONG_URL)
-
-def user_can_post_by_email(self):
-    """True, if reply by email is enabled
-    and user has sufficient reputatiton"""
-
-    if askbot_settings.REPLY_BY_EMAIL:
-        if self.is_administrator_or_moderator():
-            return True
-        else:
-            return self.reputation >= askbot_settings.MIN_REP_TO_POST_BY_EMAIL
-    else:
-        return False
+# def user_has_badge(self, badge):
+#     """True, if user was awarded a given badge,
+#     ``badge`` is instance of BadgeData
+#     """
+#     return Award.objects.filter(user=self, badge=badge).count() > 0
 
 
-def user_get_social_sharing_mode(self):
-    """returns what user wants to share on his/her channels"""
-    mode = self.social_sharing_mode
-    if mode == const.SHARE_NOTHING:
-        return 'share-nothing'
-    elif mode == const.SHARE_MY_POSTS:
-        return 'share-my-posts'
-    else:
-        assert(mode == const.SHARE_EVERYTHING)
-        return 'share-everything'
+# def user_can_create_tags(self):
+#     """true if user can create tags"""
+#     if askbot_settings.ENABLE_TAG_MODERATION:
+#         return self.is_administrator_or_moderator()
+#     else:
+#         return True
 
-def user_get_social_sharing_status(self, channel):
-    """channel is only 'twitter' for now"""
-    assert(channel == 'twitter')
-    if self.twitter_handle:
-        if self.get_social_sharing_mode() == 'share-nothing':
-            return 'inactive'
-        else:
-            return 'enabled'
-    else:
-        return 'disabled'
+# def user_can_have_strong_url(self):
+#     """True if user's homepage url can be
+#     followed by the search engine crawlers"""
+#     return (self.reputation >= askbot_settings.MIN_REP_TO_HAVE_STRONG_URL)
 
-def user_get_or_create_fake_user(self, username, email):
-    """
-    Get's or creates a user, most likely with the purpose
-    of posting under that account.
-    """
-    assert(self.is_administrator())
+# def user_can_post_by_email(self):
+#     """True, if reply by email is enabled
+#     and user has sufficient reputatiton"""
 
-    try:
-        user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        user = User()
-        user.username = username
-        user.email = email
-        user.is_fake = True
-        user.set_unusable_password()
-        user.save()
-    return user
+#     if askbot_settings.REPLY_BY_EMAIL:
+#         if self.is_administrator_or_moderator():
+#             return True
+#         else:
+#             return self.reputation >= askbot_settings.MIN_REP_TO_POST_BY_EMAIL
+#     else:
+#         return False
+
+
+# def user_get_social_sharing_mode(self):
+#     """returns what user wants to share on his/her channels"""
+#     mode = self.social_sharing_mode
+#     if mode == const.SHARE_NOTHING:
+#         return 'share-nothing'
+#     elif mode == const.SHARE_MY_POSTS:
+#         return 'share-my-posts'
+#     else:
+#         assert(mode == const.SHARE_EVERYTHING)
+#         return 'share-everything'
+
+# def user_get_social_sharing_status(self, channel):
+#     """channel is only 'twitter' for now"""
+#     assert(channel == 'twitter')
+#     if self.twitter_handle:
+#         if self.get_social_sharing_mode() == 'share-nothing':
+#             return 'inactive'
+#         else:
+#             return 'enabled'
+#     else:
+#         return 'disabled'
+
+# def user_get_or_create_fake_user(self, username, email):
+#     """
+#     Get's or creates a user, most likely with the purpose
+#     of posting under that account.
+#     """
+#     assert(self.is_administrator())
+
+#     try:
+#         user = User.objects.get(username=username)
+#     except User.DoesNotExist:
+#         user = User()
+#         user.username = username
+#         user.email = email
+#         user.is_fake = True
+#         user.set_unusable_password()
+#         user.save()
+#     return user
 
 def get_or_create_anonymous_user():
     """returns fake anonymous user"""
@@ -634,46 +1026,46 @@ def get_or_create_anonymous_user():
         user.save()
     return user
 
-def user_needs_moderation(self):
-    if self.status not in ('a', 'm', 'd'):
-        choices = ('audit', 'premoderation')
-        return askbot_settings.CONTENT_MODERATION_MODE in choices
-    return False
+# def user_needs_moderation(self):
+#     if self.status not in ('a', 'm', 'd'):
+#         choices = ('audit', 'premoderation')
+#         return askbot_settings.CONTENT_MODERATION_MODE in choices
+#     return False
 
-def user_notify_users(
-    self, notification_type=None, recipients=None, content_object=None
-):
-    """A utility function that creates instance
-    of :class:`Activity` and adds recipients
-    * `notification_type` - value should be one of TYPE_ACTIVITY_...
-    * `recipients` - an iterable of user objects
-    * `content_object` - any object related to the notification
+# def user_notify_users(
+#     self, notification_type=None, recipients=None, content_object=None
+# ):
+#     """A utility function that creates instance
+#     of :class:`Activity` and adds recipients
+#     * `notification_type` - value should be one of TYPE_ACTIVITY_...
+#     * `recipients` - an iterable of user objects
+#     * `content_object` - any object related to the notification
 
-    todo: possibly add checks on the content_object, depending on the
-    notification_type
-    """
-    activity = Activity(
-                user=self,
-                activity_type=notification_type,
-                content_object=content_object
-            )
-    activity.save()
-    activity.add_recipients(recipients)
+#     todo: possibly add checks on the content_object, depending on the
+#     notification_type
+#     """
+#     activity = Activity(
+#                 user=self,
+#                 activity_type=notification_type,
+#                 content_object=content_object
+#             )
+#     activity.save()
+#     activity.add_recipients(recipients)
 
-def user_is_read_only(self):
-    """True if user is allowed to change content on the site"""
-    if askbot_settings.GROUPS_ENABLED:
-        return bool(self.get_groups().filter(read_only=True).count())
-    else:
-        return False
+# def user_is_read_only(self):
+#     """True if user is allowed to change content on the site"""
+#     if askbot_settings.GROUPS_ENABLED:
+#         return bool(self.get_groups().filter(read_only=True).count())
+#     else:
+#         return False
 
-def user_get_notifications(self, notification_types=None, **kwargs):
-    """returns query set of activity audit status objects"""
-    return ActivityAuditStatus.objects.filter(
-                        user=self,
-                        activity__activity_type__in=notification_types,
-                        **kwargs
-                    )
+# def user_get_notifications(self, notification_types=None, **kwargs):
+#     """returns query set of activity audit status objects"""
+#     return ActivityAuditStatus.objects.filter(
+#                         user=self,
+#                         activity__activity_type__in=notification_types,
+#                         **kwargs
+#                     )
 
 def _assert_user_can(
         user=None,
@@ -753,102 +1145,102 @@ def _assert_user_can(
     assert(error_message is not None)
     raise django_exceptions.PermissionDenied(error_message)
 
-def user_assert_can_approve_post_revision(self, post_revision = None):
-    _assert_user_can(
-        user=self,
-        admin_or_moderator_required=True
-    )
+# def user_assert_can_approve_post_revision(self, post_revision = None):
+#     _assert_user_can(
+#         user=self,
+#         admin_or_moderator_required=True
+#     )
 
-def user_assert_can_unaccept_best_answer(self, answer = None):
-    assert getattr(answer, 'post_type', '') == 'answer'
-    suspended_error_message = _(message_keys.ACCOUNT_CANNOT_PERFORM_ACTION) % {
-        'perform_action': askbot_settings.WORDS_ACCEPT_OR_UNACCEPT_THE_BEST_ANSWER,
-        'your_account_is': _('your account is suspended')
-    }
-    blocked_error_message = _(message_keys.ACCOUNT_CANNOT_PERFORM_ACTION) % {
-        'perform_action': askbot_settings.WORDS_ACCEPT_OR_UNACCEPT_THE_BEST_ANSWER,
-        'your_account_is': _('your account is blocked')
-    }
+# def user_assert_can_unaccept_best_answer(self, answer = None):
+#     assert getattr(answer, 'post_type', '') == 'answer'
+#     suspended_error_message = _(message_keys.ACCOUNT_CANNOT_PERFORM_ACTION) % {
+#         'perform_action': askbot_settings.WORDS_ACCEPT_OR_UNACCEPT_THE_BEST_ANSWER,
+#         'your_account_is': _('your account is suspended')
+#     }
+#     blocked_error_message = _(message_keys.ACCOUNT_CANNOT_PERFORM_ACTION) % {
+#         'perform_action': askbot_settings.WORDS_ACCEPT_OR_UNACCEPT_THE_BEST_ANSWER,
+#         'your_account_is': _('your account is blocked')
+#     }
 
-    if self.is_blocked():
-        error_message = blocked_error_message
-    elif self.is_suspended():
-        error_message = suspended_error_message
-    elif self == answer.thread._question_post().get_owner():
-        if self == answer.get_owner():
-            if not self.is_administrator():
-                #check rep
-                _assert_user_can(
-                    user=self,
-                    action_display=askbot_settings.WORDS_ACCEPT_OR_UNACCEPT_OWN_ANSWER,
-                    blocked_user_cannot=True,
-                    suspended_owner_cannot=True,
-                    min_rep_setting = askbot_settings.MIN_REP_TO_ACCEPT_OWN_ANSWER
-                )
-        return # success
+#     if self.is_blocked():
+#         error_message = blocked_error_message
+#     elif self.is_suspended():
+#         error_message = suspended_error_message
+#     elif self == answer.thread._question_post().get_owner():
+#         if self == answer.get_owner():
+#             if not self.is_administrator():
+#                 #check rep
+#                 _assert_user_can(
+#                     user=self,
+#                     action_display=askbot_settings.WORDS_ACCEPT_OR_UNACCEPT_OWN_ANSWER,
+#                     blocked_user_cannot=True,
+#                     suspended_owner_cannot=True,
+#                     min_rep_setting = askbot_settings.MIN_REP_TO_ACCEPT_OWN_ANSWER
+#                 )
+#         return # success
 
-    elif self.reputation >= askbot_settings.MIN_REP_TO_ACCEPT_ANY_ANSWER or \
-        self.is_administrator() or self.is_moderator() or self.is_post_moderator(answer):
+#     elif self.reputation >= askbot_settings.MIN_REP_TO_ACCEPT_ANY_ANSWER or \
+#         self.is_administrator() or self.is_moderator() or self.is_post_moderator(answer):
 
-        will_be_able_at = (
-            answer.added_at +
-            datetime.timedelta(
-                days=askbot_settings.MIN_DAYS_FOR_STAFF_TO_ACCEPT_ANSWER)
-        )
+#         will_be_able_at = (
+#             answer.added_at +
+#             datetime.timedelta(
+#                 days=askbot_settings.MIN_DAYS_FOR_STAFF_TO_ACCEPT_ANSWER)
+#         )
 
-        if datetime.datetime.now() < will_be_able_at:
-            error_message = _(message_keys.CANNOT_PERFORM_ACTION_UNTIL) % {
-                'perform_action': askbot_settings.WORDS_ACCEPT_OR_UNACCEPT_OWN_ANSWER,
-                'until': will_be_able_at.strftime('%d/%m/%Y')
-            }
-        else:
-            return
+#         if datetime.datetime.now() < will_be_able_at:
+#             error_message = _(message_keys.CANNOT_PERFORM_ACTION_UNTIL) % {
+#                 'perform_action': askbot_settings.WORDS_ACCEPT_OR_UNACCEPT_OWN_ANSWER,
+#                 'until': will_be_able_at.strftime('%d/%m/%Y')
+#             }
+#         else:
+#             return
 
-    else:
-        question_owner = answer.thread._question_post().get_owner()
-        error_message = _(message_keys.MODERATORS_OR_AUTHOR_CAN_PEFROM_ACTION) % {
-            'post_author': askbot_settings.WORDS_AUTHOR_OF_THE_QUESTION,
-            'perform_action': askbot_settings.WORDS_ACCEPT_OR_UNACCEPT_THE_BEST_ANSWER,
-        }
+#     else:
+#         question_owner = answer.thread._question_post().get_owner()
+#         error_message = _(message_keys.MODERATORS_OR_AUTHOR_CAN_PEFROM_ACTION) % {
+#             'post_author': askbot_settings.WORDS_AUTHOR_OF_THE_QUESTION,
+#             'perform_action': askbot_settings.WORDS_ACCEPT_OR_UNACCEPT_THE_BEST_ANSWER,
+#         }
 
-    raise django_exceptions.PermissionDenied(error_message)
+#     raise django_exceptions.PermissionDenied(error_message)
 
-def user_assert_can_accept_best_answer(self, answer = None):
-    assert getattr(answer, 'post_type', '') == 'answer'
-    self.assert_can_unaccept_best_answer(answer)
+# def user_assert_can_accept_best_answer(self, answer = None):
+#     assert getattr(answer, 'post_type', '') == 'answer'
+#     self.assert_can_unaccept_best_answer(answer)
 
-def user_assert_can_vote_for_post(
-                                self,
-                                post = None,
-                                direction = None,
-                            ):
-    """raises exceptions.PermissionDenied exception
-    if user can't in fact upvote
+# def user_assert_can_vote_for_post(
+#                                 self,
+#                                 post = None,
+#                                 direction = None,
+#                             ):
+#     """raises exceptions.PermissionDenied exception
+#     if user can't in fact upvote
 
-    :param:direction can be 'up' or 'down'
-    :param:post can be instance of question or answer
-    """
-    if self == post.author:
-        raise django_exceptions.PermissionDenied(
-            _('Sorry, you cannot vote for your own posts')
-        )
+#     :param:direction can be 'up' or 'down'
+#     :param:post can be instance of question or answer
+#     """
+#     if self == post.author:
+#         raise django_exceptions.PermissionDenied(
+#             _('Sorry, you cannot vote for your own posts')
+#         )
 
-    assert(direction in ('up', 'down'))
+#     assert(direction in ('up', 'down'))
 
-    if direction == 'up':
-        min_rep_setting = askbot_settings.MIN_REP_TO_VOTE_UP
-        action_display = _('upvote')
-    else:
-        min_rep_setting = askbot_settings.MIN_REP_TO_VOTE_DOWN
-        action_display = _('downvote')
+#     if direction == 'up':
+#         min_rep_setting = askbot_settings.MIN_REP_TO_VOTE_UP
+#         action_display = _('upvote')
+#     else:
+#         min_rep_setting = askbot_settings.MIN_REP_TO_VOTE_DOWN
+#         action_display = _('downvote')
 
-    _assert_user_can(
-        user=self,
-        action_display=action_display,
-        blocked_user_cannot=True,
-        suspended_user_cannot=True,
-        min_rep_setting = min_rep_setting,
-    )
+#     _assert_user_can(
+#         user=self,
+#         action_display=action_display,
+#         blocked_user_cannot=True,
+#         suspended_user_cannot=True,
+#         min_rep_setting = min_rep_setting,
+#     )
 
 
 def user_assert_can_upload_file(request_user):
