@@ -174,6 +174,51 @@ class AskbotUser(models.Model):
         self.user.date_joined = value
         self.user.save()
 
+    def get_username(self):
+        return self.user.get_username()
+
+    def is_anonymous(self):
+        return self.user.is_anonymous()
+
+    def is_authenticated(self):
+        return self.user.is_authenticated()
+
+    def get_full_name(self):
+        return self.user.get_full_name()
+
+    def get_short_name(self):
+        return self.user.get_short_name()
+
+    def set_password(self, raw_password):
+        return self.user.set_password(raw_password)
+
+    def check_password(self, raw_password):
+        return self.user.check_password(raw_password)
+
+    def set_unusable_password(self):
+        return self.user.set_unusable_password()
+
+    def has_usable_password(self):
+        return self.user.has_usable_password()
+
+    def get_group_permissions(self, obj=None):
+        return self.user.get_group_permissions(obj)
+
+    def get_all_permissions(self, obj=None):
+        return self.user.get_all_permissions(obj)
+
+    def has_perm(self, perm, obj=None):
+        return self.user.has_perm(perm, obj)
+
+    def has_perms(self, perm_list, obj=None):
+        return self.user.has_perms(perm_list, obj)
+
+    def has_module_perms(self, package_name):
+        return self.user.has_module_perms(package_name)
+
+    def email_user(self, subject, message, from_email=None, **kwargs):
+        return self.user.email_user(subject, message, from_email, **kwargs)
+
 
 User = AskbotUser
 
