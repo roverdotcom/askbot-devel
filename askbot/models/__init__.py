@@ -76,6 +76,11 @@ class AskbotUser(models.Model):
     class Meta(object):
         app_label = 'askbot'
 
+    def save(self, *args, **kwargs):
+        """Save self.user prior to saving self."""
+        self.user.save()
+        super(AskbotUser, self).save(*args, **kwargs)
+
     @property
     def username(self):
         return self.user.username
@@ -83,7 +88,6 @@ class AskbotUser(models.Model):
     @username.setter
     def username(self, value):
         self.user.username = value
-        self.user.save()
 
     @property
     def first_name(self):
@@ -92,7 +96,6 @@ class AskbotUser(models.Model):
     @first_name.setter
     def first_name(self, value):
         self.user.first_name = value
-        self.user.save()
 
     @property
     def last_name(self):
@@ -101,7 +104,6 @@ class AskbotUser(models.Model):
     @last_name.setter
     def last_name(self, value):
         self.user.last_name = value
-        self.user.save()
 
     @property
     def email(self):
@@ -110,7 +112,6 @@ class AskbotUser(models.Model):
     @email.setter
     def email(self, value):
         self.user.email = value
-        self.user.save()
 
     @property
     def password(self):
@@ -119,7 +120,6 @@ class AskbotUser(models.Model):
     @password.setter
     def password(self, value):
         self.user.password = value
-        self.user.save()
 
     @property
     def groups(self):
@@ -136,7 +136,6 @@ class AskbotUser(models.Model):
     @is_staff.setter
     def is_staff(self, value):
         self.user.is_staff = value
-        self.user.save()
 
     @property
     def is_active(self):
@@ -145,7 +144,6 @@ class AskbotUser(models.Model):
     @is_active.setter
     def is_active(self, value):
         self.user.is_active = value
-        self.user.save()
 
     @property
     def is_superuser(self):
@@ -154,7 +152,6 @@ class AskbotUser(models.Model):
     @is_superuser.setter
     def is_superuser(self, value):
         self.user.is_superuser = value
-        self.user.save()
 
     @property
     def last_login(self):
@@ -163,7 +160,6 @@ class AskbotUser(models.Model):
     @last_login.setter
     def last_login(self, value):
         self.user.last_login = value
-        self.user.save()
 
     @property
     def date_joined(self):
@@ -172,7 +168,6 @@ class AskbotUser(models.Model):
     @date_joined.setter
     def date_joined(self, value):
         self.user.date_joined = value
-        self.user.save()
 
     def get_username(self):
         return self.user.get_username()
