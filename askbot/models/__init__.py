@@ -1,14 +1,6 @@
 from askbot import startup_procedures
 startup_procedures.run()
 
-from django.contrib.auth.models import User
-#set up a possibility for the users to follow others
-try:
-    import followit
-    followit.register(User)
-except ImportError:
-    pass
-
 import collections
 import datetime
 import hashlib
@@ -70,6 +62,29 @@ from askbot.utils.diff import textDiff as htmldiff
 from askbot.utils.url_utils import strip_path
 from askbot import mail
 from askbot.models import signals
+
+
+from django.contrib.auth.models import User
+
+
+class AskbotUser(models.Model):
+    """Custome user model which encapsulates askbot functionality.
+    Replaces monkey-patched auth User model.
+    """
+    user = models.OneToOneField(User)
+
+    class Meta(object):
+        app_label = 'askbot'
+
+User = AskbotUser
+
+
+#set up a possibility for the users to follow others
+try:
+    import followit
+    followit.register(User)
+except ImportError:
+    pass
 
 from django import VERSION
 
