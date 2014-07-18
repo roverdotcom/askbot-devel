@@ -76,6 +76,105 @@ class AskbotUser(models.Model):
     class Meta(object):
         app_label = 'askbot'
 
+    @property
+    def username(self):
+        return self.user.username
+
+    @username.setter
+    def username(self, value):
+        self.user.username = value
+        self.user.save()
+
+    @property
+    def first_name(self):
+        return self.user.first_name
+
+    @first_name.setter
+    def first_name(self, value):
+        self.user.first_name = value
+        self.user.save()
+
+    @property
+    def last_name(self):
+        return self.user.last_name
+
+    @last_name.setter
+    def last_name(self, value):
+        self.user.last_name = value
+        self.user.save()
+
+    @property
+    def email(self):
+        return self.user.email
+
+    @email.setter
+    def email(self, value):
+        self.user.email = value
+        self.user.save()
+
+    @property
+    def password(self):
+        return self.user.password
+
+    @password.setter
+    def password(self, value):
+        self.user.password = value
+        self.user.save()
+
+    @property
+    def groups(self):
+        return self.user.groups
+
+    @property
+    def user_permissions(self):
+        return self.user.user_permissions
+
+    @property
+    def is_staff(self):
+        return self.user.is_staff
+
+    @is_staff.setter
+    def is_staff(self, value):
+        self.user.is_staff = value
+        self.user.save()
+
+    @property
+    def is_active(self):
+        return self.user.is_active
+
+    @is_active.setter
+    def is_active(self, value):
+        self.user.is_active = value
+        self.user.save()
+
+    @property
+    def is_superuser(self):
+        return self.user.is_superuser
+
+    @is_superuser.setter
+    def is_superuser(self, value):
+        self.user.is_superuser = value
+        self.user.save()
+
+    @property
+    def last_login(self):
+        return self.user.last_login
+
+    @last_login.setter
+    def last_login(self, value):
+        self.user.last_login = value
+        self.user.save()
+
+    @property
+    def date_joined(self):
+        return self.user.date_joined
+
+    @date_joined.setter
+    def date_joined(self, value):
+        self.user.date_joined = value
+        self.user.save()
+
+
 User = AskbotUser
 
 
