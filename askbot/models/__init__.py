@@ -68,7 +68,7 @@ from django.contrib.auth.models import User
 
 
 class AskbotUser(models.Model):
-    """Custome user model which encapsulates askbot functionality.
+    """Custom user model which encapsulates askbot functionality.
     Replaces monkey-patched auth User model.
     """
     user = models.OneToOneField(User)
