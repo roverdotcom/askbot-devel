@@ -64,14 +64,14 @@ from askbot import mail
 from askbot.models import signals
 
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User as DjangoUser
 
 
 class AskbotUser(models.Model):
     """Custom user model which encapsulates askbot functionality.
     Replaces monkey-patched auth User model.
     """
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(DjangoUser)
 
     class Meta(object):
         app_label = 'askbot'
