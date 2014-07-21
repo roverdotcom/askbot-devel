@@ -82,149 +82,21 @@ class AskbotUser(models.Model):
         # figure out how it creates its users.
         super(AskbotUser, self).__init__(*args, **kwargs)
 
+    def __getattr__(self, name):
+        """If the AskbotUser does not have some attribute, look for it on the
+        AskbotUser's User object.
+        """
+        return getattr(self.user, name)
+
     def save(self, *args, **kwargs):
         """Save self.user prior to saving self."""
         self.user.save()
         super(AskbotUser, self).save(*args, **kwargs)
 
-    @property
-    def username(self):
-        return self.user.username
-
-    @username.setter
-    def username(self, value):
-        self.user.username = value
-
-    @property
-    def first_name(self):
-        return self.user.first_name
-
-    @first_name.setter
-    def first_name(self, value):
-        self.user.first_name = value
-
-    @property
-    def last_name(self):
-        return self.user.last_name
-
-    @last_name.setter
-    def last_name(self, value):
-        self.user.last_name = value
-
-    @property
-    def email(self):
-        return self.user.email
-
-    @email.setter
-    def email(self, value):
-        self.user.email = value
-
-    @property
-    def password(self):
-        return self.user.password
-
-    @password.setter
-    def password(self, value):
-        self.user.password = value
-
-    @property
-    def groups(self):
-        return self.user.groups
-
-    @property
-    def user_permissions(self):
-        return self.user.user_permissions
-
-    @property
-    def is_staff(self):
-        return self.user.is_staff
-
-    @is_staff.setter
-    def is_staff(self, value):
-        self.user.is_staff = value
-
-    @property
-    def is_active(self):
-        return self.user.is_active
-
-    @is_active.setter
-    def is_active(self, value):
-        self.user.is_active = value
-
-    @property
-    def is_superuser(self):
-        return self.user.is_superuser
-
-    @is_superuser.setter
-    def is_superuser(self, value):
-        self.user.is_superuser = value
-
-    @property
-    def last_login(self):
-        return self.user.last_login
-
-    @last_login.setter
-    def last_login(self, value):
-        self.user.last_login = value
-
-    @property
-    def date_joined(self):
-        return self.user.date_joined
-
-    @date_joined.setter
-    def date_joined(self, value):
-        self.user.date_joined = value
-
-    def get_username(self):
-        return self.user.get_username()
-
-    def is_anonymous(self):
-        return self.user.is_anonymous()
-
-    def is_authenticated(self):
-        return self.user.is_authenticated()
-
-    def get_full_name(self):
-        return self.user.get_full_name()
-
-    def get_short_name(self):
-        return self.user.get_short_name()
-
-    def set_password(self, raw_password):
-        return self.user.set_password(raw_password)
-
-    def check_password(self, raw_password):
-        return self.user.check_password(raw_password)
-
-    def set_unusable_password(self):
-        return self.user.set_unusable_password()
-
-    def has_usable_password(self):
-        return self.user.has_usable_password()
-
-    def get_group_permissions(self, obj=None):
-        return self.user.get_group_permissions(obj)
-
-    def get_all_permissions(self, obj=None):
-        return self.user.get_all_permissions(obj)
-
-    def has_perm(self, perm, obj=None):
-        return self.user.has_perm(perm, obj)
-
-    def has_perms(self, perm_list, obj=None):
-        return self.user.has_perms(perm_list, obj)
-
-    def has_module_perms(self, package_name):
-        return self.user.has_module_perms(package_name)
-
-    def email_user(self, subject, message, from_email=None, **kwargs):
-        return self.user.email_user(subject, message, from_email, **kwargs)
-
 
 User = AskbotUser
 
-
-#set up a possibility for the users to follow others
+# set up a possibility for the users to follow others
 try:
     import followit
     followit.register(User)
