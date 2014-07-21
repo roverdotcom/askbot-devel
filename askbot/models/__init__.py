@@ -64,7 +64,8 @@ from askbot import mail
 from askbot.models import signals
 
 
-from askbot.models.askbot_user import AskbotUser as User
+from askbot.models.askbot_user import AskbotUser
+User = AskbotUser
 
 
 # set up a possibility for the users to follow others
@@ -3845,44 +3846,46 @@ signals.post_revision_published.connect(notify_author_of_published_revision)
 signals.site_visited.connect(record_user_visit)
 
 __all__ = [
-        'signals',
+    'signals',
 
-        'Thread',
+    'Thread',
 
-        'QuestionView',
-        'FavoriteQuestion',
-        'AnonymousQuestion',
-        'DraftQuestion',
+    'QuestionView',
+    'FavoriteQuestion',
+    'AnonymousQuestion',
+    'DraftQuestion',
 
-        'AnonymousAnswer',
-        'DraftAnswer',
+    'AnonymousAnswer',
+    'DraftAnswer',
 
-        'Post',
-        'PostRevision',
-        'PostToGroup',
+    'Post',
+    'PostRevision',
+    'PostToGroup',
 
-        'Tag',
-        'Vote',
-        'PostFlagReason',
-        'MarkedTag',
-        'TagSynonym',
+    'Tag',
+    'Vote',
+    'PostFlagReason',
+    'MarkedTag',
+    'TagSynonym',
 
-        'BadgeData',
-        'Award',
-        'Repute',
+    'BadgeData',
+    'Award',
+    'Repute',
 
-        'Activity',
-        'ActivityAuditStatus',
-        'EmailFeedSetting',
-        'GroupMembership',
-        'Group',
+    'Activity',
+    'ActivityAuditStatus',
+    'EmailFeedSetting',
+    'GroupMembership',
+    'Group',
 
-        'User',
+    'User',
 
-        'ReplyAddress',
-        
-        'ImportRun',
-        'ImportedObjectInfo',
+    'ReplyAddress',
 
-        'get_model',
+    'ImportRun',
+    'ImportedObjectInfo',
+
+    'get_model',
+
+    'AskbotUser',
 ]

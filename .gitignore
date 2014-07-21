@@ -54,3 +54,4 @@ recaptcha
 *.DS_Store
 htmlcov
 installation/*
+installation_?/*
