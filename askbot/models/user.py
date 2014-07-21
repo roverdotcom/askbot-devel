@@ -5,7 +5,8 @@ from django.db import models
 from django.db.backends.dummy.base import IntegrityError
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from askbot.models import AskbotUser as User
 from django.contrib.auth.models import Group as AuthGroup
 from django.core import exceptions
 from django.forms import EmailField, URLField

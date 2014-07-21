@@ -59,7 +59,8 @@ class UserIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
 
     def get_model(self):
-        from askbot.models import User
+        # from askbot.models import User
+        from askbot.models import AskbotUser as User
         return User
 
     def index_queryset(self, using=None):

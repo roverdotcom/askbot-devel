@@ -3,7 +3,9 @@ from django.core.management.base import NoArgsCommand
 from django.core.urlresolvers import reverse
 from django.db import connection
 from django.db.models import Q, F
-from askbot.models import User, Post, PostRevision, Thread
+# from askbot.models import User, Post, PostRevision, Thread
+from askbot.models import Post, PostRevision, Thread
+from askbot.models import AskbotUser as User
 from askbot.models import Activity, EmailFeedSetting
 from django.template.loader import get_template
 from django.utils.translation import ugettext as _

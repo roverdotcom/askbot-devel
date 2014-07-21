@@ -15,7 +15,8 @@ import time
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+# Import is duplicated?
+# from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseForbidden
@@ -30,7 +31,8 @@ from django.core.urlresolvers import reverse
 from django.core import exceptions
 from django.conf import settings
 from django.views.decorators import csrf
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from askbot.models import AskbotUser as User
 
 from askbot import exceptions as askbot_exceptions
 from askbot import forms

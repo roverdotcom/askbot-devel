@@ -6,7 +6,8 @@ from askbot.models import Post
 from askbot.models import PostRevision
 from askbot.models import Thread
 from askbot.models import Tag
-from askbot.models import User
+# from askbot.models import User
+from askbot.models import AskbotUser as User
 from askbot.utils.slug import slugify_camelcase
 from bs4 import BeautifulSoup
 from datetime import datetime

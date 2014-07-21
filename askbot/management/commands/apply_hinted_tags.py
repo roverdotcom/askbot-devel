@@ -6,7 +6,8 @@ from django.utils import translation
 from optparse import make_option
 from askbot.utils.console import ProgressBar
 from askbot.models import Thread
-from askbot.models import User
+# from askbot.models import User
+from askbot.models import AskbotUser as User
 
 class Command(BaseCommand):
     help = """Adds tags to questions. Tags should be given via a file

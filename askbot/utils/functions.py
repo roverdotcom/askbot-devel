@@ -177,7 +177,8 @@ def setup_paginator(context):
 def get_admin():
     """Returns an admin users, usefull for raising flags"""
     try:
-        from django.contrib.auth.models import User
+        # from django.contrib.auth.models import User
+        from askbot.models import AskbotUser as User
         return User.objects.filter(is_superuser=True)[0]
     except:
         raise Exception('there is no admin users')

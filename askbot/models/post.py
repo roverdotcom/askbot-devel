@@ -6,7 +6,8 @@ import logging
 from django.contrib.sitemaps import ping_google
 from django.utils import html
 from django.conf import settings as django_settings
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from askbot.models import AskbotUser as User
 from django.core import urlresolvers
 from django.db import models
 from django.utils import html as html_utils
@@ -2162,7 +2163,8 @@ class PostRevision(models.Model):
 
     post = models.ForeignKey('askbot.Post', related_name='revisions', null=True, blank=True)
     revision = models.PositiveIntegerField()
-    author = models.ForeignKey('auth.User', related_name='%(class)ss')
+    # author = models.ForeignKey('auth.User', related_name='%(class)ss')
+    author = models.ForeignKey(User, related_name='%(class)ss')
     revised_at = models.DateTimeField()
     summary = models.CharField(max_length=300, blank=True)
     text = models.TextField(blank=True)
@@ -2343,7 +2345,8 @@ class PostRevision(models.Model):
 
 class PostFlagReason(models.Model):
     added_at = models.DateTimeField()
-    author = models.ForeignKey('auth.User')
+    # author = models.ForeignKey('auth.User')
+    author = models.ForeignKey(User)
     title = models.CharField(max_length=128)
     details = models.ForeignKey(Post, related_name = 'post_reject_reasons')
     class Meta:

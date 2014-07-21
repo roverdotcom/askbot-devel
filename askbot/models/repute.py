@@ -1,7 +1,8 @@
 import datetime
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from askbot.models import AskbotUser as User
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.html import escape
@@ -36,7 +37,8 @@ class Vote(models.Model):
         (VOTE_UP,   u'Up'),
         (VOTE_DOWN, u'Down'),
     )
-    user = models.ForeignKey('auth.User', related_name='votes')
+    # user = models.ForeignKey('auth.User', related_name='votes')
+    user = models.ForeignKey(User, related_name='votes')
     voted_post = models.ForeignKey('Post', related_name='votes')
 
     vote           = models.SmallIntegerField(choices=VOTE_CHOICES)

@@ -14,7 +14,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy, string_concat
 from django.utils.translation import get_language
 from django.utils.text import get_text_list
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from askbot.models.user import AskbotUser as User
 from django_countries import countries
 from askbot.utils.forms import NextUrlField, UserNameField
 from askbot.mail import extract_first_email_address
