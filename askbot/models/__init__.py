@@ -64,7 +64,7 @@ from askbot import mail
 from askbot.models import signals
 
 
-from askbot_user import User
+from askbot.models.askbot_user import AskbotUser as User
 
 
 # set up a possibility for the users to follow others
