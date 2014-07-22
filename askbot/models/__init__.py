@@ -63,10 +63,7 @@ from askbot.utils.url_utils import strip_path
 from askbot import mail
 from askbot.models import signals
 
-
-from askbot.models.askbot_user import AskbotUser
-User = AskbotUser
-
+from askbot.models.askbot_user import AskbotUser as User
 
 # set up a possibility for the users to follow others
 try:
@@ -3885,7 +3882,7 @@ __all__ = [
     'ImportRun',
     'ImportedObjectInfo',
 
-    'get_model',
-
     'AskbotUser',
+
+    'get_model',
 ]

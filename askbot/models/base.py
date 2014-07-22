@@ -1,7 +1,7 @@
 import datetime
 from django.db import models
 # from django.contrib.auth.models import User
-from askbot.models import AskbotUser as User
+from askbot.models.askbot_user import AskbotUser as User
 
 class BaseQuerySetManager(models.Manager):
     """a base class that allows chainable qustom filters

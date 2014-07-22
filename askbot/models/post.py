@@ -7,7 +7,7 @@ from django.contrib.sitemaps import ping_google
 from django.utils import html
 from django.conf import settings as django_settings
 # from django.contrib.auth.models import User
-from askbot.models import AskbotUser as User
+from askbot.models.askbot_user import AskbotUser as User
 from django.core import urlresolvers
 from django.db import models
 from django.utils import html as html_utils
