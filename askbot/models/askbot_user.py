@@ -4,11 +4,21 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 
+class AskbotUserManager(models.Manager):
+    """Custom model manager for AskbotUser.
+    Performs left join with auth User to get User fields, when appropriate.
+    """
+    def get_query_set(self):
+        pass
+
+
 class AskbotUser(models.Model):
     """Custom user model which encapsulates askbot functionality.
     Replaces monkey-patched auth User model.
     """
     user = models.OneToOneField(User, related_name='askbot_user')
+
+    objects = AskbotUserManager()
 
     class Meta(object):
         app_label = 'askbot'
