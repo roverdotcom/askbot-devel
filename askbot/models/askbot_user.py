@@ -8,7 +8,7 @@ class AskbotUser(models.Model):
     """Custom user model which encapsulates askbot functionality.
     Replaces monkey-patched auth User model.
     """
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, related_name='askbot_user')
 
     class Meta(object):
         app_label = 'askbot'
