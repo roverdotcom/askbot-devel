@@ -6,10 +6,13 @@ from django.db.models.signals import post_save
 
 class AskbotUserManager(models.Manager):
     """Custom model manager for AskbotUser.
-    Performs left join with auth User to get User fields, when appropriate.
+    Performs left join with auth User to get User fields.
     """
     def get_query_set(self):
-        pass
+        return self.raw(
+            'SELECT * FROM askbot_askbotuser LEFT OUTER JOIN auth_user'
+            'ON askbot_user.user_id = auth_user.id;'
+        )
 
 
 class AskbotUser(models.Model):
