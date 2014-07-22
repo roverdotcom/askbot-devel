@@ -63,7 +63,9 @@ from askbot.utils.url_utils import strip_path
 from askbot import mail
 from askbot.models import signals
 
-from askbot.models.askbot_user import AskbotUser as User
+# Import by name, then assign to User, so we can declare in __all__.
+from askbot.models.askbot_user import AskbotUser
+User = AskbotUser
 
 # set up a possibility for the users to follow others
 try:
