@@ -4,56 +4,47 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 
-# class AskbotUserManager(models.Manager):
-#     """Custom model manager for AskbotUser.
-#     Performs left outer join with auth User to get User fields.
-#     """
-#     def get_query_set(self):
-#         """Perform a left outer join to get auth_user attributes.
+class AskbotUserManager(models.Manager):
+    """Custom model manager for AskbotUser.
+    Preprocesses ORM queries and adds 'user__' in order to query related the
+    related auth User, where appropriate.
 
-#         This method comes courtesy of Colin Copeland:
-#         http://www.caktusgroup.com/blog/2009/09/28/custom-joins-with-djangos-queryjoin/
-#         Note that this method relies on Django methods that are deprecated as
-#         of Django 1.6: upgrading from Django 1.5.8 will break this method, and
-#         make an outer join pretty much impossible without resorting to raw SQL,
-#         which will require a substantial overhaul.
+    Note that chaining of queryset methods is not supported:
 
-#         An outer join is employed here to keep AskbotUser as pluggable as
-#         possible. Ideally, we want to return a queryset that contains the auth
-#         user attributes, so that we don't have to modify all existing Askbot
-#         ORM calls to query related models. We want the existing Askbot code,
-#         which looks like this:
+    # YES
+    AskbotUser.objects.all()
 
-#         User.objects.filter(username='JoeSchmoe')
+    # NO
+    AskbotUser.objects.filter(username="something").filter(email="something)
 
-#         To not have to be manually changed to this:
+    To achieve chaining, a custom QuerySet class will have to be defined for
+    the AskbotUser.
+    """
+    def get_query_set(self):
+        """
+        """
 
-#         User.objects.filter(user__username='JoeSchmoe')
+        # Get these fields from the auth_user table.
+        auth_user_selects = {
+            'username': 'auth_user.username',
+            'first_name': 'auth_user.first_name',
+            'last_name': 'auth_user.last_name',
+            'email': 'auth_user.email',
+            'password': 'auth_user.password',
+            'groups': 'auth_user.groups',
+            'user_permissions': 'auth_user.user_permissions',
+            'is_staff': 'auth_user.is_staff',
+            'is_active': 'auth_user.is_active',
+            'is_superuser': 'auth_user.is_superuser',
+            'last_login': 'auth_user.last_login',
+            'date_joined': 'auth_user.date_joined',
+        }
 
-#         Monkey-patching is evil.
-#         """
-
-#         # Get these fields from the auth_user table.
-#         auth_user_selects = {
-#             'username': 'auth_user.username',
-#             'first_name': 'auth_user.first_name',
-#             'last_name': 'auth_user.last_name',
-#             'email': 'auth_user.email',
-#             'password': 'auth_user.password',
-#             'groups': 'auth_user.groups',
-#             'user_permissions': 'auth_user.user_permissions',
-#             'is_staff': 'auth_user.is_staff',
-#             'is_active': 'auth_user.is_active',
-#             'is_superuser': 'auth_user.is_superuser',
-#             'last_login': 'auth_user.last_login',
-#             'date_joined': 'auth_user.date_joined',
-#         }
-
-#         results = super(AskbotUserManager, self).get_query_set()
-#         results.extra(
-#             select=auth_user_selects,
-#             where=["(AskbotUser.user_id = )"]
-#         )
+        results = super(AskbotUserManager, self).get_query_set()
+        results.extra(
+            select=auth_user_selects,
+            where=["(AskbotUser.user_id = )"]
+        )
 
 
 class AskbotUser(models.Model):
@@ -62,7 +53,7 @@ class AskbotUser(models.Model):
     """
     user = models.OneToOneField(User, related_name='askbot_user')
 
-    # objects = AskbotUserManager()
+    objects = AskbotUserManager()
 
     class Meta(object):
         app_label = 'askbot'
