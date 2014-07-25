@@ -145,13 +145,47 @@ class AskbotUserQuerySet(QuerySet):
         return _preprocess_field
 
 
+class AskbotUserPassThroughManager(PassThroughManager):
+    """Add the create_user and create_superuser methods to PassThroughManager.
+    """
+    def create_user(username, email=None, password=None, **extra_fields):
+        new_user = User(
+            username=username,
+            email=email,
+            password=password,
+            is_active=True,
+            **extra_fields
+        )
+        new_user.save()
+
+        # new_user's post_save signal should create an AskbotUser.
+        return new_user.askbot_user
+
+    def create_superuser(username, email=None, password=None, **extra_fields):
+        new_user = User(
+            username=username,
+            email=email,
+            password=password,
+            is_superuser=True,
+            is_staff=True,
+            is_active=True,
+            **extra_fields
+        )
+        new_user.save()
+
+        # new_user's post_save signal should create an AskbotUser.
+        return new_user.askbot_user
+
+
 class AskbotUser(models.Model):
     """Custom user model which encapsulates askbot functionality.
     Replaces monkey-patched auth User model.
     """
     user = models.OneToOneField(User, related_name='askbot_user')
 
-    objects = PassThroughManager.for_queryset_class(AskbotUserQuerySet)()
+    objects = AskbotUserPassThroughManager.for_queryset_class(
+        AskbotUserQuerySet
+    )()
 
     class Meta(object):
         app_label = 'askbot'
