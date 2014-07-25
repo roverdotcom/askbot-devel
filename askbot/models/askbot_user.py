@@ -157,14 +157,17 @@ class AskbotUserPassThroughManager(UserManager, PassThroughManager):
             password=None,
             **extra_fields
     ):
+        """Call UserManager's create_user and return the the AskbotUser that
+        gets tied to the resulting User object.
+        """
         new_user = super(AskbotUserPassThroughManager, self).create_user(
             username,
-            email,
-            password,
+            email=email,
+            password=password,
             **extra_fields
         )
 
-        # new_user's post_save signal should create an AskbotUser.
+        # new_user's post_save signal creates an AskbotUser.
         return new_user.askbot_user
 
     def create_superuser(
@@ -174,14 +177,17 @@ class AskbotUserPassThroughManager(UserManager, PassThroughManager):
         password=None,
         **extra_fields
     ):
+        """Call UserManager's create_superuser and return the the AskbotUser
+        that gets tied to the resulting User object.
+        """
         new_user = super(AskbotUserPassThroughManager, self).create_superuser(
             username,
-            email,
-            password,
+            email=email,
+            password=password,
             **extra_fields
         )
 
-        # new_user's post_save signal should create an AskbotUser.
+        # new_user's post_save signal creates an AskbotUser.
         return new_user.askbot_user
 
 
