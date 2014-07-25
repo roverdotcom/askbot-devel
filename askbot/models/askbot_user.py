@@ -173,6 +173,8 @@ class AskbotUserPassThroughManager(PassThroughManager):
         """
         now = timezone.now()
 
+        email = UserManager.normalize_email(email)
+
         new_user = User(
             username=username,
             email=email,
