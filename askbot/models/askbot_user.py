@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
+# Import UserManager so we can access the normalize_email classmethod.
 from django.contrib.auth.models import UserManager
+from django.utils import timezone
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -146,9 +148,9 @@ class AskbotUserQuerySet(QuerySet):
         return _preprocess_field
 
 
-class AskbotUserPassThroughManager(UserManager, PassThroughManager):
-    """Create a custom PassThroughManager with UserManager's special
-    properties.
+class AskbotUserPassThroughManager(PassThroughManager):
+    """Create a custom PassThroughManager with create_user and
+    create_superuser.
     """
     def create_user(
             self,
@@ -157,15 +159,32 @@ class AskbotUserPassThroughManager(UserManager, PassThroughManager):
             password=None,
             **extra_fields
     ):
-        """Call UserManager's create_user and return the the AskbotUser that
-        gets tied to the resulting User object.
+        """Create a new User and return the AskbotUser created in post_save.
+
+        Note on implementation: inheriting from UserManager and calling
+
+        super(AskbotUserPassThroughManager, self).create_user
+
+        won't work here because UserManager.create_user creates a self.model,
+        which ends up being an AskbotUser. As a side effect, this method will
+        break if a custom AUTH_USER_MODEL is defined, because it will always
+        create a standard contrib.auth User. This method is basically a copy-
+        pasted version of UserManager.create_user with self.model replaced.
         """
-        new_user = super(AskbotUserPassThroughManager, self).create_user(
-            username,
+        now = timezone.now()
+
+        new_user = self.model(
+            username=username,
             email=email,
-            password=password,
+            is_staff=False,
+            is_active=True,
+            is_superuser=False,
+            last_login=now,
+            date_joined=now,
             **extra_fields
         )
+
+        new_user.set_password(password)
 
         # new_user's post_save signal creates an AskbotUser.
         return new_user.askbot_user
@@ -177,18 +196,23 @@ class AskbotUserPassThroughManager(UserManager, PassThroughManager):
         password=None,
         **extra_fields
     ):
-        """Call UserManager's create_superuser and return the the AskbotUser
-        that gets tied to the resulting User object.
+        """Create a new AskbotUser as a superuser.
+
+        See documentation for AskbotUserPassThroughManager.create_user for
+        implementation notes.
         """
-        new_user = super(AskbotUserPassThroughManager, self).create_superuser(
+        new_askbot_user = self.create_user(
             username,
-            email=email,
-            password=password,
+            email,
+            password,
             **extra_fields
         )
 
-        # new_user's post_save signal creates an AskbotUser.
-        return new_user.askbot_user
+        new_askbot_user.is_superuser = True
+        new_askbot_user.is_staff = True
+        new_askbot_user.save()
+
+        return new_askbot_user
 
 
 class AskbotUser(models.Model):
