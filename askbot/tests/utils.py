@@ -67,7 +67,6 @@ def create_user(
     * 'w' - weekly
     * 'n' - never
     """
-    import pdb; pdb.set_trace()
     user = models.AskbotUser.objects.create_user(username, email)
 
     user.reputation = reputation
