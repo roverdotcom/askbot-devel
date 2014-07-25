@@ -2,49 +2,147 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.db.models.query import QuerySet
+from model_utils.managers import PassThroughManager
 
 
-class AskbotUserManager(models.Manager):
-    """Custom model manager for AskbotUser.
-    Preprocesses ORM queries and adds 'user__' in order to query related the
-    related auth User, where appropriate.
+class AskbotUserQuerySet(QuerySet):
+    """Custom queryset that automatically adds related object names to
+    queries, where appropriate.
 
-    Note that chaining of queryset methods is not supported:
+    So, a request for:
+    AskbotUser.objects.filter(username='something')
 
-    # YES
-    AskbotUser.objects.all()
+    Will automatically be translated to:
+    AskbotUser.objects.filter(user__username='something')
 
-    # NO
-    AskbotUser.objects.filter(username="something").filter(email="something)
-
-    To achieve chaining, a custom QuerySet class will have to be defined for
-    the AskbotUser.
+    in order to successfully tunnel through the one-to-one relationship
+    while treating the one-to-one related model's fields as if they were
+    part of this model.
     """
-    def get_query_set(self):
-        """
-        """
 
-        # Get these fields from the auth_user table.
-        auth_user_selects = {
-            'username': 'auth_user.username',
-            'first_name': 'auth_user.first_name',
-            'last_name': 'auth_user.last_name',
-            'email': 'auth_user.email',
-            'password': 'auth_user.password',
-            'groups': 'auth_user.groups',
-            'user_permissions': 'auth_user.user_permissions',
-            'is_staff': 'auth_user.is_staff',
-            'is_active': 'auth_user.is_active',
-            'is_superuser': 'auth_user.is_superuser',
-            'last_login': 'auth_user.last_login',
-            'date_joined': 'auth_user.date_joined',
-        }
+    # List of attributes on User objects that need 'user__' prefixed to
+    # their ORM query keyword arguments.
+    user_attributes = tuple(
+        attr for attr in User._meta.get_all_field_names() if attr != 'id'
+    )
 
-        results = super(AskbotUserManager, self).get_query_set()
-        results.extra(
-            select=auth_user_selects,
-            where=["(AskbotUser.user_id = )"]
+    def __getattribute__(self, name):
+        """Intercept calls to queryset methods that take field names or field
+        lookups as arguments.
+        """
+        # UNSUPPORTED METHODS:
+        # create
+        # get_or_create
+        # Aggregation functions - although these may or may not actually
+        # need explicit support.
+
+        # Lists of methods that need to be intercepted. These are the
+        # Django 1.5 methods - some have changed in 1.6 and 1.7.
+
+        # List of methods on QuerySet objects that take a list of field-
+        # lookup format keyword arguments.
+        queryset_kwargs_methods = (
+            'filter',
+            'exclude',
+            # 'get',  # This method calls filter.
         )
+        # Note that 'update' takes **kwargs but does not support related
+        # field lookups.
+
+        # List of methods on QuerySet objects that take a list of field
+        # names as positional arguments.
+        queryset_args_methods = (
+            'order_by',
+            'distinct',
+            'values',
+            'values_list',
+            'select_related',
+            'prefetch_related',
+            'defer',
+            'only',
+        )
+
+        # List of methods on QuerySet objects that take a single field
+        # name as their first positional argument.
+        queryset_field_methods = (
+            'dates',
+            'latest',
+        )
+
+        if name in queryset_kwargs_methods:
+            return self._decorate_kwargs_preprocessor(name)
+        elif name in queryset_args_methods:
+            return self._decorate_args_preprocessor(name)
+        elif name in queryset_field_methods:
+            return self._decorate_field_preprocessor(name)
+        else:
+            return super(AskbotUserQuerySet, self).__getattribute__(name)
+
+    def _decorate_kwargs_preprocessor(self, name):
+        """Decorate an instance of _preprocess_kwargs with the method
+        name it should call, then return the resulting callable.
+        """
+        def _preprocess_kwargs(**kwargs):
+            """Return results of method 'name' with processed arguments
+            **kwargs, where **kwargs have been prefixed with 'user__',
+            where appropriate.
+            """
+            # Keep a list of keys to modify, as we can't modify the dict
+            # while looping over it.
+            to_modify = []
+            for key in kwargs.keys():
+                if key in self.user_attributes:
+                    to_modify.append(key)
+
+            for key in to_modify:
+                kwargs['user__%s' % key] = kwargs[key]
+                del kwargs[key]
+
+            # Use the superclass method here to avoid another call to
+            # __getattribute__ - infinite recursion.
+            return getattr(super(AskbotUserQuerySet, self), name)(**kwargs)
+
+        return _preprocess_kwargs
+
+    def _decorate_args_preprocessor(self, name):
+        """Decorate an instance of _preprocess_args with the method name
+        it should call, then return the resulting callable.
+        """
+        def _preprocess_args(*args):
+            """Return results of method 'name' with processed arguments
+            *args, where *args have been prefixed with 'user__', where
+            appropriate.
+            """
+            for i in range(len(args)):
+                if args[i] in self.user_attributes:
+                    args[i] = 'user__%s' % args[i]
+                elif args[i][0] == '-' and args[i][1:] in self.user_attributes:
+                    args[i] = '-user__%s' % args[i][1:]
+
+            # Use the superclass method here to avoid another call to
+            # __getattribute__ - infinite recursion.
+            return getattr(super(AskbotUserQuerySet, self), name)(*args)
+
+        return _preprocess_args
+
+    def _decorate_field_preprocessor(self, name):
+        """Decorate an instance of _preprocess_field with the method name
+        it should call, then return the resulting callable.
+        """
+        def _preprocess_field(field, *args, **kwargs):
+            """Return results of method 'name' with processed argument
+            field and remaining arguments, where field has been prefixed
+            with 'user__', where appropriate.
+            """
+            if field in self.user_attributes:
+                field = 'user__%s' % field
+
+            # Use the superclass method here to avoid another call to
+            # __getattribute__ - infinite recursion.
+            return getattr(super(AskbotUserQuerySet, self), name)(*args)
+
+        return _preprocess_field
 
 
 class AskbotUser(models.Model):
@@ -53,7 +151,7 @@ class AskbotUser(models.Model):
     """
     user = models.OneToOneField(User, related_name='askbot_user')
 
-    objects = AskbotUserManager()
+    objects = PassThroughManager.for_queryset_class(AskbotUserQuerySet)()
 
     class Meta(object):
         app_label = 'askbot'
