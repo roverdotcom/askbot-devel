@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.contrib.auth.models import UserManager
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -145,33 +146,40 @@ class AskbotUserQuerySet(QuerySet):
         return _preprocess_field
 
 
-class AskbotUserPassThroughManager(PassThroughManager):
-    """Add the create_user and create_superuser methods to PassThroughManager.
+class AskbotUserPassThroughManager(UserManager, PassThroughManager):
+    """Create a custom PassThroughManager with UserManager's special
+    properties.
     """
-    def create_user(username, email=None, password=None, **extra_fields):
-        new_user = User(
-            username=username,
-            email=email,
-            password=password,
-            is_active=True,
+    def create_user(
+            self,
+            username,
+            email=None,
+            password=None,
+            **extra_fields
+    ):
+        new_user = super(AskbotUserPassThroughManager, self).create_user(
+            username,
+            email,
+            password,
             **extra_fields
         )
-        new_user.save()
 
         # new_user's post_save signal should create an AskbotUser.
         return new_user.askbot_user
 
-    def create_superuser(username, email=None, password=None, **extra_fields):
-        new_user = User(
-            username=username,
-            email=email,
-            password=password,
-            is_superuser=True,
-            is_staff=True,
-            is_active=True,
+    def create_superuser(
+        self,
+        username,
+        email=None,
+        password=None,
+        **extra_fields
+    ):
+        new_user = super(AskbotUserPassThroughManager, self).create_superuser(
+            username,
+            email,
+            password,
             **extra_fields
         )
-        new_user.save()
 
         # new_user's post_save signal should create an AskbotUser.
         return new_user.askbot_user
