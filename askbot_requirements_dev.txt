@@ -28,3 +28,4 @@ django-tinymce
 longerusername
 beautifulsoup4
 django-picklefield==0.3.0
+django-model-utils==2.1.0
