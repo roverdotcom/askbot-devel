@@ -204,11 +204,6 @@ class AskbotUser(models.Model):
     class Meta(object):
         app_label = 'askbot'
 
-    def __init__(self, user, *args, **kwargs):
-        """Create a new AskbotUser tied to an existing User."""
-        self.user = user
-        super(AskbotUser, self).__init__(*args, **kwargs)
-
     def __getattr__(self, name):
         """If the AskbotUser does not have some attribute, look for it on the
         AskbotUser's User object.
@@ -225,5 +220,6 @@ class AskbotUser(models.Model):
 def create_corresponding_askbot_user(sender, instance, created, **kwargs):
     """Create a new AskbotUser whenever a User is saved."""
     if created:
-        new_user = AskbotUser(instance)
-        new_user.save()
+        new_askbot_user = AskbotUser()
+        new_askbot_user.user = instance
+        new_askbot_user.save()
