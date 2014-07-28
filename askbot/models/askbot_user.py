@@ -276,10 +276,17 @@ class AskbotUser(models.Model):
 
         Only allow setting of fields on the underlying User.
         """
-        if name != u'id' and name in self.user._meta.get_all_field_names():
-            setattr(self.user, name, value)
-        else:
+        try:
+            if name != u'id' and name in self.user._meta.get_all_field_names():
+                setattr(self.user, name, value)
+        except User.DoesNotExist:
             super(AskbotUser, self).__setattr__(name, value)
+
+    def __unicode__(self):
+        try:
+            return unicode(self.user.username)
+        except User.DoesNotExist:
+            return u'AskbotUser with no related User'
 
     def save(self, *args, **kwargs):
         """Save self.user prior to saving self."""
@@ -290,6 +297,7 @@ class AskbotUser(models.Model):
 @receiver(post_save, sender=User)
 def create_corresponding_askbot_user(sender, instance, created, **kwargs):
     """Create a new AskbotUser whenever a User is saved."""
+    import pdb; pdb.set_trace()
     if created:
         new_askbot_user = AskbotUser()
         new_askbot_user.user = instance
