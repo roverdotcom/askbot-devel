@@ -74,7 +74,7 @@ class AskbotUserQuerySet(QuerySet):
         )
 
         if name in queryset_kwargs_methods:
-            return self._decorate_kwargs_preprocessor(name)
+            return self._decorate_Q_and_kwargs_preprocessor(name)
         elif name in queryset_args_methods:
             return self._decorate_args_preprocessor(name)
         elif name in queryset_field_methods:
@@ -82,20 +82,26 @@ class AskbotUserQuerySet(QuerySet):
         else:
             return super(AskbotUserQuerySet, self).__getattribute__(name)
 
-    def _decorate_kwargs_preprocessor(self, name):
-        """Decorate an instance of _preprocess_kwargs with the method
+    def _decorate_Q_and_kwargs_preprocessor(self, name):
+        """Decorate an instance of _preprocess_Q_and_kwargs with the method
         name it should call, then return the resulting callable.
         """
-        def _preprocess_kwargs(**kwargs):
+        def _preprocess_kwargs(*args, **kwargs):
             """Return results of method 'name' with processed arguments
-            **kwargs, where **kwargs have been prefixed with 'user__',
-            where appropriate.
+            *args and **kwargs, where **kwargs and 'children' of Q objects
+            in *args have been prefixed with 'user__', where appropriate.
             """
+            for q in args:
+                for i in range(len(q.children)):
+                    query, param = q.children[i]
+                    if query.split('__')[0] in self.user_attributes:
+                        pass
+
             # Keep a list of keys to modify, as we can't modify the dict
             # while looping over it.
             to_modify = []
             for key in kwargs.keys():
-                if key in self.user_attributes:
+                if key.split('__')[0] in self.user_attributes:
                     to_modify.append(key)
 
             for key in to_modify:
@@ -118,9 +124,10 @@ class AskbotUserQuerySet(QuerySet):
             appropriate.
             """
             for i in range(len(args)):
-                if args[i] in self.user_attributes:
+                if args[i].split('__')[0] in self.user_attributes:
                     args[i] = 'user__%s' % args[i]
-                elif args[i][0] == '-' and args[i][1:] in self.user_attributes:
+                elif args[i][0] == '-' and \
+                        args[i][1:].split('__')[0] in self.user_attributes:
                     args[i] = '-user__%s' % args[i][1:]
 
             # Use the superclass method here to avoid another call to
@@ -138,7 +145,7 @@ class AskbotUserQuerySet(QuerySet):
             field and remaining arguments, where field has been prefixed
             with 'user__', where appropriate.
             """
-            if field in self.user_attributes:
+            if field.split('__')[0] in self.user_attributes:
                 field = 'user__%s' % field
 
             # Use the superclass method here to avoid another call to
