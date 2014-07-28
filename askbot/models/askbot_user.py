@@ -126,12 +126,17 @@ class AskbotUserQuerySet(QuerySet):
             *args, where *args have been prefixed with 'user__', where
             appropriate.
             """
-            for i in range(len(args)):
-                if args[i].split('__')[0] in self.user_attributes:
-                    args[i] = 'user__%s' % args[i]
-                elif args[i][0] == '-' and \
-                        args[i][1:].split('__')[0] in self.user_attributes:
-                    args[i] = '-user__%s' % args[i][1:]
+            # Build a new args tuple. Occasionally this gets passed in as
+            # a tuple, so it can't reliably be modified in place.
+            new_args = ()
+            for arg in args:
+                if arg.split('__')[0] in self.user_attributes:
+                    new_args += 'user__%s' % arg
+                elif arg[0] == '-' and \
+                        arg[1:].split('__')[0] in self.user_attributes:
+                    new_args += '-user__%s' % arg[1:]
+                else:
+                    new_args += arg
 
             # Use the superclass method here to avoid another call to
             # __getattribute__ - infinite recursion.
