@@ -276,9 +276,9 @@ class AskbotUser(models.Model):
         """If the attribute being set exists on the AskbotUser's User object,
         set it there, not here.
 
-        Set only public attributes on the User.
+        Only allow setting of fields on the underlying User.
         """
-        if name[0] != '_' and hasattr(self.user, name):
+        if name != u'id' and name in self.user._meta.get_all_field_names():
             setattr(self.user, name, value)
         else:
             super(AskbotUser, self).__setattr__(name, value)
