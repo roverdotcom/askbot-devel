@@ -11,7 +11,7 @@ here.
 from django.contrib.auth import get_user
 from django.contrib.auth.models import AnonymousUser
 from django.utils.functional import SimpleLazyObject
-from django.conf.settings import ASKBOT_URL
+from django.conf import settings
 from re import match
 
 
@@ -35,5 +35,5 @@ class AskbotUserMiddleware(object):
     """
     def process_request(self, request):
         # Only modify requests coming to ASKBOT_URL.
-        if match(r'\/?%s' % ASKBOT_URL, request.get_full_path()):
+        if match(r'\/?%s' % settings.ASKBOT_URL, request.get_full_path()):
             request.user = SimpleLazyObject(lambda: get_askbot_user(request))
