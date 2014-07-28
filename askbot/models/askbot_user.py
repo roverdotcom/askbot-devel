@@ -121,7 +121,7 @@ class AskbotUserQuerySet(QuerySet):
         """Decorate an instance of _preprocess_args with the method name
         it should call, then return the resulting callable.
         """
-        def _preprocess_args(*args):
+        def _preprocess_args(*args, **kwargs):
             """Return results of method 'name' with processed arguments
             *args, where *args have been prefixed with 'user__', where
             appropriate.
@@ -140,7 +140,10 @@ class AskbotUserQuerySet(QuerySet):
 
             # Use the superclass method here to avoid another call to
             # __getattribute__ - infinite recursion.
-            return getattr(super(AskbotUserQuerySet, self), name)(*args)
+            return getattr(
+                super(AskbotUserQuerySet, self),
+                name
+            )(*args, **kwargs)
 
         return _preprocess_args
 
