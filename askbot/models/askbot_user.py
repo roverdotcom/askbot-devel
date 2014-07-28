@@ -188,6 +188,8 @@ class AskbotUserPassThroughManager(PassThroughManager):
 
         new_user.set_password(password)
 
+        new_user.save()
+
         # new_user's post_save signal creates an AskbotUser.
         return new_user.askbot_user
 
