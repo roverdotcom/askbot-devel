@@ -254,23 +254,21 @@ class AskbotUser(models.Model):
         """If the AskbotUser does not have some attribute, look for it on the
         AskbotUser's User object.
 
-        For now, __getattr__ is querying only public attributes on its user -
+        For now, __getattr__ is querying only public attributes on its User -
         querying all attributes causes maximum recursion depth to be exceeded,
         as the two __getattr__s bounce back and forth forver. If this proves
         problematic, __getattr__ may need to keep a list of attributes that
         it's allowed to query on the User.
         """
         try:
-            return super(AskbotUser, self).__getattr__(name)
-        except AttributeError:
-            if name[0] != '_' and hasattr(self.user, name):
+            if name[0] != '_':
                 return getattr(self.user, name)
-            else:
-                raise AttributeError(
-                    "Neither AskbotUser nor User has public attribute %s" % (
-                        name
-                    )
+        except AttributeError:
+            raise AttributeError(
+                "Neither AskbotUser nor User has public attribute %s" % (
+                    name
                 )
+            )
 
     def __setattr__(self, name, value):
         """If the attribute being set exists on the AskbotUser's User object,
