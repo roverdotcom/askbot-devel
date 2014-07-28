@@ -297,7 +297,6 @@ class AskbotUser(models.Model):
 @receiver(post_save, sender=User)
 def create_corresponding_askbot_user(sender, instance, created, **kwargs):
     """Create a new AskbotUser whenever a User is saved."""
-    import pdb; pdb.set_trace()
     if created:
         new_askbot_user = AskbotUser()
         new_askbot_user.user = instance
