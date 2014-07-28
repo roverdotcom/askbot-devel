@@ -272,6 +272,17 @@ class AskbotUser(models.Model):
                     )
                 )
 
+    def __setattr__(self, name, value):
+        """If the attribute being set exists on the AskbotUser's User object,
+        set it there, not here.
+
+        Set only public attributes on the User.
+        """
+        if name[0] != '_' and hasattr(self.user, name):
+            setattr(self.user, name, value)
+        else:
+            super(AskbotUser, self).__setattr__(name, value)
+
     def save(self, *args, **kwargs):
         """Save self.user prior to saving self."""
         self.user.save()
