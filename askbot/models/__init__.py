@@ -140,7 +140,8 @@ class RelatedObjectSimulator(object):
     somehow django does not creates it automatically in django1.4.1'''
 
     def __init__(self, user, model_class):
-        self.user = user
+        # self.user = user
+        self.user = user.user
         self.model_class = model_class
 
     def all(self):
