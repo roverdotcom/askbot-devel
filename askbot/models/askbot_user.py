@@ -95,7 +95,7 @@ class AskbotUserQuerySet(QuerySet):
                 for i in range(len(q.children)):
                     query, param = q.children[i]
                     if query.split('__')[0] in self.user_attributes:
-                        pass
+                        q.children[i] = ('user__%s' % query, param)
 
             # Keep a list of keys to modify, as we can't modify the dict
             # while looping over it.
@@ -110,7 +110,10 @@ class AskbotUserQuerySet(QuerySet):
 
             # Use the superclass method here to avoid another call to
             # __getattribute__ - infinite recursion.
-            return getattr(super(AskbotUserQuerySet, self), name)(**kwargs)
+            return getattr(
+                super(AskbotUserQuerySet, self),
+                name
+            )(*args, **kwargs)
 
         return _preprocess_kwargs
 
