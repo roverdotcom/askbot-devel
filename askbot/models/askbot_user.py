@@ -131,7 +131,7 @@ class AskbotUserQuerySet(QuerySet):
             new_args = ()
             for arg in args:
                 if arg.split('__')[0] in self.user_attributes:
-                    new_args += 'user__%s' % (arg,)
+                    new_args += ('user__%s' % arg,)
                 elif arg[0] == '-' and \
                         arg[1:].split('__')[0] in self.user_attributes:
                     new_args += ('-user__%s' % arg[1:],)
