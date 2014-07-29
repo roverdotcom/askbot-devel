@@ -1,5 +1,5 @@
 from django.contrib.auth.management.commands.createsuperuser import *
-# from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save, post_save
 
 class Command(Command):
 
@@ -106,6 +106,6 @@ class Command(Command):
           self.stdout.write("Askbot Superuser created successfully.\n")
 
 
-    # def remove_signals(self):
-    #     pre_save.receivers = []
-    #     post_save.receivers = []
+    def remove_signals(self):
+        pre_save.receivers = []
+        post_save.receivers = []
