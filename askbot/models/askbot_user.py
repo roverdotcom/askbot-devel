@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User as AuthUser
-# Import UserManager so we can access the normalize_email classmethod.
 from django.contrib.auth.models import UserManager
 from django.contrib.auth import get_user_model
 from django.utils import timezone
