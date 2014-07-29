@@ -308,4 +308,6 @@ def create_corresponding_askbot_user(sender, instance, created, **kwargs):
     if created:
         new_askbot_user = AskbotUser()
         new_askbot_user.user = instance
-        new_askbot_user.save()
+
+        # Avoid another set of user save signals being emitted.
+        super(AskbotUser, new_askbot_user).save()
