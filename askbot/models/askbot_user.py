@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 # Import UserManager so we can access the normalize_email classmethod.
 from django.contrib.auth.models import UserManager
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.db import models
 from django.dispatch import receiver
@@ -184,16 +185,15 @@ class AskbotUserPassThroughManager(PassThroughManager):
         super(AskbotUserPassThroughManager, self).create_user
 
         won't work here because UserManager.create_user creates a self.model,
-        which ends up being an AskbotUser. As a side effect, this method will
-        break if a custom AUTH_USER_MODEL is defined, because it will always
-        create a standard contrib.auth User. This method is basically a copy-
-        pasted version of UserManager.create_user with self.model replaced.
+        which ends up being an AskbotUser. contrib.auth.get_user_model is
+        subsituted here, instead.
         """
         now = timezone.now()
-
         email = UserManager.normalize_email(email)
 
-        new_user = User(
+        user_model = get_user_model()
+
+        new_user = user_model(
             username=username,
             email=email,
             is_staff=False,
@@ -205,7 +205,6 @@ class AskbotUserPassThroughManager(PassThroughManager):
         )
 
         new_user.set_password(password)
-
         new_user.save()
 
         # new_user's post_save signal creates an AskbotUser.
