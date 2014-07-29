@@ -7,6 +7,7 @@ from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.db.models.query import QuerySet
+from django.db.models import Q
 from model_utils.managers import PassThroughManager
 
 
@@ -92,11 +93,8 @@ class AskbotUserQuerySet(QuerySet):
             *args and **kwargs, where **kwargs and 'children' of Q objects
             in *args have been prefixed with 'user__', where appropriate.
             """
-            for q in args:
-                for i in range(len(q.children)):
-                    query, param = q.children[i]
-                    if query.split('__')[0] in self.user_attributes:
-                        q.children[i] = ('user__%s' % query, param)
+            for q_obj in args:
+                self._traverse_Q(q_obj)
 
             # Keep a list of keys to modify, as we can't modify the dict
             # while looping over it.
@@ -165,6 +163,19 @@ class AskbotUserQuerySet(QuerySet):
             return getattr(super(AskbotUserQuerySet, self), name)(*args)
 
         return _preprocess_field
+
+    def _traverse_Q(self, q_obj):
+        """Recursively traverse a Q object (whose 'children' may contain
+        other Q objects with differing connectors) and prefix 'user__' to
+        field names, where appropriate.
+        """
+        for i in range(len(q_obj.children)):
+            if isinstance(q_obj.children[i], Q):
+                self._traverse_Q(q_obj.children[i])
+            else:
+                query, param = q_obj.children[i]
+                if query.split('__')[0] in self.user_attributes:
+                    q_obj.children[i] = ('user__%s' % query, param)
 
 
 class AskbotUserPassThroughManager(PassThroughManager):
