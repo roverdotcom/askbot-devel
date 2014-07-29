@@ -3846,46 +3846,46 @@ signals.post_revision_published.connect(notify_author_of_published_revision)
 signals.site_visited.connect(record_user_visit)
 
 __all__ = [
-    'signals',
+        'signals',
 
-    'Thread',
+        'Thread',
 
-    'QuestionView',
-    'FavoriteQuestion',
-    'AnonymousQuestion',
-    'DraftQuestion',
+        'QuestionView',
+        'FavoriteQuestion',
+        'AnonymousQuestion',
+        'DraftQuestion',
 
-    'AnonymousAnswer',
-    'DraftAnswer',
+        'AnonymousAnswer',
+        'DraftAnswer',
 
-    'Post',
-    'PostRevision',
-    'PostToGroup',
+        'Post',
+        'PostRevision',
+        'PostToGroup',
 
-    'Tag',
-    'Vote',
-    'PostFlagReason',
-    'MarkedTag',
-    'TagSynonym',
+        'Tag',
+        'Vote',
+        'PostFlagReason',
+        'MarkedTag',
+        'TagSynonym',
 
-    'BadgeData',
-    'Award',
-    'Repute',
+        'BadgeData',
+        'Award',
+        'Repute',
 
-    'Activity',
-    'ActivityAuditStatus',
-    'EmailFeedSetting',
-    'GroupMembership',
-    'Group',
+        'Activity',
+        'ActivityAuditStatus',
+        'EmailFeedSetting',
+        'GroupMembership',
+        'Group',
 
-    'User',
+        'User',
 
-    'ReplyAddress',
+        'ReplyAddress',
 
-    'ImportRun',
-    'ImportedObjectInfo',
+        'ImportRun',
+        'ImportedObjectInfo',
 
-    'AskbotUser',
+        'AskbotUser',
 
-    'get_model',
+        'get_model',
 ]
