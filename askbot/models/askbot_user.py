@@ -274,6 +274,8 @@ class AskbotUser(models.Model):
 
         Only allow setting of model fields on the underlying AuthUser.
         """
+        # try-except to catch attempts to access self.user before it has been
+        # assigned (during AskbotUser instantiation).
         try:
             if name != u'id' and name in self.user._meta.get_all_field_names():
                 setattr(self.user, name, value)
