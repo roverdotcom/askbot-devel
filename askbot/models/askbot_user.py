@@ -292,6 +292,10 @@ class AskbotUser(models.Model):
 
     def save(self, *args, **kwargs):
         """Save self.user prior to saving self."""
+        # It would make sense to validate these with full_clean, so that we
+        # don't end up with one saved when the other is invalid - but
+        # AskbotUser cannot be full_cleaned, because many of its fields are
+        # populated by pre_save and post_save handlers. Vexing.
         self.user.save()
         super(AskbotUser, self).save(*args, **kwargs)
 
