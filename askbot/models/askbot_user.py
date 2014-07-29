@@ -141,7 +141,7 @@ class AskbotUserQuerySet(QuerySet):
             return getattr(
                 super(AskbotUserQuerySet, self),
                 name
-            )(*args, **kwargs)
+            )(*new_args, **kwargs)
 
         return _preprocess_args
 
