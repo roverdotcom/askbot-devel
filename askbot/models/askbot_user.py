@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User as AuthUser
 # Import UserManager so we can access the normalize_email classmethod.
 from django.contrib.auth.models import UserManager
 from django.contrib.auth import get_user_model
@@ -28,7 +28,7 @@ class AskbotUserQuerySet(QuerySet):
     # List of attributes on User objects that need 'user__' prefixed to
     # their ORM query keyword arguments.
     user_attributes = tuple(
-        attr for attr in User._meta.get_all_field_names() if attr != 'id'
+        attr for attr in AuthUser._meta.get_all_field_names() if attr != 'id'
     )
 
     def __getattribute__(self, name):
@@ -240,7 +240,7 @@ class AskbotUser(models.Model):
     """Custom user model which encapsulates askbot functionality.
     Replaces monkey-patched auth User model.
     """
-    user = models.OneToOneField(User, related_name='askbot_user')
+    user = models.OneToOneField(AuthUser, related_name='askbot_user')
 
     objects = AskbotUserPassThroughManager.for_queryset_class(
         AskbotUserQuerySet
@@ -251,13 +251,12 @@ class AskbotUser(models.Model):
 
     def __getattr__(self, name):
         """If the AskbotUser does not have some attribute, look for it on the
-        AskbotUser's User object.
+        AskbotUser's AuthUser object.
 
         For now, __getattr__ is querying only public attributes on its User -
-        querying all attributes causes maximum recursion depth to be exceeded,
-        as the two __getattr__s bounce back and forth forver. If this proves
-        problematic, __getattr__ may need to keep a list of attributes that
-        it's allowed to query on the User.
+        querying all attributes causes a max recursion depth exception.
+        If this proves problematic, __getattr__ may need to keep a list of
+        attributes that it's allowed to query on the User.
         """
         try:
             if name[0] != '_':
@@ -270,21 +269,25 @@ class AskbotUser(models.Model):
             )
 
     def __setattr__(self, name, value):
-        """If the attribute being set exists on the AskbotUser's User object,
-        set it there, not here.
+        """If the attribute being set exists on the AskbotUser's AuthUser
+        object, set it there, not here.
 
-        Only allow setting of fields on the underlying User.
+        Only allow setting of model fields on the underlying AuthUser.
         """
         try:
             if name != u'id' and name in self.user._meta.get_all_field_names():
                 setattr(self.user, name, value)
-        except User.DoesNotExist:
+            else:
+                super(AskbotUser, self).__setattr__(name, value)
+
+        except AuthUser.DoesNotExist:
             super(AskbotUser, self).__setattr__(name, value)
 
     def __unicode__(self):
         try:
-            return unicode(self.user.username)
-        except User.DoesNotExist:
+            return u'AskbotUser related to %s' % self.user.__unicode__()
+
+        except AuthUser.DoesNotExist:
             return u'AskbotUser with no related User'
 
     def save(self, *args, **kwargs):
@@ -293,9 +296,9 @@ class AskbotUser(models.Model):
         super(AskbotUser, self).save(*args, **kwargs)
 
 
-@receiver(post_save, sender=User)
+@receiver(post_save, sender=AuthUser)
 def create_corresponding_askbot_user(sender, instance, created, **kwargs):
-    """Create a new AskbotUser whenever a User is saved."""
+    """Create a new AskbotUser whenever an AuthUser is saved."""
     if created:
         new_askbot_user = AskbotUser()
         new_askbot_user.user = instance
