@@ -261,12 +261,23 @@ class AskbotUser(models.Model):
         try:
             if name[0] != '_':
                 return getattr(self.user, name)
+
         except AttributeError:
             raise AttributeError(
-                "Neither AskbotUser nor User has public attribute %s" % (
+                "Neither '%s' object nor '%s' object have public attribute"
+                " '%s'" % (
+                    self.__class__.__name__,
+                    self.user.__class__.__name__,
                     name
                 )
             )
+
+        raise AttributeError(
+            "'%s' object has no attribute '%s'" % (
+                self.__class__.__name__,
+                name
+            )
+        )
 
     def __setattr__(self, name, value):
         """If the attribute being set exists on the AskbotUser's AuthUser
@@ -277,7 +288,8 @@ class AskbotUser(models.Model):
         # try-except to catch attempts to access self.user before it has been
         # assigned (during AskbotUser instantiation).
         try:
-            if name != u'id' and name in self.user._meta.get_all_field_names():
+            if name != u'id' and \
+                    name in get_user_model()._meta.get_all_field_names():
                 setattr(self.user, name, value)
             else:
                 super(AskbotUser, self).__setattr__(name, value)
