@@ -97,22 +97,13 @@ class AskbotUserQuerySet(QuerySet):
             for q_obj in args:
                 self._traverse_Q(q_obj)
 
-            # Keep a list of keys to modify, as we can't modify the dict
-            # while looping over it.
-            to_modify = {}
-            for query in kwargs.keys():
-                new_query = self._prefix_user_fields(query)
-                if query != new_query:
-                    to_modify[query] = new_query
-
-            for query, new_query in to_modify:
-                kwargs[new_query] = kwargs[query]
-                del kwargs[query]
-
-            return getattr(
-                super(AskbotUserQuerySet, self),
-                name
-            )(*args, **kwargs)
+            return getattr(super(AskbotUserQuerySet, self), name)(
+                *args,
+                **{
+                    self._prefix_user_fields(query): kwargs[query]
+                    for query in kwargs.keys()
+                }
+            )
 
         return _preprocess_Q_and_kwargs
 
