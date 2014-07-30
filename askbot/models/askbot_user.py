@@ -153,7 +153,8 @@ class AskbotUserQuerySet(QuerySet):
 
     def _prefix_user_fields(self, query):
         """Find single field lookups on AskbotUser or related field lookups
-        that query through a related AskbotUser.
+        that query through a related AskbotUser and prefix those fields with
+        'user__'.
         """
         if query[0] == '-':
             descending = '-'
@@ -200,13 +201,10 @@ class AskbotUserPassThroughManager(PassThroughManager):
         subsituted here, instead.
         """
         now = timezone.now()
-        email = UserManager.normalize_email(email)
 
-        user_model = get_user_model()
-
-        new_user = user_model(
+        new_user = get_user_model()(
             username=username,
-            email=email,
+            email=UserManager.normalize_email(email),
             is_staff=False,
             is_active=True,
             is_superuser=False,
@@ -264,8 +262,8 @@ class AskbotUser(models.Model):
         """If the AskbotUser does not have some attribute, look for it on the
         AskbotUser's AuthUser object.
 
-        For now, __getattr__ is querying only public attributes on its User -
-        querying all attributes causes a max recursion depth exception.
+        For now, __getattr__ is querying only public attributes on its AuthUser
+        - querying all attributes causes a max recursion depth exception.
         If this proves problematic, __getattr__ may need to keep a list of
         attributes that it's allowed to query on the User.
         """
@@ -318,9 +316,9 @@ class AskbotUser(models.Model):
     def save(self, *args, **kwargs):
         """Save self.user prior to saving self."""
         # It would make sense to validate these with full_clean, so that we
-        # don't end up with one saved when the other is invalid - but
+        # don't end up with one saved when the other is invalid, but
         # AskbotUser cannot be full_cleaned, because many of its fields are
-        # populated by pre_save and post_save handlers. Vexing.
+        # populated by pre_save handlers. Vexing.
         self.user.save()
         super(AskbotUser, self).save(*args, **kwargs)
 
@@ -336,6 +334,7 @@ class AskbotUserRelatedModel(models.Model):
 
     class Meta(object):
         abstract = True
+        app_label = 'askbot'
 
 
 @receiver(post_save, sender=AuthUser)
@@ -345,5 +344,6 @@ def create_corresponding_askbot_user(sender, instance, created, **kwargs):
         new_askbot_user = AskbotUser()
         new_askbot_user.user = instance
 
-        # Avoid another set of user save signals being emitted.
+        # Don't need to perform another save() on user - we're in its
+        # post_save signal.
         super(AskbotUser, new_askbot_user).save()
