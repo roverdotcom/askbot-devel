@@ -141,15 +141,13 @@ class AskbotUserQuerySet(QuerySet):
         """
         def _preprocess_field(field, *args, **kwargs):
             """Return results of method 'name' with processed argument
-            field and remaining arguments, where field has been prefixed
-            with 'user__', where appropriate.
+            field and remaining arguments, where field has had 'user__'
+            inserted, if appropriate.
             """
-            if field.split('__')[0] in self.user_attributes:
-                field = 'user__%s' % field
-
-            # Use the superclass method here to avoid another call to
-            # __getattribute__ - infinite recursion.
-            return getattr(super(AskbotUserQuerySet, self), name)(*args)
+            return getattr(
+                super(AskbotUserQuerySet, self),
+                name
+            )(self._prefix_user_fields(field), *args, **kwargs)
 
         return _preprocess_field
 
