@@ -6,7 +6,7 @@ from django.conf import settings as django_settings
 from django.db import models
 from django.db.models import F
 # from django.contrib.auth.models import User
-from askbot.models.askbot_user import AskbotUser as User
+from askbot.models import AskbotUser as User
 from django.core import cache  # import cache, not from cache import cache, to be able to monkey-patch cache.cache in test cases
 from django.core import exceptions as django_exceptions
 from django.core.urlresolvers import reverse
