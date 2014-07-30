@@ -124,14 +124,10 @@ class AskbotUserQuerySet(QuerySet):
             """Return results of method 'name' with processed arguments
             *args, where *args have had 'user__' inserted, where appropriate.
             """
-            new_args = []
-            for query in args:
-                new_args.append(self._prefix_user_fields(query))
-
             return getattr(
                 super(AskbotUserQuerySet, self),
                 name
-            )(*new_args, **kwargs)
+            )(*map(self._prefix_user_fields, args), **kwargs)
 
         return _preprocess_args
 
