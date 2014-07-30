@@ -89,10 +89,10 @@ class AskbotUserQuerySet(QuerySet):
         """Decorate an instance of _preprocess_Q_and_kwargs with the method
         name it should call, then return the resulting callable.
         """
-        def _preprocess_kwargs(*args, **kwargs):
+        def _preprocess_Q_and_kwargs(*args, **kwargs):
             """Return results of method 'name' with processed arguments
             *args and **kwargs, where **kwargs and 'children' of Q objects
-            in *args have been prefixed with 'user__', where appropriate.
+            in *args have had 'user__' inserted, where appropriate.
             """
             for q_obj in args:
                 self._traverse_Q(q_obj)
@@ -114,7 +114,7 @@ class AskbotUserQuerySet(QuerySet):
                 name
             )(*args, **kwargs)
 
-        return _preprocess_kwargs
+        return _preprocess_Q_and_kwargs
 
     def _decorate_args_preprocessor(self, name):
         """Decorate an instance of _preprocess_args with the method name
@@ -122,23 +122,12 @@ class AskbotUserQuerySet(QuerySet):
         """
         def _preprocess_args(*args, **kwargs):
             """Return results of method 'name' with processed arguments
-            *args, where *args have been prefixed with 'user__', where
-            appropriate.
+            *args, where *args have had 'user__' inserted, where appropriate.
             """
-            # Build a new args tuple. Occasionally this gets passed in as
-            # a tuple, so it can't reliably be modified in place.
-            new_args = ()
-            for arg in args:
-                if arg.split('__')[0] in self.user_attributes:
-                    new_args += ('user__%s' % arg,)
-                elif arg[0] == '-' and \
-                        arg[1:].split('__')[0] in self.user_attributes:
-                    new_args += ('-user__%s' % arg[1:],)
-                else:
-                    new_args += (arg,)
+            new_args = []
+            for query in args:
+                new_args.append(self._prefix_user_fields(query))
 
-            # Use the superclass method here to avoid another call to
-            # __getattribute__ - infinite recursion.
             return getattr(
                 super(AskbotUserQuerySet, self),
                 name
