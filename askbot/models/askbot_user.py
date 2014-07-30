@@ -333,6 +333,9 @@ class AskbotUserRelatedModel(models.Model):
 
     objects = PassThroughManager.for_queryset_class(AskbotUserQuerySet)()
 
+    class Meta(object):
+        abstract = True
+
 
 @receiver(post_save, sender=AuthUser)
 def create_corresponding_askbot_user(sender, instance, created, **kwargs):
