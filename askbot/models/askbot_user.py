@@ -14,15 +14,17 @@ class AskbotUserQuerySet(QuerySet):
     """Custom queryset that automatically adds related object names to
     queries, where appropriate.
 
-    So, a request for:
+    So, a request on AskbotUser for:
     AskbotUser.objects.filter(username='something')
 
     Will automatically be translated to:
     AskbotUser.objects.filter(user__username='something')
 
-    in order to successfully tunnel through the one-to-one relationship
-    while treating the one-to-one related model's fields as if they were
-    part of this model.
+    And a request on Post for:
+    Post.objects.filter(author__username='something')
+
+    Will be translated to:
+    Post.objects.filter(author__user__username='something')
     """
 
     # List of attributes on User objects that need 'user__' prefixed to
@@ -99,6 +101,7 @@ class AskbotUserQuerySet(QuerySet):
             # while looping over it.
             to_modify = []
             for key in kwargs.keys():
+                fields = key.split('__')
                 if key.split('__')[0] in self.user_attributes:
                     to_modify.append(key)
 
@@ -175,6 +178,31 @@ class AskbotUserQuerySet(QuerySet):
                 query, param = q_obj.children[i]
                 if query.split('__')[0] in self.user_attributes:
                     q_obj.children[i] = ('user__%s' % query, param)
+
+    def _prefix_user_fields(self, query):
+        """Find single field lookups on AskbotUser or related field lookups
+        that query through a related AskbotUser.
+        """
+        if query[0] == '-':
+            descending = '-'
+            query = query[1:]
+        else:
+            descending = ''
+
+        fields = query.split('__')
+
+        current_model = self.model
+
+        for i, field in enumerate(fields):
+            if current_model is AskbotUser and field in self.user_attributes:
+                fields[i] = 'user__%s' % field
+
+            try:
+                current_model = current_model._meta.get_field(field).rel.to
+            except AttributeError:
+                pass
+
+        return ''.join([descending, '__'.join(fields)])
 
 
 class AskbotUserPassThroughManager(PassThroughManager):
