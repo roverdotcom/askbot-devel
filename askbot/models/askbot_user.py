@@ -99,18 +99,16 @@ class AskbotUserQuerySet(QuerySet):
 
             # Keep a list of keys to modify, as we can't modify the dict
             # while looping over it.
-            to_modify = []
-            for key in kwargs.keys():
-                fields = key.split('__')
-                if key.split('__')[0] in self.user_attributes:
-                    to_modify.append(key)
+            to_modify = {}
+            for query in kwargs.keys():
+                new_query = self._prefix_user_fields(query)
+                if query != new_query:
+                    to_modify[query] = new_query
 
-            for key in to_modify:
-                kwargs['user__%s' % key] = kwargs[key]
-                del kwargs[key]
+            for query, new_query in to_modify:
+                kwargs[new_query] = kwargs[query]
+                del kwargs[query]
 
-            # Use the superclass method here to avoid another call to
-            # __getattribute__ - infinite recursion.
             return getattr(
                 super(AskbotUserQuerySet, self),
                 name
@@ -196,6 +194,7 @@ class AskbotUserQuerySet(QuerySet):
         for i, field in enumerate(fields):
             if current_model is AskbotUser and field in self.user_attributes:
                 fields[i] = 'user__%s' % field
+                current_model = current_model._meta.get_field('user').rel.to
 
             try:
                 current_model = current_model._meta.get_field(field).rel.to
