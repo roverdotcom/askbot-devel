@@ -115,10 +115,10 @@ class AskbotUserQuerySet(QuerySet):
             """Return results of method 'name' with processed arguments
             *args, where *args have had 'user__' inserted, where appropriate.
             """
-            return getattr(
-                super(AskbotUserQuerySet, self),
-                name
-            )(*map(self._prefix_user_fields, args), **kwargs)
+            return getattr(super(AskbotUserQuerySet, self), name)(
+                *map(self._prefix_user_fields, args),
+                **kwargs
+            )
 
         return _preprocess_args
 
@@ -131,10 +131,11 @@ class AskbotUserQuerySet(QuerySet):
             field and remaining arguments, where field has had 'user__'
             inserted, if appropriate.
             """
-            return getattr(
-                super(AskbotUserQuerySet, self),
-                name
-            )(self._prefix_user_fields(field), *args, **kwargs)
+            return getattr(super(AskbotUserQuerySet, self), name)(
+                self._prefix_user_fields(field),
+                *args,
+                **kwargs
+            )
 
         return _preprocess_field
 
