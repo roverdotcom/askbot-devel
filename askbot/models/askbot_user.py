@@ -168,18 +168,26 @@ class AskbotUserQuerySet(QuerySet):
         current_model = self.model
 
         for i, field in enumerate(fields):
+            # pk can't be a relation, nor would we want to translate
+            # 'askbotuser__pk' to 'askbotuser__user__pk', so we're finished.
+            # This avoids a FieldDoesNotExist error when we try to
+            # get_field('pk')
+            if field == 'pk':
+                break
+
             if current_model is AskbotUser and field in self.user_attributes:
                 fields[i] = 'user__%s' % field
                 current_model = current_model._meta.get_field('user').rel.to
 
             try:
-                try:
-                    current_model = \
-                        current_model._meta.get_field(field).rel.to
-                except FieldDoesNotExist:
-                    current_model = \
-                        current_model._meta.get_field_by_name(field).rel.to
-            except AttributeError:
+                current_model = \
+                    current_model._meta.get_field_by_name(field).rel.to
+            except (AttributeError, FieldDoesNotExist):
+                # AttributeError will be raised when the field's 'rel'
+                # attribute it None - it has no relation, so we're done.
+                # FieldDoesNotExist will be raised if we reach an ORM operator
+                # like lt or exact, which are not field names. These terms
+                # appear at the end of the query, so we're done.
                 pass
 
         return ''.join([descending, '__'.join(fields)])
