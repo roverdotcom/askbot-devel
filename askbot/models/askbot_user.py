@@ -141,16 +141,15 @@ class AskbotUserQuerySet(QuerySet):
 
     def _traverse_Q(self, q_obj):
         """Recursively traverse a Q object (whose 'children' may contain
-        other Q objects with differing connectors) and prefix 'user__' to
+        other Q objects with differing connectors) and insert 'user__' into
         field names, where appropriate.
         """
-        for i in range(len(q_obj.children)):
-            if isinstance(q_obj.children[i], Q):
-                self._traverse_Q(q_obj.children[i])
+        for i, child in enumerate(q_obj.children):
+            if isinstance(child, Q):
+                self._traverse_Q(child)
             else:
-                query, param = q_obj.children[i]
-                if query.split('__')[0] in self.user_attributes:
-                    q_obj.children[i] = ('user__%s' % query, param)
+                query, value = child
+                q_obj.children[i] = (self._prefix_user_fields(query), value)
 
     def _prefix_user_fields(self, query):
         """Find single field lookups on AskbotUser or related field lookups
