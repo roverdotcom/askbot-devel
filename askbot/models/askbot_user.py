@@ -100,8 +100,8 @@ class AskbotUserQuerySet(QuerySet):
             return getattr(super(AskbotUserQuerySet, self), name)(
                 *args,
                 **{
-                    self._prefix_user_fields(query): kwargs[query]
-                    for query in kwargs.keys()
+                    self._prefix_user_fields(query): value
+                    for query, value in kwargs.items()
                 }
             )
 
