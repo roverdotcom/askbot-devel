@@ -337,20 +337,6 @@ class AskbotUser(models.Model):
         super(AskbotUser, self).save(*args, **kwargs)
 
 
-class AskbotUserRelatedModel(models.Model):
-    """Abstract base class for models that have relations to AskbotUser."""
-    # TO DO: When we reach the point where AskbotUser is getting toggled on and
-    # off by a setting, this class will need to determine whether or not to
-    # attach a PassThroughManager to itself (because it won't be necessary when
-    # AskbotUser is not being used).
-
-    objects = PassThroughManager.for_queryset_class(AskbotUserQuerySet)()
-
-    class Meta(object):
-        abstract = True
-        app_label = 'askbot'
-
-
 @receiver(post_save, sender=AuthUser)
 def create_corresponding_askbot_user(sender, instance, created, **kwargs):
     """Create a new AskbotUser whenever an AuthUser is saved."""
