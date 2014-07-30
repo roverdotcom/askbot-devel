@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.db.models.fields import FieldDoesNotExist
 from django.db.models.query import QuerySet
 from django.db.models import Q
 from model_utils.managers import PassThroughManager
@@ -172,7 +173,12 @@ class AskbotUserQuerySet(QuerySet):
                 current_model = current_model._meta.get_field('user').rel.to
 
             try:
-                current_model = current_model._meta.get_field(field).rel.to
+                try:
+                    current_model = \
+                        current_model._meta.get_field(field).rel.to
+                except FieldDoesNotExist:
+                    current_model = \
+                        current_model._meta.get_field_by_name(field).rel.to
             except AttributeError:
                 pass
 
