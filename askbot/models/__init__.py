@@ -2,6 +2,7 @@ from askbot import startup_procedures
 startup_procedures.run()
 
 # Import by name, then assign to User, so we can declare in __all__.
+from askbot.models.askbot_user import AskbotUserQuerySet
 from askbot.models.askbot_user import AskbotUser
 User = AskbotUser
 
@@ -3886,6 +3887,7 @@ __all__ = [
         'ImportedObjectInfo',
 
         'AskbotUser',
+        'AskbotUserQuerySet',
 
         'get_model',
 ]
