@@ -41,7 +41,7 @@ from askbot.models.base import BaseQuerySetManager, DraftContent
 from askbot.utils.diff import textDiff as htmldiff
 from askbot.search import mysql
 
-from model_utils.managers import PassThroughManagerMixin
+from model_utils.managers import PassThroughManager
 from askbot.models import AskbotUserQuerySet
 
 class PostToGroup(models.Model):
@@ -2110,7 +2110,7 @@ class Post(models.Model):
         list(Post.objects.filter(text=name))
 
 
-class PostRevisionManager(models.Manager, PassThroughManagerMixin):
+class PostRevisionManager(PassThroughManager):
     def create(self, *args, **kwargs):
         #clean the "summary" field
         kwargs.setdefault('summary', '')
