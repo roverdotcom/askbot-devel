@@ -41,6 +41,9 @@ from askbot.models.base import BaseQuerySetManager, DraftContent
 from askbot.utils.diff import textDiff as htmldiff
 from askbot.search import mysql
 
+from model_utils.managers import PassThroughManagerMixin
+from askbot.models import AskbotUserQuerySet
+
 class PostToGroup(models.Model):
     post = models.ForeignKey('Post')
     group = models.ForeignKey('Group')
@@ -2107,7 +2110,7 @@ class Post(models.Model):
         list(Post.objects.filter(text=name))
 
 
-class PostRevisionManager(models.Manager):
+class PostRevisionManager(models.Manager, PassThroughManagerMixin):
     def create(self, *args, **kwargs):
         #clean the "summary" field
         kwargs.setdefault('summary', '')
@@ -2182,7 +2185,7 @@ class PostRevision(models.Model):
     is_anonymous = models.BooleanField(default=False)
     ip_addr = models.IPAddressField(max_length=21, default='0.0.0.0')
 
-    objects = PostRevisionManager()
+    objects = PostRevisionManager.for_queryset_class(AskbotUserQuerySet)()
 
     class Meta:
         # INFO: This `unique_together` constraint might be problematic for databases in which
