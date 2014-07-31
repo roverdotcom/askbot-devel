@@ -179,7 +179,7 @@ class AskbotUserQuerySet(QuerySet):
                     current_model._meta.get_field_by_name(field)[0].rel.to
             except (AttributeError, FieldDoesNotExist):
                 # AttributeError will be raised when the field's 'rel'
-                # attribute it None - it has no relation, so we're done.
+                # attribute is None - it has no relation, so we're done.
                 # FieldDoesNotExist will be raised if we reach an ORM operator
                 # like lt or exact, which are not field names. These terms
                 # appear at the end of the query, so we're done.
@@ -190,7 +190,7 @@ class AskbotUserQuerySet(QuerySet):
 
 class AskbotUserPassThroughManager(PassThroughManager):
     """Create a custom PassThroughManager with create_user and
-    create_superuser.
+    create_superuser methods.
     """
     def create_user(
             self,
