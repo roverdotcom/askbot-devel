@@ -2111,6 +2111,8 @@ class Post(models.Model):
 
 
 class PostRevisionManager(PassThroughManager):
+    use_for_related_fields = True
+
     def create(self, *args, **kwargs):
         #clean the "summary" field
         kwargs.setdefault('summary', '')
