@@ -1,6 +1,6 @@
 from askbot.tests.utils import AskbotTestCase
 # from django.contrib.auth.models import User
-from askbot.models import AskbotUser as User
+from askbot.models import User
 from askbot import models
 from askbot.conf import settings
 from askbot.models.tag import format_personal_group_name

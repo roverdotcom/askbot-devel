@@ -32,7 +32,7 @@ from django.core import exceptions
 from django.conf import settings
 from django.views.decorators import csrf
 # from django.contrib.auth.models import User
-from askbot.models import AskbotUser as User
+from askbot.models import User
 
 from askbot import exceptions as askbot_exceptions
 from askbot import forms

@@ -1,8 +1,7 @@
 from django.core.management.base import NoArgsCommand
 from django.db.models import Count
 from django.db import transaction
-# from askbot.models import User
-from askbot.models import AskbotUser as User
+from askbot.models import User
 from askbot import forms
 
 class Command(NoArgsCommand):

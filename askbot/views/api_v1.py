@@ -2,7 +2,7 @@ from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, Http404
 # from django.contrib.auth.models import User
-from askbot.models import AskbotUser as User
+from askbot.models import User
 from django.utils import simplejson
 from django.db.models import Q
 from django.core.urlresolvers import reverse

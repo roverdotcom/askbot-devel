@@ -4,7 +4,7 @@ from operator import attrgetter
 import time
 from askbot.search.state_manager import SearchState
 # from django.contrib.auth.models import User
-from askbot.models import AskbotUser as User
+from askbot.models import User
 from django.core import cache, urlresolvers
 from django.core.cache.backends.dummy import DummyCache
 from django.core.cache.backends.locmem import LocMemCache

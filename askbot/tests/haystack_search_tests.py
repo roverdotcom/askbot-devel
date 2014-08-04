@@ -2,7 +2,7 @@
 from django.core import exceptions
 from django.conf import settings
 # from django.contrib.auth.models import User
-from askbot.models import AskbotUser as User
+from askbot.models import User
 from askbot.tests.utils import AskbotTestCase, skipIf
 from askbot import models
 import datetime
