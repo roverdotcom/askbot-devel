@@ -226,7 +226,7 @@ def check_spam(field):
                             )
                     else:
                         request.user.message_set.create(message=spam_message)
-                        return HttpResponseRedirect(reverse('index'))
+                        return HttpResponseRedirect(reverse('askbot-index'))
 
             return view_func(request, *args, **kwargs)
         return wrapper

@@ -111,7 +111,7 @@ def clean_login_url(url):
             return url
     except Http404:
         pass
-    return reverse('index')
+    return reverse('askbot-index')
 
 @register.filter
 def transurl(url):

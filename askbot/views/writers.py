@@ -168,7 +168,7 @@ def __import_se_data(dump_file):
     read_stdout.close()
     dump_file.close()
     sys.stdout = real_stdout
-    yield '<p>Done. Please, <a href="%s">Visit Your Forum</a></p></body></html>' % reverse('index')
+    yield '<p>Done. Please, <a href="%s">Visit Your Forum</a></p></body></html>' % reverse('askbot-index')
 
 @csrf.csrf_protect
 def import_data(request):
@@ -225,7 +225,7 @@ def ask(request):#view used to ask a new question
             return HttpResponseRedirect(referer)
 
     if askbot_settings.READ_ONLY_MODE_ENABLED:
-        return HttpResponseRedirect(reverse('index'))
+        return HttpResponseRedirect(reverse('askbot-index'))
 
     if request.method == 'POST':
         form = forms.AskForm(request.POST, user=request.user)
@@ -272,7 +272,7 @@ def ask(request):#view used to ask a new question
                     return HttpResponseRedirect(question.get_absolute_url())
                 except exceptions.PermissionDenied, e:
                     request.user.message_set.create(message = unicode(e))
-                    return HttpResponseRedirect(reverse('index'))
+                    return HttpResponseRedirect(reverse('askbot-index'))
 
             else:
                 request.session.flush()

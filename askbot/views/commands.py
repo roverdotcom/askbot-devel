@@ -140,7 +140,7 @@ def manage_inbox(request):
                 raise exceptions.PermissionDenied('must use POST request')
         else:
             #todo: show error page but no-one is likely to get here
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('askbot-index'))
     except Exception, e:
         message = unicode(e)
         if message == '':
@@ -708,7 +708,7 @@ def subscribe_for_tags(request):
                     'Tag subscription was canceled (<a href="%(url)s">undo</a>).'
                 ) % {'url': escape(request.path) + '?tags=' + request.REQUEST['tags']}
                 request.user.message_set.create(message = message)
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('askbot-index'))
         else:
             data = {'tags': tag_names}
             return render(request, 'subscribe_for_tags.html', data)

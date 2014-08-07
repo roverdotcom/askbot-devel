@@ -90,4 +90,4 @@ def get_logout_redirect_url():
     elif hasattr(settings, 'LOGOUT_REDIRECT_URL'):
         return settings.LOGOUT_REDIRECT_URL
     else:
-        return reverse('index')
+        return reverse('askbot-index')

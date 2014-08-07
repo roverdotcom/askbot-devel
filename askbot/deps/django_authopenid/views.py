@@ -277,10 +277,10 @@ def complete_oauth2_signin(request):
         next_url = request.session['next_url']
         del request.session['next_url']
     else:
-        next_url = reverse('index')
+        next_url = reverse('askbot-index')
 
     if 'error' in request.GET:
-        return HttpResponseRedirect(reverse('index'))
+        return HttpResponseRedirect(reverse('askbot-index'))
 
     csrf_token = request.GET.get('state', None)
     oauth2_csrf_token = request.session.pop('oauth2_csrf_token', None)
@@ -350,7 +350,7 @@ def complete_oauth_signin(request):
         next_url = request.session['next_url']
         del request.session['next_url']
     else:
-        next_url = reverse('index')
+        next_url = reverse('askbot-index')
 
     if 'denied' in request.GET:
         return HttpResponseRedirect(next_url)
@@ -1177,7 +1177,7 @@ def verify_email_and_register(request):
                 'The token can be already used or has expired. Please try again'
             )
             request.user.message_set.create(message=message)
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('askbot-index'))
     else:
         data = {'page_class': 'validate-email-page'}
         return render(request, 'authopenid/verify_email.html', data)
