@@ -225,7 +225,7 @@ class PageLoadTestCase(AskbotTestCase):
                 status_code=status_code,
                 template='static_page.html')
         self.try_url(
-                'privacy',
+                'askbot-privacy',
                 status_code=status_code,
                 template='static_page.html')
         self.try_url('logout', template='authopenid/logout.html')
