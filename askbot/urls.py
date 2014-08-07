@@ -166,7 +166,7 @@ urlpatterns = patterns('',
     service_url(r'^import-data/$', views.writers.import_data, name='import_data'),
     service_url(r'^%s$' % _('about/'), views.meta.about, name='about'),
     service_url(r'^%s$' % _('faq/'), views.meta.faq, name='faq'),
-    service_url(r'^%s$' % _('privacy/'), views.meta.privacy, name='privacy'),
+    service_url(r'^%s$' % _('privacy/'), views.meta.privacy, name='askbot-privacy'),
     service_url(r'^%s$' % _('help/'), views.meta.help, name='help'),
     service_url(
         r'^%s(?P<id>\d+)/%s$' % (_('answers/'), _('edit/')),
