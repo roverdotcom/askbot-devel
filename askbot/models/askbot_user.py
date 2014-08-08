@@ -188,10 +188,14 @@ class AskbotUserQuerySet(QuerySet):
         return ''.join([descending, '__'.join(fields)])
 
 
-class AskbotUserPassThroughManager(PassThroughManager):
+class AskbotUserManager(PassThroughManager):
     """Create a custom PassThroughManager with create_user and
     create_superuser methods.
     """
+    def get_query_set(self):
+        return super(AskbotUserManager, self).get_queryset(). \
+            select_related('user')
+
     def create_user(
             self,
             username,
@@ -260,7 +264,7 @@ class AskbotUser(models.Model):
     """
     user = models.OneToOneField(AuthUser, related_name='askbot_user')
 
-    objects = AskbotUserPassThroughManager.for_queryset_class(
+    objects = AskbotUserManager.for_queryset_class(
         AskbotUserQuerySet
     )()
 
