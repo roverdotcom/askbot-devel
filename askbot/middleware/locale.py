@@ -24,7 +24,7 @@ class LocaleMiddleware(object):
 
     def process_response(self, request, response):
         if not request.path.startswith('/' + django_settings.ASKBOT_URL):
-            return
+            return response
 
         patch_vary_headers(response, ('Accept-Language',))
         if 'Content-Language' not in response:

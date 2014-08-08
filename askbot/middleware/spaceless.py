@@ -23,7 +23,7 @@ class SpacelessMiddleware(object):
         whose content type is text/html
         """
         if not request.path.startswith('/' + settings.ASKBOT_URL):
-            return
+            return response
 
         if 'Content-Type' in response and 'text/html' in response['Content-Type']:
             response.content = reduce_spaces_between_tags(response.content)
