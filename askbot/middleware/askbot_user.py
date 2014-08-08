@@ -10,15 +10,18 @@ here.
 
 from django.contrib.auth import get_user
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.models import User
 from django.utils.functional import SimpleLazyObject
-from django.conf import settings
 
 
 def get_askbot_user(request):
     """Call auth.get_user, and, if its return value is a User object,
     translate it into an AskbotUser object.
     """
-    if not hasattr(request, '_cached_user'):
+    # Replaced cached auth Users with AskbotUsers. Rover can treat AskbotUsers
+    # exactly the same way it treats auth Users, by design.
+    if not hasattr(request, '_cached_user') or \
+            isinstance(request._cached_user, User):
         user = get_user(request)
         if not isinstance(user, AnonymousUser):
             user = user.askbot_user
@@ -34,5 +37,4 @@ class AskbotUserMiddleware(object):
     """
     def process_request(self, request):
         # Only modify requests coming to ASKBOT_URL.
-        if request.path.startswith('/%s' % settings.ASKBOT_URL):
-            request.user = SimpleLazyObject(lambda: get_askbot_user(request))
+        request.user = SimpleLazyObject(lambda: get_askbot_user(request))
