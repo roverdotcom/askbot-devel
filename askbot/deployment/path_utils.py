@@ -12,7 +12,7 @@ import glob
 import shutil
 import imp
 from askbot.utils import console
-from askbot.deployment.template_loader import SettingsTemplate
+from pystache import render
 
 
 FILES_TO_CREATE = ('__init__.py', 'manage.py', 'urls.py', 'django.wsgi')
@@ -189,7 +189,16 @@ def deploy_into(directory, new_project = False, verbosity = 1, context = None):
         #creating settings file from template
         if verbosity >= 1:
             print "Creating settings file"
-        settings_contents = SettingsTemplate(context).render()
+
+        with open(os.path.join(
+            SOURCE_DIR,
+            'setup_templates',
+            'settings.py.mustache'
+            )
+        ) as template_file:
+            template_contents = unicode(template_file.read())
+        settings_contents = render(template_contents, context)
+
         settings_path = os.path.join(directory, 'settings.py')
         if os.path.exists(settings_path) and new_project == False:
             if verbosity >= 1:
