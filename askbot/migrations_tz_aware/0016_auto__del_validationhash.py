@@ -1,5 +1,6 @@
 # encoding: utf-8
 from django.utils import timezone
+from django.conf import settings
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
@@ -21,7 +22,7 @@ class Migration(SchemaMigration):
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('type', self.gf('django.db.models.fields.CharField')(max_length=12)),
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('expiration', self.gf('django.db.models.fields.DateTimeField')(default=timezone.datetime(2010, 6, 13, 23, 48, 5, 784060))),
+            ('expiration', self.gf('django.db.models.fields.DateTimeField')(default=timezone.datetime(2010, 6, 13, 23, 48, 5, 784060, tzinfo=timezone.utc if getattr(settings, "USE_TZ", False) else None))),
         ))
         db.send_create_signal('askbot', ['ValidationHash'])
     
