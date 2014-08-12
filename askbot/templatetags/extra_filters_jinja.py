@@ -13,6 +13,7 @@ from django.template import defaultfilters
 from django.core.urlresolvers import reverse, resolve
 from django.http import Http404
 from django.utils import simplejson
+from django.utils import timezone
 from django.utils.text import truncate_html_words
 from askbot import exceptions as askbot_exceptions
 from askbot.conf import settings as askbot_settings
@@ -41,7 +42,9 @@ TIMEZONE_STR = pytz.timezone(
 
 @register.filter
 def add_tz_offset(datetime_object):
-    return str(datetime_object) + ' ' + TIMEZONE_STR
+    return str(
+        datetime_object.astimezone(pytz.timezone(django_settings.TIME_ZONE))
+    )
 
 @register.filter
 def as_js_bool(some_object):
