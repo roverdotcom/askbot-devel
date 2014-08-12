@@ -3,7 +3,7 @@ This module records the site visits by the authenticated users
 
 Included here is the ViewLogMiddleware
 """
-import datetime
+from django.utils import timezone
 from askbot.models import signals
 
 
@@ -17,5 +17,5 @@ class ViewLogMiddleware(object):
         if request.user.is_authenticated():
             signals.site_visited.send(None, #this signal has no sender
                 user = request.user,
-                timestamp = datetime.datetime.now()
+                timestamp = timezone.now()
             )

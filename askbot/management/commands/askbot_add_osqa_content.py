@@ -9,7 +9,7 @@ from askbot.models import Tag
 from askbot.models import User
 from askbot.utils.slug import slugify_camelcase
 from bs4 import BeautifulSoup
-from datetime import datetime
+from django.utils import timezone
 from django.db.models import Q
 from django.utils import translation
 from django.conf import settings as django_settings
@@ -24,9 +24,24 @@ def decode_datetime(data):
     """
     if data:
         try:
-            return datetime.strptime(data, '%Y-%m-%d %H:%M:%S')
+            return timezone.datetime.strptime(
+                data,
+                '%Y-%m-%d %H:%M:%S'
+            ).replace(
+                tzinfo=timezone.utc if getattr(
+                    django_settings,
+                    'USE_TZ',
+                    False
+                ) else None
+            )
         except ValueError:
-            return datetime.strptime(data, '%Y-%m-%d')
+            return timezone.datetime.strptime(data, '%Y-%m-%d').replace(
+                tzinfo=timezone.utc if getattr(
+                    django_settings,
+                    'USE_TZ',
+                    False
+                ) else None
+            )
     return None
 
 class DataObject(object):

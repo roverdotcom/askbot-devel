@@ -1,4 +1,3 @@
-import datetime
 import pytz
 import re
 import time
@@ -34,11 +33,6 @@ register = coffin_template.Library()
 
 absolutize_urls = register.filter(absolutize_urls)
 
-TIMEZONE_STR = pytz.timezone(
-                    django_settings.TIME_ZONE
-                ).localize(
-                    datetime.datetime.now()
-                ).strftime('%z')
 
 @register.filter
 def add_tz_offset(datetime_object):
@@ -161,11 +155,29 @@ def split(string, separator):
 
 @register.filter
 def get_age(birthday):
-    current_time = datetime.datetime(*time.localtime()[0:6])
+    current_time = timezone.datetime(
+        *time.localtime()[0:6],
+        tzinfo=timezone.utc if getattr(
+            django_settings,
+            'USE_TZ',
+            False
+        ) else None
+    )
     year = birthday.year
     month = birthday.month
     day = birthday.day
-    diff = current_time - datetime.datetime(year,month,day,0,0,0)
+    diff = current_time - timezone.datetime(
+        year,
+        month,
+        day,
+        0,
+        0,
+        0,
+        tzinfo=timezone.utc if getattr(
+            django_settings,
+            'USE_TZ',
+            False
+        ) else None)
     return diff.days / 365
 
 @register.filter

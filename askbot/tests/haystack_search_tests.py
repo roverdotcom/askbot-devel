@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from askbot.tests.utils import AskbotTestCase, skipIf
 from askbot import models
-import datetime
+
 
 class HaystackSearchTests(AskbotTestCase):
     """tests methods on User object,

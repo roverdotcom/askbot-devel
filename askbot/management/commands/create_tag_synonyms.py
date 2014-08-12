@@ -7,11 +7,10 @@ from optparse import make_option
 from django.conf import settings as django_settings
 from django.core import management
 from django.core.management.base import BaseCommand, CommandError
+from django.utils import timezone
 from askbot import models
 from askbot.management.commands.rename_tags import get_admin
 from askbot.utils import console
-import datetime
-
 
 
 def decode_input(input):
@@ -154,7 +153,7 @@ remove source_tag"""
             new_options['from'] = existing_tag_synonym.source_tag_name
             new_options['user_id'] = admin.id
             new_options['is_force'] = True # this is mandatory conversion
-            new_options['timestamp'] = datetime.datetime.now()
+            new_options['timestamp'] = timezone.now()
             existing_tag_synonym.delete() # no longer needed
             self.handle(*args, **new_options)
 
@@ -163,5 +162,5 @@ remove source_tag"""
             source_tag.delete()
         else:
             source_tag.deleted = True
-            source_tag.deleted_at = options.get('timestamp', datetime.datetime.now())
+            source_tag.deleted_at = options.get('timestamp', timezone.now())
             source_tag.deleted_by = admin

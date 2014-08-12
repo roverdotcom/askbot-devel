@@ -18,7 +18,7 @@ from django.db import connection
 from django.conf import settings as django_settings
 from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured
-from datetime import datetime
+from django.utils import timezone
 from askbot.utils.loading import load_module
 from askbot.utils.functions import enumerate_string_list
 from askbot.utils.url_utils import urls_equal
@@ -831,7 +831,7 @@ def test_cache_backend():
     #test that cache actually works
     errors = list()
 
-    test_value = 'test value %s' % datetime.now()
+    test_value = 'test value %s' % timezone.now()
     cache.set('askbot-cache-test', test_value)
     if cache.get('askbot-cache-test') != test_value:
         errors.append(

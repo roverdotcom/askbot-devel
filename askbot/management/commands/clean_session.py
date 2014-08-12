@@ -3,10 +3,10 @@ works only when sessions are stored in the database
 """
 from django.core.management.base import NoArgsCommand
 from django.contrib.sessions.models import Session
+from django.utils import timezone
 from django.db import transaction
 from optparse import make_option
 from askbot.utils.console import ProgressBar
-from datetime import datetime
 
 ITEMS_PER_TRANSACTION = 1000
 
@@ -28,7 +28,7 @@ class Command(NoArgsCommand):
         quiet = options.get('quiet', False)
 
         expired_sessions = Session.objects.filter(
-                                expire_date__lt=datetime.now()
+                                expire_date__lt=timezone.now()
                             )
         count = expired_sessions.count()
         expired_sessions = expired_sessions.iterator()

@@ -1,5 +1,4 @@
 import copy
-import datetime
 from operator import attrgetter
 import time
 from askbot.search.state_manager import SearchState
@@ -19,6 +18,7 @@ from askbot.models import Group
 from askbot.search.state_manager import DummySearchState
 from django.utils import simplejson
 from django.utils import timezone
+from django.conf import settings as django_settings
 from askbot.conf import settings as askbot_settings
 
 
@@ -85,9 +85,30 @@ class PostModelTests(AskbotTestCase):
         self.user = self.u1
         q = self.post_question()
 
-        c1 = self.post_comment(parent_post=q, timestamp=datetime.datetime(2010, 10, 2, 14, 33, 20))
-        c2 = q.add_comment(user=self.user, comment='blah blah', added_at=datetime.datetime(2010, 10, 2, 14, 33, 21))
-        c3 = self.post_comment(parent_post=q, body_text='blah blah 2', timestamp=datetime.datetime(2010, 10, 2, 14, 33, 22))
+        c1 = self.post_comment(parent_post=q, timestamp=timezone.datetime(
+            2010, 10, 2, 14, 33, 20,
+            tzinfo=timezone.utc if getattr(
+                django_settings,
+                'USE_TZ',
+                False
+            ) else None
+        ))
+        c2 = q.add_comment(user=self.user, comment='blah blah', added_at=timezone.datetime(
+            2010, 10, 2, 14, 33, 21,
+            tzinfo=timezone.utc if getattr(
+                django_settings,
+                'USE_TZ',
+                False
+            ) else None
+        ))
+        c3 = self.post_comment(parent_post=q, body_text='blah blah 2', timestamp=timezone.datetime(
+            2010, 10, 2, 14, 33, 22,
+            tzinfo=timezone.utc if getattr(
+                django_settings,
+                'USE_TZ',
+                False
+            ) else None
+        ))
 
         Post.objects.precache_comments(for_posts=[q], visitor=self.user)
         self.assertListEqual([c1, c2, c3], q._cached_comments)
@@ -109,9 +130,30 @@ class PostModelTests(AskbotTestCase):
         self.user = self.u1
         q = self.post_question()
 
-        c1 = self.post_comment(parent_post=q, timestamp=datetime.datetime(2010, 10, 2, 14, 33, 20))
-        c2 = q.add_comment(user=self.user, comment='blah blah', added_at=datetime.datetime(2010, 10, 2, 14, 33, 21))
-        c3 = self.post_comment(parent_post=q, timestamp=datetime.datetime(2010, 10, 2, 14, 33, 22))
+        c1 = self.post_comment(parent_post=q, timestamp=timezone.datetime(
+            2010, 10, 2, 14, 33, 20,
+            tzinfo=timezone.utc if getattr(
+                django_settings,
+                'USE_TZ',
+                False
+            ) else None
+        ))
+        c2 = q.add_comment(user=self.user, comment='blah blah', added_at=timezone.datetime(
+            2010, 10, 2, 14, 33, 21,
+            tzinfo=timezone.utc if getattr(
+                django_settings,
+                'USE_TZ',
+                False
+            ) else None
+        ))
+        c3 = self.post_comment(parent_post=q, timestamp=timezone.datetime(
+            2010, 10, 2, 14, 33, 22,
+            tzinfo=timezone.utc if getattr(
+                django_settings,
+                'USE_TZ',
+                False
+            ) else None
+        ))
 
         Post.objects.precache_comments(for_posts=[q], visitor=self.user)
         self.assertListEqual([c1, c2, c3], q._cached_comments)
