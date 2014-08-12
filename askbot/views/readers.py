@@ -6,7 +6,6 @@ By main textual content is meant - text of Questions, Answers and Comments.
 The "read-only" requirement here is not 100% strict, as for example "question" view does
 allow adding new comments via Ajax form post.
 """
-import datetime
 import logging
 import urllib
 import operator
@@ -21,6 +20,7 @@ from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.template.loader import get_template
 from django.template import RequestContext
 from django.utils import simplejson
+from django.utils import timezone
 from django.utils.html import escape
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
@@ -565,7 +565,7 @@ def question(request, id):#refactor - long subroutine. display question body, an
                 update_view_count = True
 
         request.session['question_view_times'][question_post.id] = \
-                                                    datetime.datetime.now()
+                                                    timezone.now()
 
         #2) run the slower jobs in a celery task
         from askbot import tasks

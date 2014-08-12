@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.test.client import Client
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.utils import timezone
 from django import forms
 from askbot import exceptions as askbot_exceptions
 from askbot.tests.utils import AskbotTestCase
@@ -16,7 +17,6 @@ from askbot.tests.utils import with_settings
 from askbot import models
 from askbot import const
 from askbot.conf import settings as askbot_settings
-import datetime
 
 class DBApiTests(AskbotTestCase):
     """tests methods on User object,
@@ -27,7 +27,7 @@ class DBApiTests(AskbotTestCase):
         self.create_user()
         self.create_user(username = 'other_user')
         self.question = self.post_question()
-        self.now = datetime.datetime.now()
+        self.now = timezone.now()
 
     def post_answer(self, user = None, question = None):
         if user is None:
@@ -419,7 +419,7 @@ class CommentTests(AskbotTestCase):
         self.create_user()
         self.create_user(username = 'other_user')
         self.question = self.post_question()
-        self.now = datetime.datetime.now()
+        self.now = timezone.now()
         self.comment = self.user.post_comment(
             parent_post = self.question,
             body_text = 'lalalalalalalalal hahahah'
