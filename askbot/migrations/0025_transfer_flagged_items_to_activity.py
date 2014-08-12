@@ -1,5 +1,6 @@
 # encoding: utf-8
 #from south.db import db
+from django.utils import timezone
 from south.v2 import DataMigration
 from askbot.migrations_api.version1 import API
 from askbot import const
