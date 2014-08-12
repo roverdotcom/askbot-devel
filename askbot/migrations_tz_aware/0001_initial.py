@@ -270,7 +270,7 @@ class Migration(SchemaMigration):
             db.create_table('forum_validationhash', (
                 ('hash_code', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255)),
                 ('seed', self.gf('django.db.models.fields.CharField')(max_length=12)),
-                ('expiration', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2010, 4, 25, 13, 14, 41, 581000))),
+                ('expiration', self.gf('django.db.models.fields.DateTimeField')(default=timezone.datetime(2010, 4, 25, 13, 14, 41, 581000))),
                 ('type', self.gf('django.db.models.fields.CharField')(max_length=12)),
                 ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
                 ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
@@ -617,7 +617,7 @@ class Migration(SchemaMigration):
             db.create_table('askbot_validationhash', (
                 ('hash_code', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255)),
                 ('seed', self.gf('django.db.models.fields.CharField')(max_length=12)),
-                ('expiration', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2010, 4, 25, 13, 14, 41, 581000))),
+                ('expiration', self.gf('django.db.models.fields.DateTimeField')(default=timezone.datetime(2010, 4, 25, 13, 14, 41, 581000))),
                 ('type', self.gf('django.db.models.fields.CharField')(max_length=12)),
                 ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
                 ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
@@ -1236,7 +1236,7 @@ class Migration(SchemaMigration):
             },
             'forum.validationhash': {
                 'Meta': {'unique_together': "(('user', 'type'),)", 'object_name': 'ValidationHash'},
-                'expiration': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2010, 4, 25, 13, 14, 41, 714642)'}),
+                'expiration': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.datetime(2010, 4, 25, 13, 14, 41, 714642)'}),
                 'hash_code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
                 'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
                 'seed': ('django.db.models.fields.CharField', [], {'max_length': '12'}),
@@ -1562,7 +1562,7 @@ class Migration(SchemaMigration):
             },
             'askbot.validationhash': {
                 'Meta': {'unique_together': "(('user', 'type'),)", 'object_name': 'ValidationHash'},
-                'expiration': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2010, 4, 25, 13, 14, 41, 714642)'}),
+                'expiration': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.datetime(2010, 4, 25, 13, 14, 41, 714642)'}),
                 'hash_code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
                 'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
                 'seed': ('django.db.models.fields.CharField', [], {'max_length': '12'}),
