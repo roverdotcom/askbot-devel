@@ -12,6 +12,7 @@ import glob
 import shutil
 import imp
 from askbot.utils import console
+from pystache.loader import Loader
 from pystache import render
 
 
@@ -190,14 +191,14 @@ def deploy_into(directory, new_project = False, verbosity = 1, context = None):
         if verbosity >= 1:
             print "Creating settings file"
 
-        with open(os.path.join(
-            SOURCE_DIR,
-            'setup_templates',
-            'settings.py.mustache'
-            )
-        ) as template_file:
-            template_contents = unicode(template_file.read())
-        settings_contents = render(template_contents, context)
+        template_loader = Loader(
+            search_dirs=[os.path.join(SOURCE_DIR, 'setup_templates')],
+            extension='mustache'
+        )
+        settings_contents = render(
+            template_loader.load_name('settings.py'),
+            context
+        )
 
         settings_path = os.path.join(directory, 'settings.py')
         if os.path.exists(settings_path) and new_project == False:
