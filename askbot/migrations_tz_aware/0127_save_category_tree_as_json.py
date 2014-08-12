@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime
+from django.utils import timezone
 from south.db import db
 from south.v2 import DataMigration
 from django.utils import simplejson

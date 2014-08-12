@@ -2,7 +2,7 @@
 import sys
 import askbot
 from askbot.search.postgresql import setup_full_text_search
-import datetime
+from django.utils import timezone
 import os
 from south.db import db
 from south.v2 import DataMigration
