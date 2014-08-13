@@ -36,9 +36,18 @@ absolutize_urls = register.filter(absolutize_urls)
 
 @register.filter
 def add_tz_offset(datetime_object):
-    return str(
-        datetime_object.astimezone(pytz.timezone(django_settings.TIME_ZONE))
-    )
+    try:
+        return str(
+            datetime_object.astimezone(
+                pytz.timezone(django_settings.TIME_ZONE)
+            )
+        )
+    except ValueError:
+        return str(
+            pytz.timezone(django_settings.TIME_ZONE).localize(
+                datetime_object
+            )
+        )
 
 @register.filter
 def as_js_bool(some_object):
