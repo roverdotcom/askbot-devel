@@ -49,7 +49,7 @@ class Migration(SchemaMigration):
         db.send_create_signal('askbot', ['AskbotUser'])
 
         # Adding model 'Tag'
-        db.create_table(u'tag', (
+        db.create_table(u'askbot_tag', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
             ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='created_tags', to=orm['askbot.AskbotUser'])),
@@ -64,10 +64,10 @@ class Migration(SchemaMigration):
         db.send_create_signal('askbot', ['Tag'])
 
         # Adding unique constraint on 'Tag', fields ['name', 'language_code']
-        db.create_unique(u'tag', ['name', 'language_code'])
+        db.create_unique(u'askbot_tag', ['name', 'language_code'])
 
         # Adding M2M table for field suggested_by on 'Tag'
-        m2m_table_name = db.shorten_name(u'tag_suggested_by')
+        m2m_table_name = db.shorten_name(u'askbot_tag_suggested_by')
         db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('tag', models.ForeignKey(orm['askbot.tag'], null=False)),
@@ -110,7 +110,7 @@ class Migration(SchemaMigration):
         db.create_unique('askbot_activityauditstatus', ['user_id', 'activity_id'])
 
         # Adding model 'Activity'
-        db.create_table(u'activity', (
+        db.create_table(u'askbot_activity', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['askbot.AskbotUser'])),
             ('activity_type', self.gf('django.db.models.fields.SmallIntegerField')()),
@@ -124,7 +124,7 @@ class Migration(SchemaMigration):
         db.send_create_signal('askbot', ['Activity'])
 
         # Adding M2M table for field receiving_users on 'Activity'
-        m2m_table_name = db.shorten_name(u'activity_receiving_users')
+        m2m_table_name = db.shorten_name(u'askbot_activity_receiving_users')
         db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('activity', models.ForeignKey(orm['askbot.activity'], null=False)),
@@ -266,7 +266,7 @@ class Migration(SchemaMigration):
         db.send_create_signal('askbot', ['QuestionView'])
 
         # Adding model 'FavoriteQuestion'
-        db.create_table(u'favorite_question', (
+        db.create_table(u'askbot_favorite_question', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('thread', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['askbot.Thread'])),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='user_favorite_questions', to=orm['askbot.AskbotUser'])),
@@ -415,7 +415,7 @@ class Migration(SchemaMigration):
         db.send_create_signal('askbot', ['ReplyAddress'])
 
         # Adding model 'Vote'
-        db.create_table(u'vote', (
+        db.create_table(u'askbot_vote', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='votes', to=orm['askbot.AskbotUser'])),
             ('voted_post', self.gf('django.db.models.fields.related.ForeignKey')(related_name='votes', to=orm['askbot.Post'])),
@@ -425,7 +425,7 @@ class Migration(SchemaMigration):
         db.send_create_signal('askbot', ['Vote'])
 
         # Adding unique constraint on 'Vote', fields ['user', 'voted_post']
-        db.create_unique(u'vote', ['user_id', 'voted_post_id'])
+        db.create_unique(u'askbot_vote', ['user_id', 'voted_post_id'])
 
         # Adding model 'BadgeData'
         db.create_table(u'askbot_badgedata', (
@@ -436,7 +436,7 @@ class Migration(SchemaMigration):
         db.send_create_signal('askbot', ['BadgeData'])
 
         # Adding model 'Award'
-        db.create_table(u'award', (
+        db.create_table(u'askbot_award', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='award_user', to=orm['askbot.AskbotUser'])),
             ('badge', self.gf('django.db.models.fields.related.ForeignKey')(related_name='award_badge', to=orm['askbot.BadgeData'])),
@@ -448,7 +448,7 @@ class Migration(SchemaMigration):
         db.send_create_signal('askbot', ['Award'])
 
         # Adding model 'Repute'
-        db.create_table(u'repute', (
+        db.create_table(u'askbot_repute', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['askbot.AskbotUser'])),
             ('positive', self.gf('django.db.models.fields.SmallIntegerField')(default=0)),
@@ -508,7 +508,7 @@ class Migration(SchemaMigration):
 
     def backwards(self, orm):
         # Removing unique constraint on 'Vote', fields ['user', 'voted_post']
-        db.delete_unique(u'vote', ['user_id', 'voted_post_id'])
+        db.delete_unique(u'askbot_vote', ['user_id', 'voted_post_id'])
 
         # Removing unique constraint on 'PostRevision', fields ['post', 'revision']
         db.delete_unique(u'askbot_postrevision', ['post_id', 'revision'])
@@ -526,16 +526,16 @@ class Migration(SchemaMigration):
         db.delete_unique('askbot_activityauditstatus', ['user_id', 'activity_id'])
 
         # Removing unique constraint on 'Tag', fields ['name', 'language_code']
-        db.delete_unique(u'tag', ['name', 'language_code'])
+        db.delete_unique(u'askbot_tag', ['name', 'language_code'])
 
         # Deleting model 'AskbotUser'
         db.delete_table(u'askbot_askbotuser')
 
         # Deleting model 'Tag'
-        db.delete_table(u'tag')
+        db.delete_table(u'askbot_tag')
 
         # Removing M2M table for field suggested_by on 'Tag'
-        db.delete_table(db.shorten_name(u'tag_suggested_by'))
+        db.delete_table(db.shorten_name(u'askbot_tag_suggested_by'))
 
         # Deleting model 'MarkedTag'
         db.delete_table(u'askbot_markedtag')
@@ -547,10 +547,10 @@ class Migration(SchemaMigration):
         db.delete_table('askbot_activityauditstatus')
 
         # Deleting model 'Activity'
-        db.delete_table(u'activity')
+        db.delete_table(u'askbot_activity')
 
         # Removing M2M table for field receiving_users on 'Activity'
-        db.delete_table(db.shorten_name(u'activity_receiving_users'))
+        db.delete_table(db.shorten_name(u'askbot_activity_receiving_users'))
 
         # Deleting model 'EmailFeedSetting'
         db.delete_table(u'askbot_emailfeedsetting')
@@ -589,7 +589,7 @@ class Migration(SchemaMigration):
         db.delete_table(u'askbot_questionview')
 
         # Deleting model 'FavoriteQuestion'
-        db.delete_table(u'favorite_question')
+        db.delete_table(u'askbot_favorite_question')
 
         # Deleting model 'DraftQuestion'
         db.delete_table(u'askbot_draftquestion')
@@ -619,16 +619,16 @@ class Migration(SchemaMigration):
         db.delete_table('askbot_replyaddress')
 
         # Deleting model 'Vote'
-        db.delete_table(u'vote')
+        db.delete_table(u'askbot_vote')
 
         # Deleting model 'BadgeData'
         db.delete_table(u'askbot_badgedata')
 
         # Deleting model 'Award'
-        db.delete_table(u'award')
+        db.delete_table(u'askbot_award')
 
         # Deleting model 'Repute'
-        db.delete_table(u'repute')
+        db.delete_table(u'askbot_repute')
 
         # Deleting model 'AskWidget'
         db.delete_table(u'askbot_askwidget')
@@ -645,7 +645,7 @@ class Migration(SchemaMigration):
 
     models = {
         'askbot.activity': {
-            'Meta': {'object_name': 'Activity', 'db_table': "u'activity'"},
+            'Meta': {'object_name': 'Activity'},
             'active_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'activity_type': ('django.db.models.fields.SmallIntegerField', [], {}),
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
@@ -738,7 +738,7 @@ class Migration(SchemaMigration):
             'title': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
         'askbot.award': {
-            'Meta': {'object_name': 'Award', 'db_table': "u'award'"},
+            'Meta': {'object_name': 'Award'},
             'awarded_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'badge': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'award_badge'", 'to': "orm['askbot.BadgeData']"}),
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
@@ -787,7 +787,7 @@ class Migration(SchemaMigration):
             'subscriber': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'notification_subscriptions'", 'to': "orm['askbot.AskbotUser']"})
         },
         'askbot.favoritequestion': {
-            'Meta': {'object_name': 'FavoriteQuestion', 'db_table': "u'favorite_question'"},
+            'Meta': {'object_name': 'FavoriteQuestion', 'db_table': "u'askbot_favorite_question'"},
             'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'thread': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['askbot.Thread']"}),
@@ -930,7 +930,7 @@ class Migration(SchemaMigration):
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['askbot.AskbotUser']"})
         },
         'askbot.repute': {
-            'Meta': {'object_name': 'Repute', 'db_table': "u'repute'"},
+            'Meta': {'object_name': 'Repute'},
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '128', 'null': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'negative': ('django.db.models.fields.SmallIntegerField', [], {'default': '0'}),
@@ -942,7 +942,7 @@ class Migration(SchemaMigration):
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['askbot.AskbotUser']"})
         },
         'askbot.tag': {
-            'Meta': {'ordering': "('-used_count', 'name')", 'unique_together': "(('name', 'language_code'),)", 'object_name': 'Tag', 'db_table': "u'tag'"},
+            'Meta': {'ordering': "('-used_count', 'name')", 'unique_together': "(('name', 'language_code'),)", 'object_name': 'Tag'},
             'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'created_tags'", 'to': "orm['askbot.AskbotUser']"}),
             'deleted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'deleted_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
@@ -1000,7 +1000,7 @@ class Migration(SchemaMigration):
             'visibility': ('django.db.models.fields.SmallIntegerField', [], {'default': '1'})
         },
         'askbot.vote': {
-            'Meta': {'unique_together': "(('user', 'voted_post'),)", 'object_name': 'Vote', 'db_table': "u'vote'"},
+            'Meta': {'unique_together': "(('user', 'voted_post'),)", 'object_name': 'Vote'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'votes'", 'to': "orm['askbot.AskbotUser']"}),
             'vote': ('django.db.models.fields.SmallIntegerField', [], {}),
