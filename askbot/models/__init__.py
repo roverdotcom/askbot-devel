@@ -3886,7 +3886,6 @@ __all__ = [
         'ImportRun',
         'ImportedObjectInfo',
 
-        'User',
         'AskbotUser',
         'AskbotUserQuerySet',
 
