@@ -317,7 +317,7 @@ class Tag(models.Model):
 
     class Meta:
         app_label = 'askbot'
-        db_table = u'tag'
+        db_table = u'askbot_tag'
         ordering = ('-used_count', 'name')
         unique_together = ('name', 'language_code')
 

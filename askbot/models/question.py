@@ -1654,7 +1654,7 @@ class FavoriteQuestion(models.Model):
 
     class Meta:
         app_label = 'askbot'
-        db_table = u'favorite_question'
+        db_table = u'askbot_favorite_question'
 
     def __str__(self):
         return unicode(self).encode('utf-8')

@@ -222,7 +222,7 @@ class Activity(models.Model):
 
     class Meta:
         app_label = 'askbot'
-        db_table = u'activity'
+        db_table = u'askbot_activity'
 
     def add_recipients(self, recipients):
         """have to use a special method, because django does not allow
