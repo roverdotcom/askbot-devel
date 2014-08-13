@@ -1,7 +1,6 @@
 # encoding: utf-8
 import os
-from django.utils import timezone
-from south.utils import datetime_utils as datetime
+import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
@@ -37,7 +36,7 @@ class Migration(SchemaMigration):
         models = {
             'forum.activity': {
                 'Meta': {'object_name': 'Activity', 'db_table': "u'activity'"},
-                'active_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'active_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'activity_type': ('django.db.models.fields.SmallIntegerField', [], {}),
                 'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
                 'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -48,7 +47,7 @@ class Migration(SchemaMigration):
             },
             'forum.anonymousanswer': {
                 'Meta': {'object_name': 'AnonymousAnswer'},
-                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'author': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True'}),
                 'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
                 'ip_addr': ('django.db.models.fields.IPAddressField', [], {'max_length': '15'}),
@@ -60,7 +59,7 @@ class Migration(SchemaMigration):
             },
             'forum.anonymousquestion': {
                 'Meta': {'object_name': 'AnonymousQuestion'},
-                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'author': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True'}),
                 'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
                 'ip_addr': ('django.db.models.fields.IPAddressField', [], {'max_length': '15'}),
@@ -75,7 +74,7 @@ class Migration(SchemaMigration):
                 'Meta': {'object_name': 'Answer', 'db_table': "u'answer'"},
                 'accepted': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
                 'accepted_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'author': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'answers'", 'to': "orm['auth.User']"}),
                 'comment_count': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
                 'deleted': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
@@ -109,7 +108,7 @@ class Migration(SchemaMigration):
             },
             'forum.award': {
                 'Meta': {'object_name': 'Award', 'db_table': "u'award'"},
-                'awarded_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'awarded_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'badge': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'award_badge'", 'to': "orm['forum.Badge']"}),
                 'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
                 'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -130,7 +129,7 @@ class Migration(SchemaMigration):
             },
             'forum.comment': {
                 'Meta': {'object_name': 'Comment', 'db_table': "u'comment'"},
-                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'comment': ('django.db.models.fields.CharField', [], {'max_length': '2048'}),
                 'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
                 'html': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '2048'}),
@@ -149,7 +148,7 @@ class Migration(SchemaMigration):
             },
             'forum.favoritequestion': {
                 'Meta': {'object_name': 'FavoriteQuestion', 'db_table': "u'favorite_question'"},
-                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
                 'question': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['forum.Question']"}),
                 'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_favorite_questions'", 'to': "orm['auth.User']"})
@@ -157,7 +156,7 @@ class Migration(SchemaMigration):
             'forum.flaggeditem': {
                 'Meta': {'unique_together': "(('content_type', 'object_id', 'user'),)", 'object_name': 'FlaggedItem', 'db_table': "u'flagged_item'"},
                 'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-                'flagged_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'flagged_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
                 'object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
                 'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'flaggeditems'", 'to': "orm['auth.User']"})
@@ -171,7 +170,7 @@ class Migration(SchemaMigration):
             },
             'forum.question': {
                 'Meta': {'object_name': 'Question', 'db_table': "u'question'"},
-                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'answer_accepted': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
                 'answer_count': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
                 'author': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'questions'", 'to': "orm['auth.User']"}),
@@ -188,7 +187,7 @@ class Migration(SchemaMigration):
                 'followed_by': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'followed_questions'", 'symmetrical': 'False', 'to': "orm['auth.User']"}),
                 'html': ('django.db.models.fields.TextField', [], {'null': 'True'}),
                 'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-                'last_activity_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'last_activity_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'last_activity_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'last_active_in_questions'", 'to': "orm['auth.User']"}),
                 'last_edited_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
                 'last_edited_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'last_edited_questions'", 'null': 'True', 'to': "orm['auth.User']"}),
@@ -235,7 +234,7 @@ class Migration(SchemaMigration):
                 'question': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['forum.Question']"}),
                 'reputation': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
                 'reputation_type': ('django.db.models.fields.SmallIntegerField', [], {}),
-                'reputed_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'reputed_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
             },
             'forum.tag': {
@@ -264,7 +263,7 @@ class Migration(SchemaMigration):
                 'object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
                 'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'votes'", 'to': "orm['auth.User']"}),
                 'vote': ('django.db.models.fields.SmallIntegerField', [], {}),
-                'voted_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'})
+                'voted_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'})
             },
             'auth.group': {
                 'Meta': {'object_name': 'Group'},
@@ -283,7 +282,7 @@ class Migration(SchemaMigration):
                 'Meta': {'object_name': 'User'},
                 'about': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
                 'bronze': ('django.db.models.fields.SmallIntegerField', [], {'default': '0'}),
-                'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'date_of_birth': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
                 'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
                 'email_isvalid': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
@@ -297,9 +296,9 @@ class Migration(SchemaMigration):
                 'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'blank': 'True'}),
                 'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
                 'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
-                'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-                'last_seen': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'last_seen': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'location': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
                 'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
                 'questions_per_page': ('django.db.models.fields.SmallIntegerField', [], {'default': '10'}),
@@ -324,7 +323,7 @@ class Migration(SchemaMigration):
         models = {
             'askbot.activity': {
                 'Meta': {'object_name': 'Activity', 'db_table': "u'activity'"},
-                'active_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'active_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'activity_type': ('django.db.models.fields.SmallIntegerField', [], {}),
                 'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
                 'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -335,7 +334,7 @@ class Migration(SchemaMigration):
             },
             'askbot.anonymousanswer': {
                 'Meta': {'object_name': 'AnonymousAnswer'},
-                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'author': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True'}),
                 'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
                 'ip_addr': ('django.db.models.fields.IPAddressField', [], {'max_length': '15'}),
@@ -347,7 +346,7 @@ class Migration(SchemaMigration):
             },
             'askbot.anonymousquestion': {
                 'Meta': {'object_name': 'AnonymousQuestion'},
-                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'author': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True'}),
                 'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
                 'ip_addr': ('django.db.models.fields.IPAddressField', [], {'max_length': '15'}),
@@ -362,7 +361,7 @@ class Migration(SchemaMigration):
                 'Meta': {'object_name': 'Answer', 'db_table': "u'answer'"},
                 'accepted': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
                 'accepted_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'author': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'answers'", 'to': "orm['auth.User']"}),
                 'comment_count': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
                 'deleted': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
@@ -396,7 +395,7 @@ class Migration(SchemaMigration):
             },
             'askbot.award': {
                 'Meta': {'object_name': 'Award', 'db_table': "u'award'"},
-                'awarded_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'awarded_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'badge': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'award_badge'", 'to': "orm['askbot.Badge']"}),
                 'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
                 'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -417,7 +416,7 @@ class Migration(SchemaMigration):
             },
             'askbot.comment': {
                 'Meta': {'object_name': 'Comment', 'db_table': "u'comment'"},
-                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'comment': ('django.db.models.fields.CharField', [], {'max_length': '2048'}),
                 'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
                 'html': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '2048'}),
@@ -436,7 +435,7 @@ class Migration(SchemaMigration):
             },
             'askbot.favoritequestion': {
                 'Meta': {'object_name': 'FavoriteQuestion', 'db_table': "u'favorite_question'"},
-                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
                 'question': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['askbot.Question']"}),
                 'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_favorite_questions'", 'to': "orm['auth.User']"})
@@ -444,7 +443,7 @@ class Migration(SchemaMigration):
             'askbot.flaggeditem': {
                 'Meta': {'unique_together': "(('content_type', 'object_id', 'user'),)", 'object_name': 'FlaggedItem', 'db_table': "u'flagged_item'"},
                 'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-                'flagged_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'flagged_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
                 'object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
                 'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'flaggeditems'", 'to': "orm['auth.User']"})
@@ -458,7 +457,7 @@ class Migration(SchemaMigration):
             },
             'askbot.question': {
                 'Meta': {'object_name': 'Question', 'db_table': "u'question'"},
-                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'added_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'answer_accepted': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
                 'answer_count': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
                 'author': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'questions'", 'to': "orm['auth.User']"}),
@@ -475,7 +474,7 @@ class Migration(SchemaMigration):
                 'followed_by': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'followed_questions'", 'symmetrical': 'False', 'to': "orm['auth.User']"}),
                 'html': ('django.db.models.fields.TextField', [], {'null': 'True'}),
                 'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-                'last_activity_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'last_activity_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'last_activity_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'last_active_in_questions'", 'to': "orm['auth.User']"}),
                 'last_edited_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
                 'last_edited_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'last_edited_questions'", 'null': 'True', 'to': "orm['auth.User']"}),
@@ -522,7 +521,7 @@ class Migration(SchemaMigration):
                 'question': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['askbot.Question']"}),
                 'reputation': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
                 'reputation_type': ('django.db.models.fields.SmallIntegerField', [], {}),
-                'reputed_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'reputed_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
             },
             'askbot.tag': {
@@ -551,7 +550,7 @@ class Migration(SchemaMigration):
                 'object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
                 'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'votes'", 'to': "orm['auth.User']"}),
                 'vote': ('django.db.models.fields.SmallIntegerField', [], {}),
-                'voted_at': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'})
+                'voted_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'})
             },
             'auth.group': {
                 'Meta': {'object_name': 'Group'},
@@ -570,7 +569,7 @@ class Migration(SchemaMigration):
                 'Meta': {'object_name': 'User'},
                 'about': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
                 'bronze': ('django.db.models.fields.SmallIntegerField', [], {'default': '0'}),
-                'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'date_of_birth': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
                 'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
                 'email_isvalid': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
@@ -584,9 +583,9 @@ class Migration(SchemaMigration):
                 'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'blank': 'True'}),
                 'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
                 'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
-                'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-                'last_seen': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
+                'last_seen': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
                 'location': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
                 'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
                 'questions_per_page': ('django.db.models.fields.SmallIntegerField', [], {'default': '10'}),
