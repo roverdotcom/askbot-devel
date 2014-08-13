@@ -5,7 +5,8 @@ import re
 from django.conf import settings as django_settings
 from django.db import models
 from django.db.models import F
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from askbot.models import AskbotUser as User
 from django.core import cache  # import cache, not from cache import cache, to be able to monkey-patch cache.cache in test cases
 from django.core import exceptions as django_exceptions
 from django.core.urlresolvers import reverse
@@ -1653,7 +1654,7 @@ class FavoriteQuestion(models.Model):
 
     class Meta:
         app_label = 'askbot'
-        db_table = u'favorite_question'
+        db_table = u'askbot_favorite_question'
 
     def __str__(self):
         return unicode(self).encode('utf-8')

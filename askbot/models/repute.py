@@ -1,7 +1,8 @@
 import datetime
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from askbot.models.askbot_user import AskbotUser as User
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.html import escape
@@ -36,7 +37,8 @@ class Vote(models.Model):
         (VOTE_UP,   u'Up'),
         (VOTE_DOWN, u'Down'),
     )
-    user = models.ForeignKey('auth.User', related_name='votes')
+    # user = models.ForeignKey('auth.User', related_name='votes')
+    user = models.ForeignKey(User, related_name='votes')
     voted_post = models.ForeignKey('Post', related_name='votes')
 
     vote           = models.SmallIntegerField(choices=VOTE_CHOICES)
@@ -47,7 +49,7 @@ class Vote(models.Model):
     class Meta:
         unique_together = ('user', 'voted_post')
         app_label = 'askbot'
-        db_table = u'vote'
+        db_table = u'askbot_vote'
 
     def __unicode__(self):
         return '[%s] voted at %s: %s' %(self.user, self.voted_at, self.vote)
@@ -142,7 +144,7 @@ class Award(models.Model):
 
     class Meta:
         app_label = 'askbot'
-        db_table = u'award'
+        db_table = u'askbot_award'
 
 class ReputeManager(models.Manager):
     def get_reputation_by_upvoted_today(self, user):
@@ -195,7 +197,7 @@ class Repute(models.Model):
 
     class Meta:
         app_label = 'askbot'
-        db_table = u'repute'
+        db_table = u'askbot_repute'
 
     def get_explanation_snippet(self):
         """returns HTML snippet with a link to related question
