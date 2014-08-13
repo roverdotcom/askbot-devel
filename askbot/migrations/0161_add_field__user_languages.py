@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.utils import timezone
-from django.conf import settings
+from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
@@ -341,7 +341,7 @@ class Migration(SchemaMigration):
             'bronze': ('django.db.models.fields.SmallIntegerField', [], {'default': '0'}),
             'consecutive_days_visit_count': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'country': ('django_countries.fields.CountryField', [], {'max_length': '2', 'blank': 'True'}),
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.datetime(2013, 1, 14, 9, 30, 19, 481370, tzinfo=timezone.utc if getattr(settings, "USE_TZ", False) else None)'}),
+            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 1, 14, 9, 30, 19, 481370)'}),
             'date_of_birth': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'display_tag_filter_strategy': ('django.db.models.fields.SmallIntegerField', [], {'default': '0'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
@@ -361,7 +361,7 @@ class Migration(SchemaMigration):
             'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'languages': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.datetime(2013, 1, 14, 9, 30, 19, 481008, tzinfo=timezone.utc if getattr(settings, "USE_TZ", False) else None)'}),
+            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 1, 14, 9, 30, 19, 481008)'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'last_seen': ('django.db.models.fields.DateTimeField', [], {'default': 'timezone.now'}),
             'location': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
