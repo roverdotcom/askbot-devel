@@ -8,6 +8,7 @@ from askbot.models import Thread
 from askbot.models import Tag
 from askbot.models import User
 from askbot.utils.slug import slugify_camelcase
+from askbot.utils.timezone import get_tzinfo
 from bs4 import BeautifulSoup
 from django.utils import timezone
 from django.db.models import Q
@@ -28,19 +29,11 @@ def decode_datetime(data):
                 data,
                 '%Y-%m-%d %H:%M:%S'
             ).replace(
-                tzinfo=timezone.utc if getattr(
-                    django_settings,
-                    'USE_TZ',
-                    False
-                ) else None
+                tzinfo=get_tzinfo()
             )
         except ValueError:
             return timezone.datetime.strptime(data, '%Y-%m-%d').replace(
-                tzinfo=timezone.utc if getattr(
-                    django_settings,
-                    'USE_TZ',
-                    False
-                ) else None
+                tzinfo=get_tzinfo()
             )
     return None
 

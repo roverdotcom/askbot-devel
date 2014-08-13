@@ -24,6 +24,7 @@ from askbot.utils import functions
 from askbot.utils import url_utils
 from askbot.utils.slug import slugify
 from askbot.utils.pluralization import py_pluralize as _py_pluralize
+from askbot.utils.timezone import get_tzinfo
 from askbot.shims.django_shims import ResolverMatch
 
 from django_countries import countries
@@ -166,27 +167,15 @@ def split(string, separator):
 def get_age(birthday):
     current_time = timezone.datetime(
         *time.localtime()[0:6],
-        tzinfo=timezone.utc if getattr(
-            django_settings,
-            'USE_TZ',
-            False
-        ) else None
+        tzinfo=get_tzinfo()
     )
     year = birthday.year
     month = birthday.month
     day = birthday.day
     diff = current_time - timezone.datetime(
-        year,
-        month,
-        day,
-        0,
-        0,
-        0,
-        tzinfo=timezone.utc if getattr(
-            django_settings,
-            'USE_TZ',
-            False
-        ) else None)
+        year, month, day, 0, 0, 0,
+        tzinfo=get_tzinfo()
+    )
     return diff.days / 365
 
 @register.filter

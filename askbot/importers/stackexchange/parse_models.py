@@ -5,7 +5,7 @@ import os
 if __name__ != '__main__':#hack do not import models if run as script
     from django.db import models
 from django.utils import timezone
-from django.conf import settings
+from askbot.utils.timezone import get_tzinfo
 
 table_prefix = ''#StackExchange or something, if needed
 date_time_format = '%Y-%m-%dT%H:%M:%S' #note that fractional part of second is lost
@@ -207,11 +207,7 @@ def parse_value(input, field_object):
         input = time_re.sub('', input)
         try:
             return timezone.datetime.strptime(input, date_time_format).replace(
-                tzinfo=timezone.utc if getattr(
-                    settings,
-                    'USE_TZ',
-                    False
-                ) else None
+                tzinfo=get_tzinfo()
             )
         except:
             raise Exception('datetime expected "%s" found' % input)

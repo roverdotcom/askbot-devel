@@ -5,6 +5,7 @@ from askbot.utils.slug import slugify
 from askbot.utils.jive import JiveConverter
 from askbot.utils.jive import internal_link_re
 from askbot.utils.file_utils import make_file_name
+from askbot.utils.timezone import get_tzinfo
 from bs4 import BeautifulSoup
 from django.conf import settings as django_settings
 from django.core.management.base import BaseCommand, CommandError
@@ -56,11 +57,7 @@ def parse_date(date_str):
         date_str[:-8],
         '%Y/%m/%d %H:%M:%S'
     ).replace(
-        tzinfo=timezone.utc if getattr(
-            django_settings,
-            'USE_TZ',
-            False
-        ) else None
+        tzinfo=get_tzinfo()
     )
 
 def fix_internal_links_in_post(post):

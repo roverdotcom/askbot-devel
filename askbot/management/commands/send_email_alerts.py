@@ -17,6 +17,7 @@ from askbot import const
 from askbot import mail
 from askbot.utils.slug import slugify
 from askbot.utils.html import site_url
+from askbot.utils.timezone import get_tzinfo
 
 DEBUG_THIS_COMMAND = False
 
@@ -342,16 +343,7 @@ class Command(NoArgsCommand):
                                         content_object=q, 
                                         activity_type=EMAIL_UPDATE_ACTIVITY
                                     )
-                emailed_at = timezone.datetime(
-                    1970,
-                    1,
-                    1,
-                    tzinfo=timezone.utc if getattr(
-                        django_settings,
-                        'USE_TZ',
-                        False
-                    ) else None
-                )  # long time ago
+                emailed_at = timezone.datetime(1970, 1, 1, tzinfo=get_tzinfo())  # long time ago
             except Activity.MultipleObjectsReturned:
                 raise Exception(
                                 'server error - multiple question email activities '

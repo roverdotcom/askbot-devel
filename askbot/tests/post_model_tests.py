@@ -20,6 +20,7 @@ from django.utils import simplejson
 from django.utils import timezone
 from django.conf import settings as django_settings
 from askbot.conf import settings as askbot_settings
+from askbot.utils.timezone import get_tzinfo
 
 
 class PostModelTests(AskbotTestCase):
@@ -87,27 +88,15 @@ class PostModelTests(AskbotTestCase):
 
         c1 = self.post_comment(parent_post=q, timestamp=timezone.datetime(
             2010, 10, 2, 14, 33, 20,
-            tzinfo=timezone.utc if getattr(
-                django_settings,
-                'USE_TZ',
-                False
-            ) else None
+            tzinfo=get_tzinfo()
         ))
         c2 = q.add_comment(user=self.user, comment='blah blah', added_at=timezone.datetime(
             2010, 10, 2, 14, 33, 21,
-            tzinfo=timezone.utc if getattr(
-                django_settings,
-                'USE_TZ',
-                False
-            ) else None
+            tzinfo=get_tzinfo()
         ))
         c3 = self.post_comment(parent_post=q, body_text='blah blah 2', timestamp=timezone.datetime(
             2010, 10, 2, 14, 33, 22,
-            tzinfo=timezone.utc if getattr(
-                django_settings,
-                'USE_TZ',
-                False
-            ) else None
+            tzinfo=get_tzinfo()
         ))
 
         Post.objects.precache_comments(for_posts=[q], visitor=self.user)
@@ -132,27 +121,15 @@ class PostModelTests(AskbotTestCase):
 
         c1 = self.post_comment(parent_post=q, timestamp=timezone.datetime(
             2010, 10, 2, 14, 33, 20,
-            tzinfo=timezone.utc if getattr(
-                django_settings,
-                'USE_TZ',
-                False
-            ) else None
+            tzinfo=get_tzinfo()
         ))
         c2 = q.add_comment(user=self.user, comment='blah blah', added_at=timezone.datetime(
             2010, 10, 2, 14, 33, 21,
-            tzinfo=timezone.utc if getattr(
-                django_settings,
-                'USE_TZ',
-                False
-            ) else None
+            tzinfo=get_tzinfo()
         ))
         c3 = self.post_comment(parent_post=q, timestamp=timezone.datetime(
             2010, 10, 2, 14, 33, 22,
-            tzinfo=timezone.utc if getattr(
-                django_settings,
-                'USE_TZ',
-                False
-            ) else None
+            tzinfo=get_tzinfo()
         ))
 
         Post.objects.precache_comments(for_posts=[q], visitor=self.user)
