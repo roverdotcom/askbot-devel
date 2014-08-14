@@ -67,7 +67,7 @@ def create_user(
     * 'w' - weekly
     * 'n' - never
     """
-    user = models.User.objects.create_user(username, email)
+    user = models.AskbotUser.objects.create_user(username, email)
 
     user.reputation = reputation
     if date_joined is not None:

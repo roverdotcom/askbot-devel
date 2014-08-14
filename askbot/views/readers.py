@@ -6,7 +6,6 @@ By main textual content is meant - text of Questions, Answers and Comments.
 The "read-only" requirement here is not 100% strict, as for example "question" view does
 allow adding new comments via Ajax form post.
 """
-import datetime
 import logging
 import urllib
 import operator
@@ -21,6 +20,7 @@ from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.template.loader import get_template
 from django.template import RequestContext
 from django.utils import simplejson
+from django.utils import timezone
 from django.utils.html import escape
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
@@ -429,7 +429,7 @@ def question(request, id):#refactor - long subroutine. display question body, an
         question_post.assert_is_visible_to(request.user)
     except exceptions.QuestionHidden, error:
         request.user.message_set.create(message = unicode(error))
-        return HttpResponseRedirect(reverse('index'))
+        return HttpResponseRedirect(reverse('askbot-index'))
 
     #redirect if slug in the url is wrong
     if request.path.split('/')[-2] != question_post.slug:
@@ -479,7 +479,7 @@ def question(request, id):#refactor - long subroutine. display question body, an
             return HttpResponseRedirect(reverse('question', kwargs = {'id': id}))
         except exceptions.QuestionHidden, error:
             request.user.message_set.create(message = unicode(error))
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('askbot-index'))
 
     elif show_answer:
         #if the url calls to view a particular answer to
@@ -565,7 +565,7 @@ def question(request, id):#refactor - long subroutine. display question body, an
                 update_view_count = True
 
         request.session['question_view_times'][question_post.id] = \
-                                                    datetime.datetime.now()
+                                                    timezone.now()
 
         #2) run the slower jobs in a celery task
         from askbot import tasks

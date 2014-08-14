@@ -1,12 +1,12 @@
 from collections import defaultdict
-import datetime
 import operator
 import logging
 
 from django.contrib.sitemaps import ping_google
 from django.utils import html
 from django.conf import settings as django_settings
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from askbot.models.askbot_user import AskbotUser as User
 from django.core import urlresolvers
 from django.db import models
 from django.utils import html as html_utils
@@ -15,6 +15,7 @@ from django.utils.translation import activate as activate_language
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 from django.utils.http import urlquote as django_urlquote
+from django.utils import timezone
 from django.core import exceptions as django_exceptions
 from django.core import cache
 from django.core.exceptions import ValidationError
@@ -39,6 +40,9 @@ from askbot.models.base import BaseQuerySetManager, DraftContent
 #todo: maybe merge askbot.utils.markup and forum.utils.html
 from askbot.utils.diff import textDiff as htmldiff
 from askbot.search import mysql
+
+from model_utils.managers import PassThroughManager
+from askbot.models import AskbotUserQuerySet
 
 class PostToGroup(models.Model):
     post = models.ForeignKey('Post')
@@ -134,7 +138,7 @@ class PostQuerySet(models.query.QuerySet):
                     question = question,
                     activity_type = activity_type
                 )
-                now = datetime.datetime.now()
+                now = timezone.now()
                 if now < activity.active_at + recurrence_delay:
                     continue
             except Activity.DoesNotExist:
@@ -144,7 +148,7 @@ class PostQuerySet(models.query.QuerySet):
                     activity_type = activity_type,
                     content_object = question,
                 )
-            activity.active_at = datetime.datetime.now()
+            activity.active_at = timezone.now()
             activity.save()
             question_list.append(question)
         return question_list
@@ -182,7 +186,7 @@ class PostManager(BaseQuerySetManager):
         return self.create_new(
                             None,#this post type is threadless
                             author,
-                            datetime.datetime.now(),
+                            timezone.now(),
                             text,
                             wiki = True,
                             post_type = 'tag_wiki'
@@ -352,7 +356,7 @@ class Post(models.Model):
     groups = models.ManyToManyField('Group', through='PostToGroup', related_name = 'group_posts')#used for group-private posts
 
     author = models.ForeignKey(User, related_name='posts')
-    added_at = models.DateTimeField(default=datetime.datetime.now)
+    added_at = models.DateTimeField(default=timezone.now)
 
     #denormalized data: the core approval of the posts is made
     #in the revisions. In the revisions there is more data about
@@ -1043,7 +1047,7 @@ class Post(models.Model):
             ):
 
         if added_at is None:
-            added_at = datetime.datetime.now()
+            added_at = timezone.now()
         if None in (comment, user):
             raise Exception('arguments comment and user are required')
 
@@ -1758,7 +1762,7 @@ class Post(models.Model):
         if text is None:
             text = self.get_latest_revision().text
         if edited_at is None:
-            edited_at = datetime.datetime.now()
+            edited_at = timezone.now()
         if edited_by is None:
             raise Exception('edited_by is required')
 
@@ -1830,7 +1834,7 @@ class Post(models.Model):
         )
 
         if edited_at is None:
-            edited_at = datetime.datetime.now()
+            edited_at = timezone.now()
         self.thread.set_last_activity(last_activity_at=edited_at, last_activity_by=edited_by)
 
     def _question__apply_edit(
@@ -1858,7 +1862,7 @@ class Post(models.Model):
         if tags is None:
             tags = latest_revision.tagnames
         if edited_at is None:
-            edited_at = datetime.datetime.now()
+            edited_at = timezone.now()
 
         # Update the Question tag associations
         if latest_revision.tagnames != tags:
@@ -2106,7 +2110,9 @@ class Post(models.Model):
         list(Post.objects.filter(text=name))
 
 
-class PostRevisionManager(models.Manager):
+class PostRevisionManager(PassThroughManager):
+    use_for_related_fields = True
+
     def create(self, *args, **kwargs):
         #clean the "summary" field
         kwargs.setdefault('summary', '')
@@ -2162,7 +2168,8 @@ class PostRevision(models.Model):
 
     post = models.ForeignKey('askbot.Post', related_name='revisions', null=True, blank=True)
     revision = models.PositiveIntegerField()
-    author = models.ForeignKey('auth.User', related_name='%(class)ss')
+    # author = models.ForeignKey('auth.User', related_name='%(class)ss')
+    author = models.ForeignKey(User, related_name='%(class)ss')
     revised_at = models.DateTimeField()
     summary = models.CharField(max_length=300, blank=True)
     text = models.TextField(blank=True)
@@ -2180,7 +2187,7 @@ class PostRevision(models.Model):
     is_anonymous = models.BooleanField(default=False)
     ip_addr = models.IPAddressField(max_length=21, default='0.0.0.0')
 
-    objects = PostRevisionManager()
+    objects = PostRevisionManager.for_queryset_class(AskbotUserQuerySet)()
 
     class Meta:
         # INFO: This `unique_together` constraint might be problematic for databases in which
@@ -2343,7 +2350,8 @@ class PostRevision(models.Model):
 
 class PostFlagReason(models.Model):
     added_at = models.DateTimeField()
-    author = models.ForeignKey('auth.User')
+    # author = models.ForeignKey('auth.User')
+    author = models.ForeignKey(User)
     title = models.CharField(max_length=128)
     details = models.ForeignKey(Post, related_name = 'post_reject_reasons')
     class Meta:
@@ -2368,7 +2376,7 @@ class AnonymousAnswer(DraftContent):
     question = models.ForeignKey(Post, related_name='anonymous_answers')
 
     def publish(self, user):
-        added_at = datetime.datetime.now()
+        added_at = timezone.now()
         Post.objects.create_new_answer(
             thread=self.question.thread,
             author=user,

@@ -1,6 +1,6 @@
 # encoding: utf-8
 import os
-import datetime
+from south.utils import datetime_utils as datetime
 import askbot
 from south.db import db
 from south.v2 import DataMigration

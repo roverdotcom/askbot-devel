@@ -1,12 +1,12 @@
 """Forms, custom form fields and related utility functions
 used in AskBot"""
 import re
-import datetime
 from django import forms
 from askbot import const
 from askbot.const import message_keys
 from django.conf import settings as django_settings
 from django.core.exceptions import PermissionDenied
+from django.utils import timezone
 from django.forms.util import ErrorList
 from django.utils.html import strip_tags
 from django.utils.datastructures import SortedDict
@@ -14,7 +14,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy, string_concat
 from django.utils.translation import get_language
 from django.utils.text import get_text_list
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from askbot.models import User
 from django_countries import countries
 from askbot.utils.forms import NextUrlField, UserNameField
 from askbot.mail import extract_first_email_address
@@ -1167,7 +1168,7 @@ class AnswerForm(PostAsSomeoneForm, PostPrivatelyForm):
             body_text = text,
             wiki = wiki,
             is_private = is_private,
-            timestamp = datetime.datetime.now(),
+            timestamp = timezone.now(),
             ip_addr=ip_addr
         )
 

@@ -5,7 +5,8 @@ from django.db import models
 from django.db.backends.dummy.base import IntegrityError
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from askbot.models.askbot_user import AskbotUser as User
 from django.contrib.auth.models import Group as AuthGroup
 from django.core import exceptions
 from django.forms import EmailField, URLField
@@ -13,6 +14,7 @@ from django.utils import translation
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from django.utils.html import strip_tags
+from django.utils import timezone
 from askbot import const
 from askbot.conf import settings as askbot_settings
 from askbot.utils import functions
@@ -201,7 +203,7 @@ class Activity(models.Model):
     receiving_users = models.ManyToManyField(User, related_name='received_activity')
     recipients = models.ManyToManyField(User, through=ActivityAuditStatus, related_name='incoming_activity')
     activity_type = models.SmallIntegerField(choices = const.TYPE_ACTIVITY)
-    active_at = models.DateTimeField(default=datetime.datetime.now)
+    active_at = models.DateTimeField(default=timezone.now)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
@@ -221,7 +223,7 @@ class Activity(models.Model):
 
     class Meta:
         app_label = 'askbot'
-        db_table = u'activity'
+        db_table = u'askbot_activity'
 
     def add_recipients(self, recipients):
         """have to use a special method, because django does not allow
@@ -367,11 +369,11 @@ class EmailFeedSetting(models.Model):
         super(EmailFeedSetting,self).save(*args,**kwargs)
 
     def get_previous_report_cutoff_time(self):
-        now = datetime.datetime.now()
+        now = timezone.now()
         return now - self.DELTA_TABLE[self.frequency]
 
     def should_send_now(self):
-        now = datetime.datetime.now()
+        now = timezone.now()
         cutoff_time = self.get_previous_report_cutoff_time()
         if self.reported_at == None or self.reported_at <= cutoff_time:
             return True
@@ -379,7 +381,7 @@ class EmailFeedSetting(models.Model):
             return False
 
     def mark_reported_now(self):
-        self.reported_at = datetime.datetime.now()
+        self.reported_at = timezone.now()
         self.save()
 
 

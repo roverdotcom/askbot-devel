@@ -1,6 +1,7 @@
 import re
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from askbot.models.askbot_user import AskbotUser as User
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
@@ -316,7 +317,7 @@ class Tag(models.Model):
 
     class Meta:
         app_label = 'askbot'
-        db_table = u'tag'
+        db_table = u'askbot_tag'
         ordering = ('-used_count', 'name')
         unique_together = ('name', 'language_code')
 

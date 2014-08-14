@@ -36,8 +36,8 @@ class Command(Command):
         # it as an option.
         if default_username:
             try:
-                User.objects.get(username=default_username)
-            except User.DoesNotExist:
+                self.UserModel.objects.get(username=default_username)
+            except self.UserModel.DoesNotExist:
                 pass
             else:
                 default_username = ''
@@ -61,8 +61,8 @@ class Command(Command):
                         username = None
                         continue
                     try:
-                        User.objects.get(username=username)
-                    except User.DoesNotExist:
+                        self.UserModel.objects.get(username=username)
+                    except self.UserModel.DoesNotExist:
                         break
                     else:
                         sys.stderr.write("Error: That username is already taken.\n")
@@ -98,9 +98,9 @@ class Command(Command):
                 sys.stderr.write("\nOperation cancelled.\n")
                 sys.exit(1)
 
-        self.remove_signals()
-        u = User.objects.create_superuser(username, email, password)
-        u.set_status('d')
+        # self.remove_signals()
+        u = self.UserModel.objects.create_superuser(username, email, password)
+        u.askbot_user.set_status('d')
 
         if verbosity >= 1:
           self.stdout.write("Askbot Superuser created successfully.\n")

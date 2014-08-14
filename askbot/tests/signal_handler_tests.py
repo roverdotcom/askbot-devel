@@ -1,6 +1,6 @@
 from askbot.tests.utils import AskbotTestCase
 from askbot import models
-from datetime import datetime
+from django.utils import timezone
 from datetime import timedelta
 
 class SignalHandlerTests(AskbotTestCase):
@@ -9,7 +9,7 @@ class SignalHandlerTests(AskbotTestCase):
         self.user = self.create_user('user1')
     
     def test_record_user_visit(self):
-        today = datetime.now()
+        today = timezone.now()
         self.user.last_seen = today
         self.user.save()
         self.assertEqual(self.user.consecutive_days_visit_count, 0)

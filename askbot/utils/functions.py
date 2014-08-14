@@ -1,6 +1,6 @@
 import re
 import random
-import datetime
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from django.utils.html import escape
@@ -83,7 +83,7 @@ def not_a_robot_request(request):
     return False
 
 def diff_date(date, use_on_prefix = False):
-    now = datetime.datetime.now()#datetime(*time.localtime()[0:6])#???
+    now = timezone.now()
     diff = now - date
     days = diff.days
     hours = int(diff.seconds/3600)
@@ -177,7 +177,8 @@ def setup_paginator(context):
 def get_admin():
     """Returns an admin users, usefull for raising flags"""
     try:
-        from django.contrib.auth.models import User
+        # from django.contrib.auth.models import User
+        from askbot.models import User
         return User.objects.filter(is_superuser=True)[0]
     except:
         raise Exception('there is no admin users')

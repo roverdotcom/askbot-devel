@@ -142,7 +142,7 @@ class PageLoadTestCase(AskbotTestCase):
 
     def test_index(self):
         #todo: merge this with all reader url tests
-        response = self.client.get(reverse('index'), follow=True)
+        response = self.client.get(reverse('askbot-index'), follow=True)
         self.assertEqual(response.status_code, 200)
         self.failUnless(len(response.redirect_chain) == 1)
         redirect_url = response.redirect_chain[0][0]
@@ -225,7 +225,7 @@ class PageLoadTestCase(AskbotTestCase):
                 status_code=status_code,
                 template='static_page.html')
         self.try_url(
-                'privacy',
+                'askbot-privacy',
                 status_code=status_code,
                 template='static_page.html')
         self.try_url('logout', template='authopenid/logout.html')

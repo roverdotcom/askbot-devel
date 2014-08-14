@@ -20,7 +20,7 @@ django-kombu==0.9.2
 django-followit
 django-recaptcha-works
 python-openid
-pystache==0.3.1
+pystache>=0.5.0
 pylint
 pytz
 sanction
@@ -28,3 +28,4 @@ django-tinymce
 longerusername
 beautifulsoup4
 django-picklefield==0.3.0
+django-model-utils==2.1.0

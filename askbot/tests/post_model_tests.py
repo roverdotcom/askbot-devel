@@ -1,9 +1,9 @@
 import copy
-import datetime
 from operator import attrgetter
 import time
 from askbot.search.state_manager import SearchState
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from askbot.models import User
 from django.core import cache, urlresolvers
 from django.core.cache.backends.dummy import DummyCache
 from django.core.cache.backends.locmem import LocMemCache
@@ -18,7 +18,9 @@ from askbot.models import Tag
 from askbot.models import Group
 from askbot.search.state_manager import DummySearchState
 from django.utils import simplejson
+from django.utils import timezone
 from askbot.conf import settings as askbot_settings
+from askbot.utils.timezone import get_tzinfo
 
 
 class PostModelTests(AskbotTestCase):
@@ -62,7 +64,7 @@ class PostModelTests(AskbotTestCase):
 
         rev2 = PostRevision(
             post=question, text='blah', author=self.u1,
-            revised_at=datetime.datetime.now(), revision=2
+            revised_at=timezone.now(), revision=2
         )
         rev2.save()
         self.assertFalse(rev2.id is None)
@@ -84,9 +86,18 @@ class PostModelTests(AskbotTestCase):
         self.user = self.u1
         q = self.post_question()
 
-        c1 = self.post_comment(parent_post=q, timestamp=datetime.datetime(2010, 10, 2, 14, 33, 20))
-        c2 = q.add_comment(user=self.user, comment='blah blah', added_at=datetime.datetime(2010, 10, 2, 14, 33, 21))
-        c3 = self.post_comment(parent_post=q, body_text='blah blah 2', timestamp=datetime.datetime(2010, 10, 2, 14, 33, 22))
+        c1 = self.post_comment(parent_post=q, timestamp=timezone.datetime(
+            2010, 10, 2, 14, 33, 20,
+            tzinfo=get_tzinfo()
+        ))
+        c2 = q.add_comment(user=self.user, comment='blah blah', added_at=timezone.datetime(
+            2010, 10, 2, 14, 33, 21,
+            tzinfo=get_tzinfo()
+        ))
+        c3 = self.post_comment(parent_post=q, body_text='blah blah 2', timestamp=timezone.datetime(
+            2010, 10, 2, 14, 33, 22,
+            tzinfo=get_tzinfo()
+        ))
 
         Post.objects.precache_comments(for_posts=[q], visitor=self.user)
         self.assertListEqual([c1, c2, c3], q._cached_comments)
@@ -108,9 +119,18 @@ class PostModelTests(AskbotTestCase):
         self.user = self.u1
         q = self.post_question()
 
-        c1 = self.post_comment(parent_post=q, timestamp=datetime.datetime(2010, 10, 2, 14, 33, 20))
-        c2 = q.add_comment(user=self.user, comment='blah blah', added_at=datetime.datetime(2010, 10, 2, 14, 33, 21))
-        c3 = self.post_comment(parent_post=q, timestamp=datetime.datetime(2010, 10, 2, 14, 33, 22))
+        c1 = self.post_comment(parent_post=q, timestamp=timezone.datetime(
+            2010, 10, 2, 14, 33, 20,
+            tzinfo=get_tzinfo()
+        ))
+        c2 = q.add_comment(user=self.user, comment='blah blah', added_at=timezone.datetime(
+            2010, 10, 2, 14, 33, 21,
+            tzinfo=get_tzinfo()
+        ))
+        c3 = self.post_comment(parent_post=q, timestamp=timezone.datetime(
+            2010, 10, 2, 14, 33, 22,
+            tzinfo=get_tzinfo()
+        ))
 
         Post.objects.precache_comments(for_posts=[q], visitor=self.user)
         self.assertListEqual([c1, c2, c3], q._cached_comments)

@@ -5,7 +5,6 @@ This module contains most (but not all) processors for Ajax requests.
 Not so clear if this subdivision was necessary as separation of Ajax and non-ajax views
 is not always very clean.
 """
-import datetime
 import logging
 from bs4 import BeautifulSoup
 from django.conf import settings as django_settings
@@ -25,6 +24,7 @@ from django.template.loader import get_template
 from django.views.decorators import csrf
 from django.utils import simplejson
 from django.utils import translation
+from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.html import escape
 from django.utils.translation import ugettext as _
@@ -140,7 +140,7 @@ def manage_inbox(request):
                 raise exceptions.PermissionDenied('must use POST request')
         else:
             #todo: show error page but no-one is likely to get here
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('askbot-index'))
     except Exception, e:
         message = unicode(e)
         if message == '':
@@ -708,7 +708,7 @@ def subscribe_for_tags(request):
                     'Tag subscription was canceled (<a href="%(url)s">undo</a>).'
                 ) % {'url': escape(request.path) + '?tags=' + request.REQUEST['tags']}
                 request.user.message_set.create(message = message)
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('askbot-index'))
         else:
             data = {'tags': tag_names}
             return render(request, 'subscribe_for_tags.html', data)
@@ -1291,7 +1291,7 @@ def moderate_suggested_tag(request):
                 thread.add_tag(
                     tag_name = tag.name,
                     user = tag.created_by,
-                    timestamp = datetime.datetime.now(),
+                    timestamp = timezone.now(),
                     silent = True
                 )
         else:
@@ -1425,7 +1425,7 @@ def share_question_with_group(request):
                 updated_by=request.user,
                 notify_sets=notify_sets,
                 activity_type=const.TYPE_ACTIVITY_POST_SHARED,
-                timestamp=datetime.datetime.now()
+                timestamp=timezone.now()
             )
 
             return HttpResponseRedirect(thread.get_absolute_url())
@@ -1458,7 +1458,7 @@ def share_question_with_user(request):
                 updated_by=request.user,
                 notify_sets=notify_sets,
                 activity_type=const.TYPE_ACTIVITY_POST_SHARED,
-                timestamp=datetime.datetime.now()
+                timestamp=timezone.now()
             )
 
             return HttpResponseRedirect(thread.get_absolute_url())

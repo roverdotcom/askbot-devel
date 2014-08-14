@@ -1,7 +1,6 @@
 import hotshot
 import time
 import os
-import datetime
 import functools
 import inspect
 import logging
@@ -14,6 +13,7 @@ from django.http import HttpResponseRedirect
 from django.utils import simplejson
 from django.utils.translation import ugettext as _
 from django.utils.encoding import smart_str
+from django.utils import timezone
 from askbot import exceptions as askbot_exceptions
 from askbot.conf import settings as askbot_settings
 from askbot.utils import url_utils
@@ -30,7 +30,7 @@ def auto_now_timestamp(func):
     def decorated_func(*arg, **kwarg):
         timestamp = kwarg.get('timestamp', None)
         if timestamp is None:
-            kwarg['timestamp'] = datetime.datetime.now()
+            kwarg['timestamp'] = timezone.now()
         return func(*arg, **kwarg)
     return decorated_func
 
@@ -213,7 +213,7 @@ def check_spam(field):
                     logging.debug(
                         'Spam detected in %s post at: %s',
                         request.user.username,
-                        datetime.datetime.now()
+                        timezone.now()
                     )
                     spam_message = _(
                         'Spam was detected on your post, sorry '
@@ -226,7 +226,7 @@ def check_spam(field):
                             )
                     else:
                         request.user.message_set.create(message=spam_message)
-                        return HttpResponseRedirect(reverse('index'))
+                        return HttpResponseRedirect(reverse('askbot-index'))
 
             return view_func(request, *args, **kwargs)
         return wrapper

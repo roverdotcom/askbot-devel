@@ -2,6 +2,7 @@
 
 from django.utils.cache import patch_vary_headers
 from django.utils import translation
+from django.conf import settings as django_settings
 from askbot.conf import settings
 
 class LocaleMiddleware(object):
@@ -14,11 +15,17 @@ class LocaleMiddleware(object):
     """
 
     def process_request(self, request):
+        if not request.path.startswith('/' + django_settings.ASKBOT_URL):
+            return
+
         language = settings.ASKBOT_LANGUAGE
         translation.activate(language)
         request.LANGUAGE_CODE = translation.get_language()
 
     def process_response(self, request, response):
+        if not request.path.startswith('/' + django_settings.ASKBOT_URL):
+            return response
+
         patch_vary_headers(response, ('Accept-Language',))
         if 'Content-Language' not in response:
             response['Content-Language'] = translation.get_language()

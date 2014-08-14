@@ -4,7 +4,6 @@
 
 This module contains views that allow adding, editing, and deleting main textual content.
 """
-import datetime
 import logging
 import os
 import os.path
@@ -15,7 +14,8 @@ import time
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+# Import is duplicated?
+# from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseForbidden
@@ -26,11 +26,13 @@ from django.utils.html import strip_tags, escape
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
+from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.core import exceptions
 from django.conf import settings
 from django.views.decorators import csrf
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from askbot.models import User
 
 from askbot import exceptions as askbot_exceptions
 from askbot import forms
@@ -166,7 +168,7 @@ def __import_se_data(dump_file):
     read_stdout.close()
     dump_file.close()
     sys.stdout = real_stdout
-    yield '<p>Done. Please, <a href="%s">Visit Your Forum</a></p></body></html>' % reverse('index')
+    yield '<p>Done. Please, <a href="%s">Visit Your Forum</a></p></body></html>' % reverse('askbot-index')
 
 @csrf.csrf_protect
 def import_data(request):
@@ -223,12 +225,12 @@ def ask(request):#view used to ask a new question
             return HttpResponseRedirect(referer)
 
     if askbot_settings.READ_ONLY_MODE_ENABLED:
-        return HttpResponseRedirect(reverse('index'))
+        return HttpResponseRedirect(reverse('askbot-index'))
 
     if request.method == 'POST':
         form = forms.AskForm(request.POST, user=request.user)
         if form.is_valid():
-            timestamp = datetime.datetime.now()
+            timestamp = timezone.now()
             title = form.cleaned_data['title']
             wiki = form.cleaned_data['wiki']
             tagnames = form.cleaned_data['tags']
@@ -270,7 +272,7 @@ def ask(request):#view used to ask a new question
                     return HttpResponseRedirect(question.get_absolute_url())
                 except exceptions.PermissionDenied, e:
                     request.user.message_set.create(message = unicode(e))
-                    return HttpResponseRedirect(reverse('index'))
+                    return HttpResponseRedirect(reverse('askbot-index'))
 
             else:
                 request.session.flush()

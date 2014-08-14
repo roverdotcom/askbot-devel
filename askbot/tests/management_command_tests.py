@@ -2,7 +2,8 @@ from django.core import management
 from django.contrib import auth
 from askbot.tests.utils import AskbotTestCase
 from askbot import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from askbot.models import User
 
 class ManagementCommandTests(AskbotTestCase):
     def test_add_askbot_user(self):
