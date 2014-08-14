@@ -10,7 +10,7 @@
 <div class="message-details" data-message-id="{{ message.id }}">
     <input type="checkbox" />
     {{ gravatar(message.user, 24) }}
-    <a class="username" href="{{ message.user.get_absolute_url() }}">{{ message.user.username|escape }}</a>
+    <a class="username" href="{{ message.user.get_absolute_url() }}">{{ message.user.get_full_name()|escape }}</a>
     <a class="forum-post-link" href="{{ message.url }}">{{ message.message_type }}</a>
     ({{ timeago(message.timestamp) }})
     {#<div class="snippet">{{ message.snippet }}</div>#}
@@ -424,7 +424,7 @@ for the purposes of the AJAX comment editor #}
                             <a 
                                 class="author"
                                 href="{{comment.author.get_profile_url()}}"
-                            >{{comment.author.username|escape}}</a>
+                            >{{comment.author.get_full_name()|escape}}</a>
                             <span class="age">&nbsp;({{ timeago(comment.added_at) }})</span>
                             <a 
                                 id="post-{{comment.id}}-edit"
@@ -577,13 +577,13 @@ for the purposes of the AJAX comment editor #}
 
 {%- macro follow_user_toggle(visitor = None, subject = None) -%}
     {% if visitor.is_anonymous() %}
-        {{ follow_toggle(True, 'user', subject.username|escape, subject.id) }}
+        {{ follow_toggle(True, 'user', subject.get_full_name()|escape, subject.id) }}
     {% else %}
         {% if visitor != subject %}
             {% if visitor.is_following(subject) %}
-                {{ follow_toggle(False, 'user', subject.username|escape, subject.id) }}
+                {{ follow_toggle(False, 'user', subject.get_full_name()|escape, subject.id) }}
             {% else %}
-                {{ follow_toggle(True, 'user', subject.username|escape, subject.id) }}
+                {{ follow_toggle(True, 'user', subject.get_full_name()|escape, subject.id) }}
             {% endif %}
         {% endif %}
     {% endif %}
@@ -613,7 +613,7 @@ for the purposes of the AJAX comment editor #}
                 endtrans %}"
             title="{% trans 
                     country=user.country.name, 
-                    person=user.username|escape %}{{person}} is from {{country}}{%
+                    person=user.get_full_name()|escape %}{{person}} is from {{country}}{%
                  endtrans %}"
         />
     {% endif %}
@@ -649,8 +649,8 @@ for the purposes of the AJAX comment editor #}
 ><img class="gravatar" 
     width="{{size}}" height="{{size}}"
     src="{{ user.get_avatar_url(size) }}"
-    title="{{user.username|escape}}" 
-    alt="{% trans username=user.username|escape %}{{username}} gravatar image{% endtrans %}" 
+    title="{{user.get_full_name()|escape}}"
+    alt="{% trans username=user.get_full_name()|escape %}{{username}} gravatar image{% endtrans %}"
 /></a>
 {% endspaceless %}
 {%- endmacro -%}
@@ -659,7 +659,7 @@ for the purposes of the AJAX comment editor #}
     {% if user.website and (not user.is_blocked()) %}
         <a 
             href="{{user.website|escape}}"
-            title="{% trans username=user.username|escape, url=user.website|escape %}{{username}}'s website is {{url}}{% endtrans %}"
+            title="{% trans username=user.get_full_name()|escape, url=user.website|escape %}{{username}}'s website is {{url}}{% endtrans %}"
             {% if user.can_have_strong_url() == False %}
             rel="nofollow"
             {% endif %}
@@ -779,7 +779,7 @@ for the purposes of the AJAX comment editor #}
     {% if user.new_response_count > 0 or user.seen_response_count > 0 %}
     <a id='ab-responses' href="{{user.get_absolute_url()}}?sort=inbox&section=forum">
         <img 
-            alt="{% trans username=user.username|escape %}responses for {{username}}{% endtrans %}"
+            alt="{% trans username=user.get_full_name()|escape %}responses for {{username}}{% endtrans %}"
             {% if user.new_response_count > 0 %}
                 src="{{ "/images/mail-envelope-full.png"|media }}"
                 title="{% trans response_count=user.new_response_count %}you have {{response_count}} new response{% pluralize %}you have {{response_count}} new responses{% endtrans %}"

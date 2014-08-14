@@ -14,11 +14,11 @@
         {{ start_quote(quote_level) }}
 
             {% if recipient|can_see_private_user_data(post.author) %}
-                {% set author = post.author.username|escape ~ '/(' ~ mailto_link(post.author) ~ ')' %}
+                {% set author = post.author.get_full_name()|escape ~ '/(' ~ mailto_link(post.author) ~ ')' %}
             {% elif post.is_anonymous %}
                 {% set author = post.author.get_name_of_anonymous_user()|escape %}
             {% else %}
-                {% set author = post.author.username|escape %}
+                {% set author = post.author.get_full_name()|escape %}
             {% endif %}
 
             {% if post.post_type == 'question' %}

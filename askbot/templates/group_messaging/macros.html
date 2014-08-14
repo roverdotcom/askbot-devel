@@ -4,7 +4,7 @@
         {% if post.sender == visitor %}
             {% trans date=post.sent_at %}You wrote on {{ date }}:{% endtrans %}
         {% else %}
-            {% trans user=post.sender.username,
+            {% trans user=post.sender.get_full_name(),
                 date=post.sent_at
             %}{{ user }} wrote on {{ date }}:{% endtrans %}
         {% endif %}
