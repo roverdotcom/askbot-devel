@@ -18,7 +18,6 @@ from askbot.models import Group
 from askbot.search.state_manager import DummySearchState
 from django.utils import simplejson
 from django.utils import timezone
-from django.conf import settings as django_settings
 from askbot.conf import settings as askbot_settings
 from askbot.utils.timezone import get_tzinfo
 
