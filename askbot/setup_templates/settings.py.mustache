@@ -14,6 +14,10 @@ TEMPLATE_DEBUG = False  # keep false when debugging jinja2 templates
 INTERNAL_IPS = ('127.0.0.1',)
 ALLOWED_HOSTS = ['*',]#change this for better security on your site
 
+# Use timezone-aware datetime objects internally and store UTC times
+# in the database.
+USE_TZ = True
+
 ADMINS = (
     ('Your Name', 'your_email@domain.com'),
 )

@@ -6,6 +6,7 @@ from askbot.models.askbot_user import AskbotUser as User
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.html import escape
+from django.utils import timezone
 from askbot import const
 from django.core.urlresolvers import reverse
 
@@ -42,7 +43,7 @@ class Vote(models.Model):
     voted_post = models.ForeignKey('Post', related_name='votes')
 
     vote           = models.SmallIntegerField(choices=VOTE_CHOICES)
-    voted_at       = models.DateTimeField(default=datetime.datetime.now)
+    voted_at       = models.DateTimeField(default=timezone.now)
 
     objects = VoteManager()
 
@@ -136,7 +137,7 @@ class Award(models.Model):
     content_type   = models.ForeignKey(ContentType)
     object_id      = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
-    awarded_at = models.DateTimeField(default=datetime.datetime.now)
+    awarded_at = models.DateTimeField(default=timezone.now)
     notified   = models.BooleanField(default=False)
 
     def __unicode__(self):
@@ -181,7 +182,7 @@ class Repute(models.Model):
     positive = models.SmallIntegerField(default=0)
     negative = models.SmallIntegerField(default=0)
     question = models.ForeignKey('Post', null=True, blank=True)
-    reputed_at = models.DateTimeField(default=datetime.datetime.now)
+    reputed_at = models.DateTimeField(default=timezone.now)
     reputation_type = models.SmallIntegerField(choices=const.TYPE_REPUTATION)
     reputation = models.IntegerField(default=1)
 

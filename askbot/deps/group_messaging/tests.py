@@ -1,9 +1,9 @@
-import datetime
 import time
 import urlparse
 from bs4 import BeautifulSoup
 from django.test import TestCase
 from django.contrib.auth.models import User, Group
+from django.utils import timezone
 from group_messaging.models import Message
 from group_messaging.models import MessageMemo
 from group_messaging.models import SenderList
@@ -100,7 +100,7 @@ class ViewsTests(GroupMessagingTests):
                                                 user=self.sender,
                                                 message=root
                                             )
-        last_visit_time.at = datetime.datetime.now()
+        last_visit_time.at = timezone.now()
         last_visit_time.save()
         time.sleep(1.5)
 

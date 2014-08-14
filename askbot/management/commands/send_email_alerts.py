@@ -1,4 +1,3 @@
-import datetime
 from django.core.management.base import NoArgsCommand
 from django.core.urlresolvers import reverse
 from django.db import connection
@@ -9,6 +8,7 @@ from django.template.loader import get_template
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from django.utils.translation import activate as activate_language
+from django.utils import timezone
 from django.conf import settings as django_settings
 from askbot.conf import settings as askbot_settings
 from django.utils.datastructures import SortedDict
@@ -17,6 +17,7 @@ from askbot import const
 from askbot import mail
 from askbot.utils.slug import slugify
 from askbot.utils.html import site_url
+from askbot.utils.timezone import get_tzinfo
 
 DEBUG_THIS_COMMAND = False
 
@@ -342,7 +343,7 @@ class Command(NoArgsCommand):
                                         content_object=q, 
                                         activity_type=EMAIL_UPDATE_ACTIVITY
                                     )
-                emailed_at = datetime.datetime(1970, 1, 1)#long time ago
+                emailed_at = timezone.datetime(1970, 1, 1, tzinfo=get_tzinfo())  # long time ago
             except Activity.MultipleObjectsReturned:
                 raise Exception(
                                 'server error - multiple question email activities '
@@ -401,7 +402,7 @@ class Command(NoArgsCommand):
             else:
                 meta_data['skip'] = False
                 #print 'not skipping'
-                update_info.active_at = datetime.datetime.now() 
+                update_info.active_at = timezone.now()
                 if DEBUG_THIS_COMMAND == False:
                     update_info.save() #save question email update activity 
         #q_list is actually an ordered dictionary

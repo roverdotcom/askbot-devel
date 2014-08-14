@@ -1,6 +1,6 @@
 # encoding: utf-8
 import sys
-import datetime
+from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models

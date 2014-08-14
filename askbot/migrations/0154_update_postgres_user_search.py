@@ -1,6 +1,6 @@
 # encoding: utf-8
 import askbot
-import datetime
+from south.utils import datetime_utils as datetime
 import os
 from askbot.search import postgresql
 from south.db import db

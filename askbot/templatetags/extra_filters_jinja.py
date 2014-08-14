@@ -1,4 +1,3 @@
-import datetime
 import pytz
 import re
 import time
@@ -13,6 +12,7 @@ from django.template import defaultfilters
 from django.core.urlresolvers import reverse, resolve
 from django.http import Http404
 from django.utils import simplejson
+from django.utils import timezone
 from django.utils.text import truncate_html_words
 from askbot import exceptions as askbot_exceptions
 from askbot.conf import settings as askbot_settings
@@ -24,6 +24,7 @@ from askbot.utils import functions
 from askbot.utils import url_utils
 from askbot.utils.slug import slugify
 from askbot.utils.pluralization import py_pluralize as _py_pluralize
+from askbot.utils.timezone import get_tzinfo
 from askbot.shims.django_shims import ResolverMatch
 
 from django_countries import countries
@@ -33,15 +34,21 @@ register = coffin_template.Library()
 
 absolutize_urls = register.filter(absolutize_urls)
 
-TIMEZONE_STR = pytz.timezone(
-                    django_settings.TIME_ZONE
-                ).localize(
-                    datetime.datetime.now()
-                ).strftime('%z')
 
 @register.filter
 def add_tz_offset(datetime_object):
-    return str(datetime_object) + ' ' + TIMEZONE_STR
+    try:
+        return str(
+            datetime_object.astimezone(
+                pytz.timezone(django_settings.TIME_ZONE)
+            )
+        )
+    except ValueError:
+        return str(
+            pytz.timezone(django_settings.TIME_ZONE).localize(
+                datetime_object
+            )
+        )
 
 @register.filter
 def as_js_bool(some_object):
@@ -158,11 +165,17 @@ def split(string, separator):
 
 @register.filter
 def get_age(birthday):
-    current_time = datetime.datetime(*time.localtime()[0:6])
+    current_time = timezone.datetime(
+        *time.localtime()[0:6],
+        tzinfo=get_tzinfo()
+    )
     year = birthday.year
     month = birthday.month
     day = birthday.day
-    diff = current_time - datetime.datetime(year,month,day,0,0,0)
+    diff = current_time - timezone.datetime(
+        year, month, day, 0, 0, 0,
+        tzinfo=get_tzinfo()
+    )
     return diff.days / 365
 
 @register.filter

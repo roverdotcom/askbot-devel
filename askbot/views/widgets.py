@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from django.utils import timezone
 from django.template import RequestContext
 from django.template.loader import get_template
 from django.shortcuts import render
@@ -90,7 +89,7 @@ def ask_widget(request, widget_id):
 
             data_dict = {
                 'title': title,
-                'added_at': datetime.now(),
+                'added_at': timezone.now(),
                 'wiki': False,
                 'text': text,
                 'tagnames': tagnames,

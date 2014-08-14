@@ -2,12 +2,12 @@
 multiple login methods supported by the authenticator
 application
 """
-import datetime
 import logging
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings as django_settings
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 from askbot.deps.django_authopenid.models import UserAssociation
 from askbot.deps.django_authopenid import util
 from askbot.deps.django_authopenid.ldap_auth import ldap_authenticate
@@ -247,7 +247,7 @@ class AuthBackend(object):
 
         if assoc:
             #update last used time
-            assoc.last_used_timestamp = datetime.datetime.now()
+            assoc.last_used_timestamp = timezone.now()
             assoc.save()
         return user
 
@@ -290,5 +290,5 @@ class AuthBackend(object):
                     )
 
         assoc.openid_url = scrambled_password
-        assoc.last_used_timestamp = datetime.datetime.now()
+        assoc.last_used_timestamp = timezone.now()
         assoc.save()

@@ -1,4 +1,3 @@
-from datetime import datetime
 import random
 import string
 import logging
@@ -6,6 +5,7 @@ from django.db import models
 # from django.contrib.auth.models import User
 from askbot.models.askbot_user import AskbotUser as User
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 from askbot.models.post import Post
 from askbot.models.base import BaseQuerySetManager
 from askbot.conf import settings as askbot_settings
@@ -188,6 +188,6 @@ class ReplyAddress(models.Model):
                                 )
         result.thread.invalidate_cached_data()
         self.response_post = result
-        self.used_at = datetime.now()
+        self.used_at = timezone.now()
         self.save()
         return result

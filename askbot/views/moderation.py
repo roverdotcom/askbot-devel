@@ -2,7 +2,7 @@ from askbot.utils import decorators
 from askbot import const
 from askbot import models
 from askbot import mail
-from datetime import datetime
+from django.utils import timezone
 from django.utils.translation import string_concat
 from django.utils.translation import ungettext
 from django.utils.translation import ugettext as _
@@ -111,7 +111,7 @@ def moderate_post_edits(request):
             
             #approve revisions by the authors
             revisions = models.PostRevision.objects.filter(author__in=editors)
-            now = datetime.now()
+            now = timezone.now()
             revisions.update(approved=True, approved_at=now, approved_by=request.user)
             ct = ContentType.objects.get_for_model(models.PostRevision)
             mod_activity_types = (

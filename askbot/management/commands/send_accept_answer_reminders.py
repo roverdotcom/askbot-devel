@@ -1,4 +1,3 @@
-import datetime
 from django.core.management.base import NoArgsCommand
 from django.conf import settings as django_settings
 from django.template.loader import get_template
