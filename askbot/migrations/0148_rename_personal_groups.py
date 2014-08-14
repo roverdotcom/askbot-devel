@@ -4,7 +4,7 @@ old format: _internal_<username>_<user_id>
 new format: _personal_<user_id>
 """
 
-import datetime
+from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models

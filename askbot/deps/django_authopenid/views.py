@@ -31,7 +31,6 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import cgi
-import datetime
 from django.http import HttpResponseRedirect, Http404
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
@@ -52,6 +51,7 @@ from django.utils.html import escape
 from django.utils.translation import ugettext as _
 from django.utils.safestring import mark_safe
 from django.utils import simplejson
+from django.utils import timezone
 from askbot.mail import send_mail
 from askbot.utils import decorators as askbot_decorators
 from askbot.utils.html import site_url
@@ -113,7 +113,7 @@ def create_authenticated_user_account(
             openid_url = user_identifier,
             user = user,
             provider_name = login_provider_name,
-            last_used_timestamp = datetime.datetime.now()
+            last_used_timestamp = timezone.now()
         ).save()
 
     subscribe_form = askbot_forms.SimpleEmailSubscribeForm({'subscribe': 'y'})
@@ -552,7 +552,7 @@ def signin(request, template_name='authopenid/signin.html'):
                                 openid_url=email,
                                 user=user,
                                 provider_name='mozilla-persona',
-                                last_used_timestamp=datetime.datetime.now()
+                                last_used_timestamp=timezone.now()
                             ).save()
 
                     if user:
@@ -954,7 +954,7 @@ def finalize_generic_signin(
                     user=request.user,
                     provider_name=login_provider_name,
                     openid_url=user_identifier,
-                    last_used_timestamp=datetime.datetime.now()
+                    last_used_timestamp=timezone.now()
                 ).save()
                 return HttpResponseRedirect(redirect_url)
 

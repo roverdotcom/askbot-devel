@@ -5,6 +5,7 @@ from askbot.utils.slug import slugify
 from askbot.utils.jive import JiveConverter
 from askbot.utils.jive import internal_link_re
 from askbot.utils.file_utils import make_file_name
+from askbot.utils.timezone import get_tzinfo
 from bs4 import BeautifulSoup
 from django.conf import settings as django_settings
 from django.core.management.base import BaseCommand, CommandError
@@ -12,7 +13,7 @@ from django.db import transaction
 #from askbot.utils.transaction import dummy_transaction as transaction
 from django.forms import EmailField, ValidationError
 from django.utils import translation
-from datetime import datetime
+from django.utils import timezone
 from optparse import make_option
 import re
 import os
@@ -52,7 +53,12 @@ FILE_TYPES = {
 jive = JiveConverter()
 
 def parse_date(date_str):
-    return datetime.strptime(date_str[:-8], '%Y/%m/%d %H:%M:%S')
+    return timezone.datetime.strptime(
+        date_str[:-8],
+        '%Y/%m/%d %H:%M:%S'
+    ).replace(
+        tzinfo=get_tzinfo()
+    )
 
 def fix_internal_links_in_post(post):
     """will replace old internal urls with the new ones."""

@@ -1,5 +1,5 @@
 # encoding: utf-8
-import datetime
+from south.utils import datetime_utils as datetime
 
 from django.db import models
 
