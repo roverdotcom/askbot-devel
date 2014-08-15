@@ -12,6 +12,7 @@ from django.contrib.auth import get_user
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.models import User
 from django.utils.functional import SimpleLazyObject
+from askbot.models import AskbotUser
 
 
 def get_askbot_user(request):
@@ -24,7 +25,7 @@ def get_askbot_user(request):
             isinstance(request._cached_user, User):
         user = get_user(request)
         if not isinstance(user, AnonymousUser):
-            user = user.askbot_user
+            user = AskbotUser.objects.get_or_create(user=user)
         request._cached_user = user
     return request._cached_user
 
