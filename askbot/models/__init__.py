@@ -7,11 +7,11 @@ from askbot.models.askbot_user import AskbotUser
 User = AskbotUser
 
 # set up a possibility for the users to follow others
-try:
-    import followit
-    followit.register(User)
-except ImportError:
-    pass
+# try:
+#     import followit
+#     followit.register(User)
+# except ImportError:
+#     pass
 
 import collections
 import datetime

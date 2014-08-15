@@ -191,7 +191,7 @@ INSTALLED_APPS = (
     'django_countries',
     'djcelery',
     'djkombu',
-    'followit',
+    # 'followit',
     'tinymce',
     #'avatar',#experimental use git clone git://github.com/ericflo/django-avatar.git$
 

@@ -29,7 +29,7 @@ urlpatterns += patterns('',
     (r'^admin/', include(admin.site.urls)),
     #(r'^cache/', include('keyedcache.urls')), - broken views disable for now
     #(r'^settings/', include('askbot.deps.livesettings.urls')),
-    (r'^followit/', include('followit.urls')),
+    # (r'^followit/', include('followit.urls')),
     (r'^tinymce/', include('tinymce.urls')),
     (r'^robots.txt$', include('robots.urls')),
     url( # TODO: replace with django.conf.urls.static ?
