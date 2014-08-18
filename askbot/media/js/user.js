@@ -833,17 +833,17 @@ FollowUser.prototype.go = function(){
         return;
     }
     var user_id = this._user_id;
-    // if (this._available_action === 'follow'){
-    //     var url = askbot['urls']['follow_user'];
-    // } else {
-    //     var url = askbot['urls']['unfollow_user'];
-    // }
+    if (this._available_action === 'follow'){
+        var url = askbot['urls']['follow_user'];
+    } else {
+        var url = askbot['urls']['unfollow_user'];
+    }
     var me = this;
     $.ajax({
         type: 'POST',
         cache: false,
         dataType: 'json',
-        // url: url.replace('{{userId}}', user_id),
+        url: url.replace('{{userId}}', user_id),
         success: function(){ me.toggleState() }
     });
 };
