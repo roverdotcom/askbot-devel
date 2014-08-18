@@ -1101,7 +1101,8 @@ def user(request, id, slug=None, tab_name=None):
         'view_user': profile_owner,
         'can_show_karma': can_show_karma,
         'search_state': search_state,
-        'user_follow_feature_on': ('followit' in django_settings.INSTALLED_APPS),
+        # 'user_follow_feature_on': ('followit' in django_settings.INSTALLED_APPS),
+        'user_follow_feature_on': (True),
     }
     if CUSTOM_TAB:
         context['custom_tab_name'] = CUSTOM_TAB['NAME']
