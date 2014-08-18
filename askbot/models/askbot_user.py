@@ -263,7 +263,11 @@ class AskbotUser(models.Model):
     Replaces monkey-patched auth User model.
     """
     user = models.OneToOneField(AuthUser, related_name='askbot_user')
-    following = models.ManyToManyField('self', related_name='followed_by')
+    following = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        related_name='followed_by'
+    )
 
     objects = AskbotUserManager.for_queryset_class(
         AskbotUserQuerySet
