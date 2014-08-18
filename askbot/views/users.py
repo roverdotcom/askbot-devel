@@ -850,7 +850,6 @@ def user_network(request, user, context):
     }
     context.update(data)
     return render(request, 'user_profile/user_network.html', context)
-    raise Http404
 
 @owner_or_moderator_required
 def user_votes(request, user, context):
