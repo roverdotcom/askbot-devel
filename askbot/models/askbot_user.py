@@ -263,6 +263,7 @@ class AskbotUser(models.Model):
     Replaces monkey-patched auth User model.
     """
     user = models.OneToOneField(AuthUser, related_name='askbot_user')
+    following = models.ManyToManyField('self', related_name='followed_by')
 
     objects = AskbotUserManager.for_queryset_class(
         AskbotUserQuerySet
@@ -334,6 +335,21 @@ class AskbotUser(models.Model):
         # populated by pre_save handlers. Vexing.
         self.user.save()
         super(AskbotUser, self).save(*args, **kwargs)
+
+    def get_followers(self):
+        return self.followed_by.all()
+
+    def get_followed_users(self):
+        return self.following.all()
+
+    def is_following(self, user):
+        return user in self.following.all()
+
+    def follow_user(self, user):
+        self.following.add(user)
+
+    def unfollow_user(self, user):
+        self.following.remove(user)
 
 
 @receiver(post_save, sender=AuthUser)
