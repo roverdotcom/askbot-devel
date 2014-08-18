@@ -69,6 +69,10 @@ def create_user(
     """
     user = models.AskbotUser.objects.create_user(username, email)
 
+    user.first_name = 'Tomjon'
+    user.last_name = 'Billybobson'
+    user.save()
+
     user.reputation = reputation
     if date_joined is not None:
         user.date_joined = date_joined
