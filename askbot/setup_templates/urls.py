@@ -13,6 +13,8 @@ from askbot.views.error import internal_error as handler500
 from django.conf import settings
 from django.contrib import admin
 
+from askbot.views import askbot_user
+
 admin.autodiscover()
 
 if getattr(settings, 'ASKBOT_MULTILINGUAL', False) == True:
@@ -29,7 +31,17 @@ urlpatterns += patterns('',
     (r'^admin/', include(admin.site.urls)),
     #(r'^cache/', include('keyedcache.urls')), - broken views disable for now
     #(r'^settings/', include('askbot.deps.livesettings.urls')),
-    (r'^followit/', include('followit.urls')),
+    # (r'^followit/', include('followit.urls')),
+    url(
+        r'^followit/follow/(?P<model_name>\w+)/(?P<object_id>\d+)/$',
+        askbot_user.FollowUser.as_view(),
+        name='follow_object'
+    ),
+    url(
+        r'^followit/unfollow/(?P<model_name>\w+)/(?P<object_id>\d+)/$',
+        askbot_user.UnfollowUser.as_view(),
+        name='unfollow_object'
+    ),
     (r'^tinymce/', include('tinymce.urls')),
     (r'^robots.txt$', include('robots.urls')),
     url( # TODO: replace with django.conf.urls.static ?

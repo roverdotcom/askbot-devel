@@ -841,8 +841,8 @@ def user_responses(request, user, context):
     return render(request, template, context)
 
 def user_network(request, user, context):
-    if 'followit' not in django_settings.INSTALLED_APPS:
-        raise Http404
+    # if 'followit' not in django_settings.INSTALLED_APPS:
+    #     raise Http404
     data = {
         'tab_name': 'network',
         'followed_users': user.get_followed_users(),
@@ -1101,7 +1101,8 @@ def user(request, id, slug=None, tab_name=None):
         'view_user': profile_owner,
         'can_show_karma': can_show_karma,
         'search_state': search_state,
-        'user_follow_feature_on': ('followit' in django_settings.INSTALLED_APPS),
+        # 'user_follow_feature_on': ('followit' in django_settings.INSTALLED_APPS),
+        'user_follow_feature_on': (True),
     }
     if CUSTOM_TAB:
         context['custom_tab_name'] = CUSTOM_TAB['NAME']
