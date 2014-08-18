@@ -4,7 +4,7 @@ Hello, this is a {{site_title}} forum feedback message.
 {% endtrans %}
 {% endspaceless %}
 {% if user.is_authenticated() -%}
-    {{user.username|safe}} ({{user.email|safe}}, ip:{{request.META.REMOTE_ADDR}})
+    {{user.get_full_name()|safe}} ({{user.email|safe}}, ip:{{request.META.REMOTE_ADDR}})
 {%- else %}
     {%- if name %}{{name|safe}} {% else %}{% trans %}Anonymous{% endtrans %} {% endif -%}
     ({%- if email %}, {% endif -%}ip:{{request.META.REMOTE_ADDR}})

@@ -6,7 +6,7 @@
 <div class="user-card">
     {{ macros.gravatar(user, 32) }}
     <div class="user-info">
-        <a href="{{ user.get_profile_url() }}">{{ user.username|escape }}</a>
+        <a href="{{ user.get_profile_url() }}">{{ user.get_full_name()|escape }}</a>
         {{ macros.user_country_flag(user) }}
 
         <br/>

@@ -9,7 +9,7 @@
     <li><a data-sender-id="{{ request_user_id }}">{% trans %}sent{% endtrans %}</a></li>
     {% for sender in senders %}
         {% if sender.id != request_user_id %}
-            <li><a data-sender-id="{{ sender.id }}">{{ sender.username|escape }}</a></li>
+            <li><a data-sender-id="{{ sender.id }}">{{ sender.get_full_name()|escape }}</a></li>
         {% endif %}
     {% endfor %}
     {# -2 is deleted messages #}

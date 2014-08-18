@@ -362,6 +362,10 @@ class AskbotUser(models.Model):
     def unfollow_user(self, user):
         self.following.remove(user)
 
+    def get_full_name(self):
+        """Return first name and last initial, separated by a space."""
+        return ' '.join([self.user.first_name, self.user.last_name[0] + '.'])
+
 
 @receiver(post_save, sender=AuthUser)
 def create_corresponding_askbot_user(sender, instance, created, **kwargs):
