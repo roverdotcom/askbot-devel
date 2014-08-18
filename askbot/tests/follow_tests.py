@@ -1,13 +1,12 @@
-# from django.conf import settings as django_settings
-# from askbot.tests.utils import AskbotTestCase
+from django.conf import settings as django_settings
+from askbot.tests.utils import AskbotTestCase
 
-# if 'followit' in django_settings.INSTALLED_APPS:
-#     TEST_PROTOTYPE = AskbotTestCase
-# else:
-#     TEST_PROTOTYPE = object
+if 'followit' in django_settings.INSTALLED_APPS:
+    TEST_PROTOTYPE = AskbotTestCase
+else:
+    TEST_PROTOTYPE = object
 
-# class FollowUserTests(TEST_PROTOTYPE):
-class FollowUserTests(object):
+class FollowUserTests(TEST_PROTOTYPE):
 
     def setUp(self):
         self.u1 = self.create_user('user1')
