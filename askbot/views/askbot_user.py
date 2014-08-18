@@ -1,4 +1,6 @@
 from django.views.generic.base import View
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.http import HttpResponse
 from django.utils import simplejson
 from askbot.models import User
@@ -26,6 +28,10 @@ class FollowUser(View):
             content_type='application/json'
         )
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(FollowUser, self).dispatch(*args, **kwargs)
+
 
 class UnfollowUser(View):
     """Allow AskbotUsers to unfollow followed AskbotUsers."""
@@ -45,3 +51,7 @@ class UnfollowUser(View):
             simplejson.dumps(response_content),
             content_type='application/json'
         )
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(UnfollowUser, self).dispatch(*args, **kwargs)
