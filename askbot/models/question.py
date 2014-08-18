@@ -376,6 +376,8 @@ class ThreadManager(BaseQuerySetManager):
             # if 'followit' in django_settings.INSTALLED_APPS:
             #     followed_users = request_user.get_followed_users()
             #     followed_filter |= models.Q(posts__post_type__in=('question', 'answer'), posts__author__in=followed_users)
+            followed_users = request_user.get_followed_users()
+            followed_filter |= models.Q(posts__post_type__in=('question', 'answer'), posts__author__in=followed_users)
 
             #a special case: "personalized" main page only ==
             #if followed is the only available scope
