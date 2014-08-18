@@ -346,7 +346,14 @@ class AskbotUser(models.Model):
         return user in self.following.all()
 
     def follow_user(self, user):
-        self.following.add(user)
+        """Follow the specified User. Returns True or False to indicate
+        whether this is a new relationship (for compliance with Askbot).
+        """
+        if user in self.following.all():
+            return True
+        else:
+            self.following.add(user)
+            return False
 
     def unfollow_user(self, user):
         self.following.remove(user)
