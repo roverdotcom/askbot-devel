@@ -335,6 +335,10 @@ class AskbotUser(models.Model):
         self.user.save()
         super(AskbotUser, self).save(*args, **kwargs)
 
+    def get_full_name(self):
+        """Return first name and last initial, separated by a space."""
+        return ' '.join([self.user.first_name, self.user.last_name[0] + '.'])
+
 
 @receiver(post_save, sender=AuthUser)
 def create_corresponding_askbot_user(sender, instance, created, **kwargs):
