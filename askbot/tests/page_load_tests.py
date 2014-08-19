@@ -811,8 +811,7 @@ class UserProfilePageTests(AskbotTestCase):
         user2 = self.create_user('user2')
         user2.follow_user(self.user)
         self.user.follow_user(user2)
-        name_slug = slugify(self.user.username)
-        kwargs={'id': self.user.id, 'slug': name_slug}
+        kwargs={'id': self.user.id}
         url = reverse('user_profile', kwargs=kwargs)
         response = self.client.get(url, data={'sort':'network'})
         self.assertEqual(response.status_code, 200)
