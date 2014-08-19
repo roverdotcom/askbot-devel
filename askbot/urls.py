@@ -114,6 +114,7 @@ urlpatterns = patterns('',
         views.users.user_select_languages,
         name = 'user_select_languages'
     ),
+    # THIS URL
     url(
         r'^%s(?P<id>\d+)/(?P<slug>.+)/$' % _('users/'),
         views.users.user,
