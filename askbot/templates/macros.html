@@ -650,7 +650,7 @@ for the purposes of the AJAX comment editor #}
     width="{{size}}" height="{{size}}"
     src="{{ user.get_avatar_url(size) }}"
     title="{{user.get_full_name()|escape}}"
-    alt="{% trans username=user.get_full_name()|escape %}{{username}} gravatar image{% endtrans %}"
+    alt="{% trans username=user.get_full_name()|escape %}{{username}}'s profile image{% endtrans %}"
 /></a>
 {% endspaceless %}
 {%- endmacro -%}
