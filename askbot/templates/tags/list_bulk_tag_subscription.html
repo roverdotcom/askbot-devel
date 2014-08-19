@@ -32,7 +32,7 @@
             {% set comma=joiner(',') %}
             <td>{%for user in subscription.users.all() %}{{ comma() }}
                 <a 
-                    href='{% url user_profile user.id, user.username|slugify %}'
+                    href='{% url user_profile user.id %}'
                 >{{user.get_full_name()}}</a>{%endfor%} <a href='#'>
             </td>
             {% if settings.GROUPS_ENABLED %}
