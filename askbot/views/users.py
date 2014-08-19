@@ -954,10 +954,7 @@ def user_select_languages(request, id=None):
     user.languages = ' '.join(languages)
     user.save()
 
-    redirect_url = reverse(
-        'user_subscriptions',
-        kwargs={'id': user.id}
-    )
+    redirect_url = reverse('user_subscriptions', kwargs={'id': user.id})
     return HttpResponseRedirect(redirect_url)
 
 
