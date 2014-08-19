@@ -30,7 +30,7 @@
     <h2>{% trans %}Subscribed languages{% endtrans %}</h2>
     <form
         method="post" 
-        action="{% url user_select_languages view_user.id, view_user.username|slugify %}"
+        action="{% url user_select_languages view_user.id %}"
     >{% csrf_token %}
         <select multiple name="languages">
         {% for lang in settings.LANGUAGES_DICT %}

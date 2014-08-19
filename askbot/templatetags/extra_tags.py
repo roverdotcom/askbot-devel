@@ -6,7 +6,6 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from askbot.utils import functions
-from askbot.utils.slug import slugify
 from askbot.conf import settings as askbot_settings
 
 register = template.Library()
@@ -30,11 +29,7 @@ def gravatar(user, size):
     """
     #todo: rewrite using get_from_dict_or_object
     user_id = functions.get_from_dict_or_object(user, 'id')
-    slug = slugify(user.username)
-    user_profile_url = reverse(
-                        'user_profile',
-                        kwargs={'id':user_id, 'slug':slug}
-                    )
+    user_profile_url = reverse('user_profile', kwargs={'id': user_id})
     #safe_username = template.defaultfilters.urlencode(username)
     return mark_safe(GRAVATAR_TEMPLATE % {
         'gravatar_url': askbot_settings.GRAVATAR_BASE_URL,

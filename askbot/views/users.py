@@ -941,7 +941,7 @@ def user_favorites(request, user, context):
 
 
 @csrf.csrf_protect
-def user_select_languages(request, id=None, slug=None):
+def user_select_languages(request, id=None):
     if request.method != 'POST':
         raise django_exceptions.PermissionDenied
 
@@ -954,10 +954,7 @@ def user_select_languages(request, id=None, slug=None):
     user.languages = ' '.join(languages)
     user.save()
 
-    redirect_url = reverse(
-        'user_subscriptions',
-        kwargs={'id': user.id, 'slug': slugify(user.username)}
-    )
+    redirect_url = reverse('user_subscriptions', kwargs={'id': user.id})
     return HttpResponseRedirect(redirect_url)
 
 
@@ -1054,13 +1051,10 @@ if CUSTOM_TAB:
     USER_VIEW_CALL_TABLE[CUSTOM_SLUG] = user_custom_tab
 
 #todo: rename this function - variable named user is everywhere
-def user(request, id, slug=None, tab_name=None):
+def user(request, id, tab_name=None):
     """Main user view function that works as a switchboard
 
     id - id of the profile owner
-
-    todo: decide what to do with slug - it is not used
-    in the code in any way
     """
     profile_owner = get_object_or_404(models.User, id = id)
 
@@ -1109,7 +1103,7 @@ def user(request, id, slug=None, tab_name=None):
         context['custom_tab_slug'] = CUSTOM_TAB['SLUG']
     return user_view_func(request, profile_owner, context)
 
-def groups(request, id = None, slug = None):
+def groups(request, id = None):
     """output groups page
     """
     if askbot_settings.GROUPS_ENABLED == False:

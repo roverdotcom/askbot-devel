@@ -67,7 +67,6 @@ from askbot.models.meta import ImportRun, ImportedObjectInfo
 from askbot import auth
 from askbot.utils.decorators import auto_now_timestamp
 from askbot.utils.markup import URL_RE
-from askbot.utils.slug import slugify
 from askbot.utils.html import replace_links_with_text
 from askbot.utils.html import sanitize_html
 from askbot.utils.html import site_url
@@ -2396,7 +2395,7 @@ def user_get_profile_url(self, profile_section=None):
     """Returns the URL for this User's profile."""
     url = reverse(
             'user_profile',
-            kwargs={'id':self.id, 'slug':slugify(self.username)}
+            kwargs={'id':self.id}
         )
     if profile_section:
         url += "?sort=" + profile_section
@@ -3245,10 +3244,7 @@ def format_instant_notification_email(
 
     user_subscriptions_url = reverse(
                                     'user_subscriptions',
-                                    kwargs = {
-                                        'id': to_user.id,
-                                        'slug': slugify(to_user.username)
-                                    }
+                                    kwargs = {'id': to_user.id}
                                 )
     update_data = {
         'admin_email': askbot_settings.ADMIN_EMAIL,

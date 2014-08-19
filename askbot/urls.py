@@ -98,7 +98,7 @@ urlpatterns = patterns('',
         name ='edit_user'
     ),
     url(
-        r'^%s(?P<id>\d+)/(?P<slug>.+)/%s$' % (
+        r'^%s(?P<id>\d+)/%s$' % (
             _('users/'),
             _('subscriptions/'),
         ),
@@ -107,7 +107,7 @@ urlpatterns = patterns('',
         name = 'user_subscriptions'
     ),
     url(
-        r'^%s(?P<id>\d+)/(?P<slug>.+)/%s$' % (
+        r'^%s(?P<id>\d+)/%s$' % (
             _('users/'),
             _('select_languages/'),
         ),
@@ -115,7 +115,7 @@ urlpatterns = patterns('',
         name = 'user_select_languages'
     ),
     url(
-        r'^%s(?P<id>\d+)/(?P<slug>.+)/$' % _('users/'),
+        r'^%s(?P<id>\d+)/$' % _('users/'),
         views.users.user,
         name='user_profile'
     ),
