@@ -1,0 +1,23 @@
+.rover-table {
+    @extend .table;
+    @extend .table-striped;
+    @extend .table-bordered;
+    > thead > tr > th {
+        border-bottom-color: darken($table-border-color, 20%);
+        font-size: 16px;
+        font-weight: normal;
+        background-color: $table-bg-accent;
+    }
+    > tbody > tr:nth-child(odd) {
+        > td,
+        > th {
+            background-color: #fff;
+        }
+    }
+    > tbody > tr:nth-child(even) {
+        > td,
+        > th {
+            background-color: $table-bg-accent;
+        }
+    }
+}

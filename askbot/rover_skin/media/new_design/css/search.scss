@@ -1,0 +1,647 @@
+/* ==========================================================================
+ * Main Search Page Styles
+ * ========================================================================== */
+
+.search-page {
+
+    @include not-xs {
+        background-color: $gray-lighter;
+    }
+
+    /* Filters and Results Container
+     * ===================================================================== */
+
+    .search-col-wrap {
+        @include not-xs {
+            background-color: white;
+            border: 1px solid $border-color;
+        }
+     }
+
+
+    /* Basic Filter Styles
+     * ===================================================================== */
+
+    .basic-filters {
+
+        @include not-xs {
+            padding: 15px 0 15px;
+        }
+
+        .search-section {
+            margin-bottom: 10px;
+
+            @include lg-only {
+                margin-bottom: 0;
+            }
+        }
+
+        .heading {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: $gray-light;
+            margin-bottom: 5px;
+        }
+
+        // Button group tweaks: max width, fixed height, text-wrapping
+        .rover-btn-group {
+            width: 100%;
+            .rover-btn {
+                white-space: normal;
+                height: $input-height-base;
+            }
+        }
+
+        // We need to shrink different button groups at different breakpoints
+        // so we'll use a mixin
+        @mixin search-group-btn-sm {
+            font-size: $font-size-small;
+            padding: $padding-small-vertical $padding-small-horizontal;
+            line-height: 1.2;
+        }
+
+
+        // Section tweaks
+        .type {
+
+            .rover-btn {
+                width: 50%;
+
+                @include lg-only {
+                    @include search-group-btn-sm;
+                }
+            }
+        }
+
+        .dog-size {
+
+            .rover-btn {
+                width: 25%;
+                @include search-group-btn-sm;
+            }
+        }
+
+        .price-slider {
+
+            height: $input-height-base;
+
+            .price-label-wrap {
+                width: 25px;
+            }
+
+            .control-wrap {
+                padding: 0 20px;
+            }
+        }
+    }
+
+    .mobile-filters-wrap {
+        padding: 0 10px 10px;
+    }
+
+
+    /* Advanced Filter Styles
+     * ===================================================================== */
+
+    .advanced-filters-bar {
+
+        &.fixed {
+            position: fixed;
+            background: white;
+            z-index: 1000;
+            border-bottom: 1px solid $border-color;
+            @include box-drop-shadow;
+        }
+
+        @include not-xs {
+            padding: 10px 20px;
+        }
+
+        .search-results-count-container {
+            font-size: 14px;
+            color: $orange;
+            font-weight: bold;
+            padding-top: 5px;
+        }
+
+    }
+
+
+
+    .advanced-filters-wrap {
+        @include not-xs {
+            background-color: $gray-lighter;
+            padding: 0px 20px 0px 20px;
+        }
+
+        .adv-filter-label {
+            font-size: $font-size-base;
+        }
+
+        .advanced-filter-row {
+            @extend .small-text;
+            padding-top: 10px;
+        }
+    }
+
+
+    /* Search Results
+     * ===================================================================== */
+
+    .search-main {
+        @include make-sm-column(8,0);
+
+    }
+    .search-sidebar {
+        @include make-sm-column(4,0);
+    }
+
+    .search-geo-box {
+        display: none;
+        border-bottom: 1px solid $border-color;
+        border-right: 1px solid $border-color;
+    }
+
+    // Layout for large map state
+    .large-map-active {
+        .search-main {
+            @include make-sm-column(5,0);
+        }
+        .search-sidebar {
+            @include make-sm-column(7,0);
+        }
+    }
+
+    .search-results-wrap {
+        @include not-xs {
+            border-right: 1px solid $border-color;
+        }
+
+
+        // No results
+        .empty {
+            min-height: 336px;
+            width: 100%;
+
+            @include xs-only {
+                min-height: 200px;
+            }
+        }
+     }
+
+    .search-right-col {
+        position: relative;
+    }
+
+    .search-right-col-container {
+        &.fixed {
+            position: fixed;
+
+            &.fixed-bottom {
+                position: absolute;
+            }
+        }
+    }
+
+
+    /* Sitter Card - an individual search result
+     * ===================================================================== */
+
+    .sitter-card {
+
+        $custom-yellow: #edda1d;
+        padding: 15px 20px;
+        margin-top: 0;
+        position: relative;
+
+        // Highlight style
+        &:hover,
+        &.active {
+            box-shadow: inset 4px 0 0 0 $orange;
+        }
+
+        // The search results container has a border-bottom, so
+        // last card doesn't need one
+        &:last-child {
+            border-bottom: none;
+        }
+
+        .sitter-photo-section {
+            margin-right: 15px;
+
+            // Increase click target width for carousel control
+            // since the photo is linked behind it.
+            .carousel-control {
+                width: 35%;
+
+                .left-control { left: 10%; }
+                .right-control { right: 10%; }
+            }
+
+            .fb-friend-wrap {
+                max-width: 150px;
+
+                .media-object {
+                    margin-right: 5px;
+                    padding-top: 1px;
+                }
+            }
+
+            .item {
+                overflow: hidden;
+                height: 150px;
+                width: 150px;
+
+                img {
+                  width: 100%;
+                }
+            }
+        }
+
+        .sitter-info-section {
+            @extend .padding-right-x3;
+
+            .search-index {
+                font-size: 0.9em;
+            }
+
+            .sitter-desc {
+                padding: 2px 0;
+                line-height: 1.4em;
+            }
+
+            .sitter-location {
+                margin-bottom: 15px;
+            }
+
+            .sitter-earned-badges {
+                img {
+                    @extend .margin-right-x1;
+                    display: inline-block;
+                    vertical-align: top;
+
+                    @include xs-only {
+                        max-width: 16px;
+                        height: auto;
+                    }
+                }
+            }
+
+            .review-summary-wrap {
+                @include xs-only {
+                    margin-top: 5px;
+                }
+            }
+
+            .review-stars {
+                color: $custom-yellow;
+                margin-right: 7px;
+            }
+
+            .review-count {
+                padding: 2px 4px;
+                display: inline-block;
+                border: 1px solid rgba($aqua, .3);
+                border-radius: 4px;
+                text-transform: uppercase;
+
+                &:hover {
+                    text-decoration: none;
+                    background-color: $aqua;
+                    color: white;
+                }
+
+            }
+
+            .review-wrap {
+                margin: 0;
+                padding: 10px 0 15px;
+
+                p {
+                    margin: 0;
+                }
+            }
+
+            .review-img {
+                margin: 5px 5px 0 0;
+            }
+
+            .review-content {
+                line-height: normal;
+            }
+        }
+
+        .sitter-price-section {
+            padding-top: 30px;
+
+            .price-wrap {
+                display: inline-block;
+                float: right;
+            }
+
+            .price {
+                display: inline-block;
+                position: relative;
+                font-size: 30px;
+                line-height: 1.2;
+            }
+
+            .currency-symbol {
+                position: absolute;
+                font-size: 18px;
+                top: 10px;
+                left: -10px;
+            }
+        }
+
+        .sitter-card-footer {
+            @include not-xs {
+                border-top: 1px solid lighten($border-color, 10%);
+                padding-top: 10px;
+            }
+        }
+
+        .sitter-attributes {
+            margin-bottom: 0;
+            font-size: 13px;
+
+            .fa-check {
+                color: $custom-yellow;
+            }
+        }
+
+        .sitter-attribute {
+            color: lighten($gray-light, 5%);
+        }
+
+        .sitter-actions {
+            text-align: right;
+        }
+
+        .sitter-save {
+            .copy-saved { display: none; }
+            .save-icon { color: $gray-light; }
+
+            &.active {
+                .copy-saved { display: inline; }
+                .copy-unsaved { display: none; }
+                .save-icon { color: red; }
+            }
+        }
+    }
+
+    // Constrained sitter card styles
+    // This has to be a mixin because it is applied both by a media
+    // query and a parent class
+    @mixin sitter-card-constrained-overrides() {
+        padding: 10px;
+
+        .ribbon-callout {
+            display: none;
+        }
+
+        .sitter-photo-section {
+
+            .sitter-carousel-wrap {
+                width: 75px;
+            }
+
+            .carousel-control {
+                display: none;
+            }
+
+            .item {
+                width: 75px;
+                height: 75px;
+            }
+
+            .fb-friend-wrap {
+                display: none;
+            }
+        }
+
+        .sitter-info-section {
+
+            .sitter-card-title {
+                font-size: 18px;
+            }
+
+            .sitter-location {
+                margin-bottom: 2px;
+            }
+
+            .sitter-desc {
+                display: none;
+            }
+
+            .review-wrap {
+                display: none;
+            }
+
+            .review-summary-wrap {
+                margin-top: 5px;
+            }
+        }
+
+        .sitter-price-section {
+            padding-top: 0;
+
+            .price {
+                font-size: 24px;
+            }
+        }
+
+        .sitter-card-footer {
+            margin: 10px 0 5px;
+            padding-top: 5px;
+
+            .save-button-copy {
+                display: none;
+            }
+        }
+    }
+
+    // Sitter card  on small screens
+    .sitter-card {
+        @include xs-only {
+            @include sitter-card-constrained-overrides;
+
+            .price-wrap {
+                // @fragile - Make sure price wrap doesn't overrun
+                // absolutely positioned sitter save button
+                margin-bottom: 30px;
+            }
+
+            .sitter-card-footer {
+                margin: 0;
+                padding: 0;
+            }
+
+            .sitter-save {
+                // @fragile - breaking the save button out of the footer
+                // mobile because rest of footer content is hidden
+                position: absolute;
+                bottom: 10px;
+                right: 20px;
+            }
+        }
+    }
+
+    // Sitter card when map is large
+    .large-map-active {
+        .sitter-card {
+            @include sitter-card-constrained-overrides;
+        }
+    }
+
+    /* Map
+     * ===================================================================== */
+    .map-controls {
+        @extend .small-text;
+        width: 100%;
+        padding: 5px;
+    }
+
+    .shrink-map-label {
+        display: none;
+    }
+
+    .search-map-redo-view {
+        text-align: right;
+    }
+
+    .search-map {
+        background-color: $gray-lighter;
+        height: 300px;
+        z-index: 100;
+    }
+
+    .search-map-redo-button {
+        height: 18px;
+    }
+
+
+    // Changes in large map state
+    .large-map-active {
+
+        .shrink-map-label {
+            display: inline;
+        }
+
+        .enlarge-map-label {
+            display: none;
+        }
+
+        .search-map {
+            height: 450px;
+        }
+    }
+
+
+
+    /* Misc
+     * ===================================================================== */
+
+    @mixin search-bar($height) {
+        height: $height;
+        line-height: $height;
+        overflow: hidden;
+        color: white;
+        background-color: $green-light;
+        font-size: 14px;
+    }
+
+    .insurance-bar {
+        @include search-bar(45px);
+        text-align: center;
+
+        @include lg-only {
+            @include img-retina('../images/search/rover-search-cap.png', '../images/search/rover-search-cap@2x.png', 38px, 28px);
+            background-repeat: no-repeat;
+            background-position: 15% center;
+        }
+
+        .rover-benefits {
+            margin: 0;
+        }
+    }
+
+    .popover-debug-data-button {
+        display: inline-block;
+    }
+
+    .popover.debug-data {
+        max-width: 100%;
+    }
+
+    .alternate-search-bar {
+        @include search-bar(35px);
+        padding-left: 20px;
+    }
+
+    .premier-search {
+      padding: 10px;
+      border-bottom: 1px solid $border-color;
+      min-height: 74px;
+    }
+
+    // CSS ribbon
+    .ribbon-callout {
+        $ribbon-color: #45cddb;
+        position: absolute;
+        top: 15px;
+        right: 0px;
+        display: inline-block;
+        padding: 0 12px 0 8px;
+        background: $ribbon-color;
+        color: white;
+        font-size: 12px;
+        line-height: 24px;
+
+        &:before,
+        &:after {
+            position: absolute;
+            left: -12px;
+            display: block;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            content: '';
+        }
+
+        &:before {
+            top: 0;
+            border-width: 0 12px 12px 0;
+            border-color: transparent $ribbon-color transparent transparent;
+        }
+
+        &:after {
+            bottom: 0;
+            border-width: 0 0 12px 12px;
+            border-color: transparent transparent $ribbon-color transparent;
+        }
+
+        .ribbon-content {
+            white-space: nowrap;
+        }
+    }
+
+    .email-capture-modal {
+        .modal-content {
+            width: 440px;
+        }
+        
+        .email-capture-popup-initial {
+            padding: 20px;
+            padding-top: 0px;
+        }
+        
+        .email-capture-popup-success {
+            display: none;
+
+            .fa {
+                color: $green-light;
+            }
+        }
+    }
+}

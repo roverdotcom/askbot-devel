@@ -1,0 +1,54 @@
+{% load staticfiles %}
+<div class="new-design js-new-design">
+    <header class="navbar navbar-default header navbar-fixed-top" role="navigation">
+        <div class="container navbar-container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapsible-nav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'index' %}?ref=header">
+                    <svg width="98" height="42">
+                        <image xlink:href="{% static 'new_design/images/logo.svg'|urlencode %}" src="{% static 'new_design/images/logo@2x.png'|urlencode %}" width="98" height="42" />
+                    </svg>
+                </a>
+            </div>
+
+            {# Collect the nav links, forms, and other content for toggling #}
+            <div class="collapse navbar-collapse" id="collapsible-nav">
+                <ul class="nav navbar-nav">
+
+                    <li><a href="{% url 'search' %}?ref=header"><span class="fa fa-search link-icon"></span>Search Sitters</a></li>
+
+                    <li class="hide js-become-a-sitter hidden-xs js-anonymous-user"><a href="{% url 'become-a-sitter' %}?ref=header"><span class="fa fa-heart link-icon"></span>Become a Sitter</a></li>
+
+                    <li class="hide js-list-more-services hidden-xs"><a href="{% url 'list-service' %}?ref=header"><span class="fa fa-heart link-icon"></span>List More Services</a></li>
+
+                    <li class="js-authenticated-user authenticated-user hide visible-lg visible-md">
+                        <a href="#"><span class="fa fa-comment-o link-icon"></span><span id="extole-header">Give $20, Get $20</span></a>
+                    </li>
+
+                    <script type="extole/widget">
+                        {
+                            "zone": "header_feb",
+                            "reference_element": "#extole-header"
+                        }
+                    </script>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right js-anonymous-header">
+                    <li><a href="{% url 'account-continue' %}?ref=header&amp;next={{ request.get_full_path|urlencode }}">Sign Up</a></li>
+                    <li><a href="{% url 'account-continue' %}?ref=header&amp;action=sign_in&amp;next={{ request.get_full_path|urlencode }}">Sign In</a></li>
+                    <li><a href="https://support.rover.com/hc/en-us?ref=header"><span class="fa fa-question-circle link-icon"></span>Help</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    {% if not remove_customer_support_number %}
+    <div class="container need-help-container hidden-xs">
+        <div class="need-help-phone">Customer Support 888-453-7889</div>
+    </div>
+   {% endif %}
+</div>

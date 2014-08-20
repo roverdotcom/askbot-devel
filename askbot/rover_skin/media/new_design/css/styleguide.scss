@@ -1,0 +1,127 @@
+@import "new_design/vendor/bootstrap/scss/variables";
+@import "new_design/css/colors";
+@import "new_design/css/bootstrap_overrides";
+
+.header, .need-help-phone, .footer {
+    display: none !important;
+}
+
+.new-design {
+    .right-nav {
+        li {
+            padding-left: 4px;
+            a {
+                padding: 2px 10px 2px 10px;
+                margin: 4px 0;
+            }
+            &.active {
+                border: 0px #eee solid;
+                border-left-width: 4px;
+                padding-left: 0;
+            }
+        }
+        li > a:hover, li > a:focus {
+            background: none;
+            color: #000;
+        }
+        .nav {
+            margin-top: 70px;
+        }
+    }
+
+    .sg-header-table {
+        > tbody > tr:nth-child(1) > td {
+            border-top: 0;
+        }
+        .type-info {
+            vertical-align: middle;
+            color: #999;
+        }
+    }
+
+    .sg-example {
+        border: 1px solid #ddd;
+        border-radius: 4px 4px 0 0;
+        position: relative;
+        padding: 45px 15px 15px;
+        margin: 0 0 15px 0;
+        background-color: #fff;
+        &:after {
+            content: "Example";
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #bbb;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    }
+
+    .sg-code-example {
+        margin-top: 20px;
+    }
+
+    @mixin styleguide-color($color-name, $color, $font-color: white) {
+        &.#{$color-name} {
+            background-color: $color;
+            .color-inner {
+                color: $font-color;
+            }
+            .color-inner:before {
+                content: "$#{$color-name}";
+            }
+            .color-inner:after {
+                content: "#{$color}";
+            }
+        }
+    }
+
+    .color {
+        width: 300px;
+        height: 75px;
+        display: inline-block;
+        margin: 10px;
+        &:nth-child(odd) {
+            margin-left: 0px;
+        }
+        @include styleguide-color("green", $green);
+        @include styleguide-color("green-light", $green-light);
+
+        @include styleguide-color("aqua", $aqua);
+        @include styleguide-color("aqua-light", $aqua-light);
+
+        @include styleguide-color("orange", $orange);
+        @include styleguide-color("orange-light", $orange-light);
+
+        @include styleguide-color("grey", $grey, black);
+        @include styleguide-color("grey-light", $grey-light, black);
+
+        @include styleguide-color("border-color", $border-color, black);
+
+        /* Alerts */
+        @include styleguide-color("alert-success-bg", $alert-success-bg, black);
+        @include styleguide-color("alert-info-bg", $alert-info-bg, black);
+        @include styleguide-color("alert-warning-bg", $alert-warning-bg, black);
+        @include styleguide-color("alert-danger-bg", $alert-danger-bg, black);
+
+        /* Misc. */
+        @include styleguide-color("link-color", $link-color);
+
+        .color-inner {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+    }
+
+    .section {
+        margin-top: 50px;
+    }
+
+    .carousel-width-container {
+        max-width: 300px;
+    }
+}
+

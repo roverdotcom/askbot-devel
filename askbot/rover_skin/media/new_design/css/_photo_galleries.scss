@@ -1,0 +1,87 @@
+.mfp-bottom-bar {
+    background-color: rgba(0, 0, 0, .65);
+    height: 60px;
+    margin-top: -125px;
+    .mfp-title {
+        margin-top: 6px;
+    }
+}
+
+.social-share-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    margin: 0 3px;
+    display: inline-block;
+    .fa {
+        display: table-cell;
+        vertical-align: middle;
+    }
+}
+
+.hide-photo-button {
+    display: inline-block;
+    margin-top: -24px;
+}
+
+.hidden-photo img {
+    opacity: 0.3;
+}
+
+// Need to be more specific here, because of new-design wrapper semantics
+// Works fine in old design, so no need to overwrite it
+.new-design {
+    .mfp-arrow {
+        margin-top: -55px;
+        &:active {
+            margin-top: -54px;
+        }
+    }
+}
+
+.mfp-arrow-left:after, .mfp-arrow-left .mfp-a,
+.mfp-arrow-right:after, .mfp-arrow-right .mfp-a {
+    border-color: transparent;
+}
+
+.mfp-image-holder .mfp-close, .mfp-iframe-holder .mfp-close {
+    color: $text-color;
+    font-size: 16px;
+}
+
+.mfp-caption-display {
+    margin-left: 10px;
+}
+
+.facebook-share-outer {
+    background-color: $facebook-color;
+}
+
+.twitter-share-outer {
+    background-color: $twitter-color;
+}
+
+.pinterest-share-outer {
+    background-color: $pinterest-color;
+}
+
+.gallery-image {
+    position: relative;
+    @include xs-only {
+        img {
+            width: 100%;
+        }
+    }
+}
+
+.hover-caption {
+    display: block;
+    height: 50px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, .65);
+    color: #fff;
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    padding: 4px;
+    -webkit-font-smoothing: auto;
+}

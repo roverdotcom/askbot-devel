@@ -1,0 +1,38 @@
+$toolbar-height: 55px;
+
+.toolbar-displayed {
+    @include not-xs {
+        padding-top: $toolbar-height;
+        .navbar-fixed-top {
+            top: $toolbar-height;
+        }
+    }
+}
+.header-toolbar-wrapper {
+    background-color: rgba(40, 40, 40, .9) !important;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 10000;
+    .header-toolbar {
+        height: $toolbar-height;
+        overflow: hidden;
+        padding: 10px;
+        color: white;
+        h5.impersonate-user-text {
+            font-weight: normal;
+            float: left;
+            margin-top: 5px;
+            font-size: 16px;
+        }
+        .toolbar-action-btn {
+            margin: 0 5px;
+            float: right;
+            color: white;
+            font-size: 13px;
+        }
+    }
+    @include xs-only {
+        display: none;
+    }
+}

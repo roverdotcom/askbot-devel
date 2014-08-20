@@ -1,0 +1,37 @@
+/* ==========================================================================
+ * Styles for specific modals
+ * @see components/_modal.scss for modal styling in general
+ * ========================================================================== */
+
+.fade.in {
+    display: block;
+}
+
+// Magnific Popup background color
+.mfp-bg {
+    background: rgb(200, 200, 200);
+}
+
+.email-capture-popup {
+    padding: 20px;
+    font-size: 13px;
+    width: 440px;
+}
+
+.email-capture-popup-initial {
+    background: url(../../images/envelope.png) no-repeat scroll 330px 0px transparent;
+}
+
+.email-capture-popup-tagline {
+    padding: 10px 0;
+}
+
+.email-capture-popup-input {
+    width: 320px;
+}
+
+.email-capture-popup-thanks {
+    display: none;
+    padding: 0 0 0 35px;
+    background: url(../../images/green-check.png) no-repeat scroll 58px 4px transparent;
+}

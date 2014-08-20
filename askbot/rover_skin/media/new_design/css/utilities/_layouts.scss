@@ -1,0 +1,369 @@
+/* ==========================================================================
+ * Utility classes for building layouts
+ * ==========================================================================*/
+
+
+/* Responsive Grid
+ * ==========================================================================
+ * We use bootstrap's standard responsive grid
+ * @see - http://getbootstrap.com/css/#grid
+ */
+
+
+/* Bootstrap grid helpers
+* ========================================================================== */
+
+.nopadding-row {
+    margin-right: 0;
+    margin-left: 0;
+
+    .nopadding-col {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+}
+
+@mixin row-lopad-size($size) {
+    .row-lopad-#{$size} {
+        margin-right: -5px;
+        margin-left: -5px;
+    }
+    .col-lopad-#{$size} {
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+}
+
+@include xs-only {
+    @include row-lopad-size('xs');
+}
+
+@include sm-only {
+    @include row-lopad-size('sm');
+}
+
+@include md-only {
+    @include row-lopad-size('md');
+}
+
+@include lg-only {
+    @include row-lopad-size('lg');
+}
+
+
+/* Fluid Grid
+ * ==========================================================================
+ * Use this for placing variable-width blocks next to eachother that never
+ * collapse into a stack
+ */
+
+.fluid-row {
+    display: table;
+    width: 100%;
+
+    .fluid-col {
+        display: table-cell;
+        vertical-align: top;
+    }
+
+    &.v-center,
+    &.v-bottom {
+        height: 100%;
+    }
+
+    &.v-bottom {
+        .fluid-col {
+            vertical-align: bottom;
+        }
+    }
+
+    &.v-center {
+        .fluid-col {
+            vertical-align: middle;
+        }
+    }
+}
+
+
+/* Margins and Padding
+ * ==========================================================================
+ * We generate margin and padding classes
+ * that follow the form .[padding|margin]-x[multiplier] and
+ * .[padding|margin]-[direction]-x[multiplier]
+ *
+ * Examples:
+ * .padding-x1 - gives you 1 unit of padding all around
+ * .margin-top-x4 - gives you 4 units of top margin
+ * .padding-right-x2 - gives you one unit of right padding
+ * .margin-v-x4 - gives you 4 units of top and bottom margin
+ *
+ * These classes help us keep spacing consistent throughout the site, so
+ * use them instead of writing custom margins and padding.
+ *
+ * These classes are responsive, so on small screens the spacing will be
+ * reduced automatically.
+ */
+
+$spacing-types: (margin, padding);
+$spacing-directions: (top, right, bottom, left);
+$max-spacing-multiplier: 8;
+
+@mixin responsive-spacing($prop, $multiplier) {
+    $spacing-unit: 5px;
+    $sm-screen-ratio: 0.8;
+    $computed-spacing: $multiplier * $spacing-unit;
+
+    #{$prop}: $computed-spacing;
+
+    @media (max-width: $screen-xs-max) {
+        #{$prop}: $computed-spacing * $sm-screen-ratio;
+    }
+}
+
+@each $spacing-type in $spacing-types {
+
+    @for $i from 0 through $max-spacing-multiplier {
+
+        // Build out classes like .padding-x1, .margin-x2, etc.
+        .#{$spacing-type}-x#{$i} {
+            @include responsive-spacing($spacing-type, $i);
+        }
+
+        // Build out directional classes like .padding-right-x1, .margin-top-x1, etc.
+        @each $spacing-direction in $spacing-directions {
+            .#{$spacing-type}-#{$spacing-direction}-x#{$i} {
+                @include responsive-spacing($spacing-type + '-' + $spacing-direction, $i);
+            }
+        }
+
+        // Build out vertical classes like padding-v-x1
+        .#{$spacing-type}-h-x#{$i} {
+            @include responsive-spacing($spacing-type + '-left', $i);
+            @include responsive-spacing($spacing-type + '-right', $i);
+        }
+
+        // Build out horizontal classes like padding-h-x1
+        .#{$spacing-type}-v-x#{$i} {
+            @include responsive-spacing($spacing-type + '-top', $i);
+            @include responsive-spacing($spacing-type + '-bottom', $i);
+        }
+    }
+}
+
+.nomargin {
+    margin: 0 !important;
+}
+
+.nopadding {
+    padding: 0 !important;
+}
+
+/* Alignment
+ * ==========================================================================
+ * For alignment, use bootstrap's conveniently included classes:
+ * .pull-left - floats left
+ * .pull-right - floats right
+ * .center-block - centers
+ */
+
+
+/* Borders
+ * ========================================================================== */
+
+.noborder {
+    border: 0 !important;
+}
+
+.bordered {
+    border: 1px solid $border-color;
+}
+
+.bordered-bottom {
+    border-bottom: 1px solid $border-color;
+}
+
+.bordered-top {
+    border-top: 1px solid $border-color;
+}
+
+@include xs-only {
+    .bordered-xs {
+        border: 1px solid $border-color;
+    }
+}
+
+@include sm-only {
+    .bordered-sm {
+        border: 1px solid $border-color;
+    }
+}
+
+@include md-only {
+    .bordered-md {
+        border: 1px solid $border-color;
+    }
+}
+
+@include lg-only {
+    .bordered-lg {
+        border: 1px solid $border-color;
+    }
+}
+
+/* Misc
+ * ========================================================================== */
+
+.prevent-break {
+    white-space: nowrap;
+}
+
+// Always make .hide mean display: none
+.hidden-xs, .hidden-sm, .hidden-md, .hidden-lg,
+.visible-lg, .visible-md, .visible-sm, .visible-xs {
+    &.hide {
+        display: none !important;
+    }
+}
+
+// Always have the first .container in the .content div have a margin-top
+// to account for the header and the phone # link
+body:not(.flush) .content .container:first-of-type {
+    margin-top: 80px;
+}
+
+@include xs-only {
+    body:not(.flush) .content .container:first-of-type {
+        margin-top: 64px;
+    }
+}
+
+// Fix alerts to work on pages that are flush (e.g., index, /app/)
+@mixin absolute-alert {
+    .alert {
+        z-index: 10000;
+        position: absolute;
+        top: 100px;
+        left: 0;
+        right: 0;
+        margin: 0 100px;
+    }
+}
+
+body.flush {
+    @include lg-only {
+        @include absolute-alert;
+    }
+    @include md-only {
+        @include absolute-alert;
+    }
+    @include sm-only {
+        @include absolute-alert;
+    }
+    @include xs-only {
+        margin-top: 75px;
+    }
+}
+
+
+/* ==========================================================================
+ * Deprecated - Don't Use
+ * ========================================================================== */
+
+.table-row {
+    display: table;
+    height: 100%;
+}
+
+@mixin table-row {
+    display: table;
+    height: 100%;
+}
+
+.table-cell {
+    float: none;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+@mixin table-cell {
+    float: none;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.table-row > [class*="col-"] {
+    @include table-cell;
+}
+
+
+@mixin table-row-size($size) {
+    .table-row-#{$size} {
+        @include table-row;
+        > [class*="col-"] {
+            @include table-cell;
+        }
+    }
+}
+
+// Responsive table-row
+@include xs-only {
+    @include table-row-size('xs');
+}
+
+@include sm-only {
+    @include table-row-size('sm');
+}
+
+@include md-only {
+    @include table-row-size('md');
+}
+
+@include lg-only {
+    @include table-row-size('lg');
+}
+
+
+
+.auto-centered {
+    margin: 0 auto;
+}
+
+.padded {
+    padding: 10px;
+}
+
+.padded-bottom {
+    padding-bottom: 10px;
+}
+
+.margined {
+    margin: 10px 0;
+}
+
+.margined-bottom {
+    margin-bottom: 10px;
+}
+
+.h-margined {
+    margin: 0 10px;
+}
+
+.margined-all {
+    margin: 10px;
+}
+
+.super-margined {
+    margin: 20px 0;
+}
+
+.super-margined-all {
+    margin: 20px;
+}
+
+.no-top-margin {
+    margin-top: 0;
+}
+
+.grid-margin {
+    margin: 10px 10px 0 0;
+}
