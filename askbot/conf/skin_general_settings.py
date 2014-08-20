@@ -137,7 +137,7 @@ settings.register(
     values.StringValue(
         GENERAL_SKIN_SETTINGS,
         'ASKBOT_DEFAULT_SKIN',
-        default = 'rover_skin-en',
+        default = 'rover_skin',
         choices = skin_utils.get_skin_choices(),
         description = _('Select skin'),
     )
