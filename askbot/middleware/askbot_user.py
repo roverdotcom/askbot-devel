@@ -23,7 +23,7 @@ def get_askbot_user(request):
     if not hasattr(request, '_cached_user') or \
             isinstance(request._cached_user, User):
         user = get_user(request)
-        if not isinstance(user, User):
+        if isinstance(user, User):
             user = AskbotUser.objects.get_or_create(user=user)[0]
         request._cached_user = user
     return request._cached_user
