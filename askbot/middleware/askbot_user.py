@@ -8,6 +8,7 @@ that SimpleLazyObject with one that instead uses get_askbot_user, defined
 here.
 """
 
+from django.conf import settings as django_settings
 from django.contrib.auth import get_user
 from django.contrib.auth.models import User
 from django.utils.functional import SimpleLazyObject
@@ -37,5 +38,5 @@ class AskbotUserMiddleware(object):
     """
     def process_request(self, request):
         # Only modify requests coming to ASKBOT_URL.
-        if request.path.startswith('/ask/'):
+        if request.path.startswith('/' + django_settings.ASKBOT_URL):
             request.user = SimpleLazyObject(lambda: get_askbot_user(request))
