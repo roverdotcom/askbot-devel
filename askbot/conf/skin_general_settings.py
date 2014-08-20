@@ -133,16 +133,15 @@ settings.register(
     )
 )
 
-# Disable changing of askbot skin in livesettings menu.
-# settings.register(
-#     values.StringValue(
-#         GENERAL_SKIN_SETTINGS,
-#         'ASKBOT_DEFAULT_SKIN',
-#         default = 'default',
-#         choices = skin_utils.get_skin_choices(),
-#         description = _('Select skin'),
-#     )
-# )
+settings.register(
+    values.StringValue(
+        GENERAL_SKIN_SETTINGS,
+        'ASKBOT_DEFAULT_SKIN',
+        default = 'rover_skin-en',
+        choices = skin_utils.get_skin_choices(),
+        description = _('Select skin'),
+    )
+)
 
 
 settings.register(
