@@ -122,7 +122,6 @@ settings.register(
     )
 )
 
-
 def gravatar_url_callback(old, new):
     """strips trailing slash"""
     url_re = re.compile(r'([^/]*)/+$')
