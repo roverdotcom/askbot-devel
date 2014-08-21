@@ -130,8 +130,8 @@
         <li>Our reservation guarantee</li>
         <li>24/7 customer support</li>
     </ul>
-    {% if view_user.person.sitter %}
-        <a href="{{ view_user.person.sitter.get_absolute_url() }}">Visit {{ view_user.get_full_name() }}'s sitter profile</a> to book a stay!
+    {% if view_user.person.homes %}
+        <a href="{{ view_user.person.homes[0].get_absolute_url() }}">Visit {{ view_user.get_full_name() }}'s home sitter profile</a> to book a stay!
     {% endif %}
     {% if view_user.about and (not view_user.is_blocked()) %}
         {{view_user.about|linebreaks|escape}}
