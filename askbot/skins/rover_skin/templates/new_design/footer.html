@@ -82,9 +82,9 @@
                     <h4>Top Rover Cities</h4>
                     <div class="row">
                         {# Cache for a day #}
-                        {# {% cache 86400 "new_design_footer_cities" %} #}
-                            {% render_new_design_footer_cities %}
-                        {# {% endcache %} #}
+                        {% cache 86400 "new_design_footer_cities" %}
+                            {{ render_new_design_footer_cities() }}
+                        {% endcache %}
                     </div>
                 </div>
             </div>

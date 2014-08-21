@@ -17,6 +17,7 @@ from askbot.skins.loaders import get_skin
 from askbot.utils.slug import slugify
 from askbot.utils.html import site_url
 from askbot.utils.translation import get_language
+from askbot.templatetags.extra_tags import render_new_design_footer_cities
 
 def application_settings(request):
     """The context processor function
@@ -85,6 +86,7 @@ def application_settings(request):
         'skin': get_skin(),
         'moderation_items': api.get_info_on_moderation_items(request.user),
         'noscript_url': const.DEPENDENCY_URLS['noscript'],
+        'render_new_design_footer_cities': render_new_design_footer_cities,
     }
 
     if askbot_settings.GROUPS_ENABLED:
