@@ -2971,7 +2971,9 @@ User.add_to_class(
 )
 User.add_to_class('get_absolute_url', user_get_absolute_url)
 User.add_to_class('get_avatar_url', user_get_avatar_url)
-User.add_to_class('get_default_avatar_url', user_get_default_avatar_url)
+# Don't patch this method onto AskbotUser - it will overwrite AskbotUser's
+# implementation.
+# User.add_to_class('get_default_avatar_url', user_get_default_avatar_url)
 User.add_to_class('get_gravatar_url', user_get_gravatar_url)
 User.add_to_class('get_or_create_fake_user', user_get_or_create_fake_user)
 User.add_to_class('get_marked_tags', user_get_marked_tags)

@@ -366,6 +366,15 @@ class AskbotUser(models.Model):
         """Return first name and last initial, separated by a space."""
         return ' '.join([self.user.first_name, self.user.last_name[0] + '.'])
 
+    def get_default_avatar_url(self, size=48):
+        """Return Rover image url."""
+        if size <= 200:
+            return self.user.person.get_small_image_url()
+        elif size <= 450:
+            return self.user.person.get_medium_image_url()
+        else:
+            return self.user.person.get_large_uncropped_image_url()
+
 
 @receiver(post_save, sender=AuthUser)
 def create_corresponding_askbot_user(sender, instance, created, **kwargs):
