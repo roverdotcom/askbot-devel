@@ -289,45 +289,34 @@ def user_get_default_avatar_url(self, size):
     """
     return skin_utils.get_media_url(askbot_settings.DEFAULT_AVATAR_URL)
 
-
 def user_get_avatar_url(self, size=48):
-    """Return Rover image url."""
-    if size <= 200:
-        return self.person.get_small_image_url()
-    elif size <= 450:
-        return self.person.get_medium_image_url()
+    """returns avatar url - by default - gravatar,
+    but if application django-avatar is installed
+    it will use avatar provided through that app
+    """
+    if 'avatar' in django_settings.INSTALLED_APPS:
+        if self.avatar_type == 'n':
+            import avatar
+            if askbot_settings.ENABLE_GRAVATAR: #avatar.settings.AVATAR_GRAVATAR_BACKUP:
+                return self.get_gravatar_url(size)
+            else:
+                return self.get_default_avatar_url(size)
+        elif self.avatar_type == 'a':
+            kwargs = {'user_id': self.id, 'size': size}
+            try:
+                return reverse('avatar_render_primary', kwargs = kwargs)
+            except NoReverseMatch:
+                message = 'Please, make sure that avatar urls are in the urls.py '\
+                          'or update your django-avatar app, '\
+                          'currently it is impossible to serve avatars.'
+                logging.critical(message)
+                raise django_exceptions.ImproperlyConfigured(message)
+        else:
+            return self.get_gravatar_url(size)
+    if askbot_settings.ENABLE_GRAVATAR:
+        return self.get_gravatar_url(size)
     else:
-        return self.person.get_large_uncropped_image_url()
-
-
-# def user_get_avatar_url(self, size=48):
-#     """returns avatar url - by default - gravatar,
-#     but if application django-avatar is installed
-#     it will use avatar provided through that app
-#     """
-#     if 'avatar' in django_settings.INSTALLED_APPS:
-#         if self.avatar_type == 'n':
-#             import avatar
-#             if askbot_settings.ENABLE_GRAVATAR: #avatar.settings.AVATAR_GRAVATAR_BACKUP:
-#                 return self.get_gravatar_url(size)
-#             else:
-#                 return self.get_default_avatar_url(size)
-#         elif self.avatar_type == 'a':
-#             kwargs = {'user_id': self.id, 'size': size}
-#             try:
-#                 return reverse('avatar_render_primary', kwargs = kwargs)
-#             except NoReverseMatch:
-#                 message = 'Please, make sure that avatar urls are in the urls.py '\
-#                           'or update your django-avatar app, '\
-#                           'currently it is impossible to serve avatars.'
-#                 logging.critical(message)
-#                 raise django_exceptions.ImproperlyConfigured(message)
-#         else:
-#             return self.get_gravatar_url(size)
-#     if askbot_settings.ENABLE_GRAVATAR:
-#         return self.get_gravatar_url(size)
-#     else:
-#         return self.get_default_avatar_url(size)
+        return self.get_default_avatar_url(size)
 
 def user_get_top_answers_paginator(self, visitor=None):
     """get paginator for top answers by the user for a
@@ -2983,7 +2972,9 @@ User.add_to_class(
 )
 User.add_to_class('get_absolute_url', user_get_absolute_url)
 User.add_to_class('get_avatar_url', user_get_avatar_url)
-User.add_to_class('get_default_avatar_url', user_get_default_avatar_url)
+# Don't patch this method onto AskbotUser - it will overwrite AskbotUser's
+# implementation.
+# User.add_to_class('get_default_avatar_url', user_get_default_avatar_url)
 User.add_to_class('get_gravatar_url', user_get_gravatar_url)
 User.add_to_class('get_or_create_fake_user', user_get_or_create_fake_user)
 User.add_to_class('get_marked_tags', user_get_marked_tags)
