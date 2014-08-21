@@ -1,0 +1,15 @@
+{% load columns %}
+
+{% get_columns footer_cities 3 as columns %}
+{% for column in columns %}
+    <div class="col-lg-4 col-md-4 col-sm-4">
+        <ul class="footer-list">
+            {% for city in column %}
+                <li><a href="{{ city.get_absolute_url }}">{{ city.name }}</a></li>
+            {% endfor %}
+            {% if forloop.last %}
+                <li><a href="{% url 'top-cities' %}">...and thousands more</a></li>
+            {% endif %}
+        </ul>
+    </div>
+{% endfor %}
