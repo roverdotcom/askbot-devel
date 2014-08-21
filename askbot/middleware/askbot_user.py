@@ -8,8 +8,8 @@ that SimpleLazyObject with one that instead uses get_askbot_user, defined
 here.
 """
 
+from django.conf import settings as django_settings
 from django.contrib.auth import get_user
-from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.models import User
 from django.utils.functional import SimpleLazyObject
 from askbot.models import AskbotUser
@@ -24,7 +24,7 @@ def get_askbot_user(request):
     if not hasattr(request, '_cached_user') or \
             isinstance(request._cached_user, User):
         user = get_user(request)
-        if not isinstance(user, AnonymousUser):
+        if isinstance(user, User):
             user = AskbotUser.objects.get_or_create(user=user)[0]
         request._cached_user = user
     return request._cached_user
@@ -38,4 +38,5 @@ class AskbotUserMiddleware(object):
     """
     def process_request(self, request):
         # Only modify requests coming to ASKBOT_URL.
-        request.user = SimpleLazyObject(lambda: get_askbot_user(request))
+        if request.path.startswith('/' + django_settings.ASKBOT_URL):
+            request.user = SimpleLazyObject(lambda: get_askbot_user(request))

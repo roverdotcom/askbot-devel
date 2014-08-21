@@ -124,6 +124,15 @@
         </table>
     </div>
     <div class="col3 user-about">
+    Book on Rover & receive:
+    <ul>
+        <li>Premium pet insurance</li>
+        <li>Our reservation guarantee</li>
+        <li>24/7 customer support</li>
+    </ul>
+    {% if view_user.person.sitter %}
+        <a href="">Visit {{ view_user.get_full_name() }}'s sitter profile</a> to book a stay!
+    {% endif %}
     {% if view_user.about and (not view_user.is_blocked()) %}
         {{view_user.about|linebreaks|escape}}
     {% endif %}
