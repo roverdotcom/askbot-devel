@@ -39,8 +39,8 @@
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right js-anonymous-header">
-                    <li><a href="{% url 'account-continue' %}?ref=header&amp;next={{ request.get_full_path|urlencode }}">Sign Up</a></li>
-                    <li><a href="{% url 'account-continue' %}?ref=header&amp;action=sign_in&amp;next={{ request.get_full_path|urlencode }}">Sign In</a></li>
+                    <li><a href="{% url 'account-continue' %}?ref=header&amp;next={{ request.get_full_path()|urlencode }}">Sign Up</a></li>
+                    <li><a href="{% url 'account-continue' %}?ref=header&amp;action=sign_in&amp;next={{ request.get_full_path()|urlencode }}">Sign In</a></li>
                     <li><a href="https://support.rover.com/hc/en-us?ref=header"><span class="fa fa-question-circle link-icon"></span>Help</a></li>
                 </ul>
             </div>

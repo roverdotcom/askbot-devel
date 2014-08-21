@@ -34,7 +34,7 @@
         {% endif %}
     </head>
     <body class="{% block body_class %}{% endblock %}{% if user_messages %} user-messages{% endif %}{% if page_class %} {{page_class}}{% endif %}{% if request.user.is_anonymous() %} anon{% endif %} lang-{{ current_language_code }}">
-        {% include "new_design/header.html" %}
+        {% include "rover_assets/header.html" %}
         {% include "widgets/system_messages.html" %}
         {% include "debug_header.html" %}
         {% if settings.MULTILINGUAL %}
@@ -64,7 +64,7 @@
         {% elif settings.FOOTER_MODE == 'customize' %}
             {{ settings.CUSTOM_FOOTER }}
         {% endif %}
-        {% include "new_design/footer.html" %}
+        {% include "rover_assets/footer.html" %}
         {% include "custom_footer.html" ignore missing %}
         {% include "meta/bottom_scripts.html" %}
         {% block endjs %}
