@@ -384,3 +384,22 @@ def absolute_value(number):
 def get_empty_search_state(unused):
     from askbot.search.state_manager import SearchState
     return SearchState.get_empty()
+
+# Rover filters, adapted to Jinja2
+@register.filter
+def require_full_uri(content, scheme=None):
+    """
+    - Prepend scheme (https) if the content starts with //
+    - Prepend scheme + authority if the content starts with /
+    - Do nothing otherwise.
+    """
+    if scheme is None:
+        scheme = django_settings.URI_SCHEME
+    if content.startswith('//'):
+        content = '%s:%s' % (scheme, content)
+    elif content.startswith('/'):
+        content = '%s://%s%s' % (
+            scheme,
+            django_settings.URI_AUTHORITY,
+            content)
+    return content
