@@ -7,7 +7,10 @@ from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from askbot.utils import functions
 from askbot.conf import settings as askbot_settings
+
+# Rover imports.
 from seo.models import City
+from django.template.loader import render_to_string
 
 register = template.Library()
 
@@ -113,9 +116,17 @@ def include_jinja(parser, token):
 
 
 # Rover tags registered here.
-@register.inclusion_tag('new_design/footer_cities.html')
+@register.tag
 def render_new_design_footer_cities():
-    return {
-        'footer_cities': City.objects.filter(
-            is_in_footer=True).order_by('name'),
-    }
+    """Translated from an inclusion tag to a tag that simply returns the
+    rendered string template: 'inclusion_tag' doesn't appear to be
+    supported by Coffin.
+    """
+    return render_to_string(
+        'seo/new_design/footer_cities.html',
+        {
+            'footer_cities': City.objects.filter(
+                is_in_footer=True
+            ).order_by('name'),
+        }
+    )
