@@ -34,7 +34,6 @@
                             <h4>Learn More</h4>
                             <ul class="footer-list">
                                 <li><a href="{{ 'blog'|url("")|require_full_uri('http') }}?ref=footer">Read Our Blog</a></li>
-                                {# <li><a href="{% filter require_full_uri:'http' %}{% url 'blog' "" %}{% endfilter %}?ref=footer">Read Our Blog</a></li> #}
                                 <li><a href="{ url 'insurance' %}?ref=footer">Premium Insurance</a></li>
                                 <li><a href="{% url 'sit-a-dog-save-a-life' %}?ref=footer">Sit a Dog, Save a Life</a></li>
                                 {% if request.user.is_staff %}
