@@ -1,0 +1,27 @@
+.responsive-list-inline {
+    @extend .list-inline;
+    .form-group {
+        margin-bottom: 0px;
+    }
+    @include xs-only {
+        > li {
+            display: block;
+        }
+    }
+}
+
+
+.aqua-list {
+    li:before {
+        content: '';
+        background-color: #14a4be;
+        display: inline-block;
+        position: relative;
+        height: 6px;
+        width: 6px;
+        @include border-radius(6px);
+        @include background-clip(padding-box);
+        margin-right: 6px;
+        top: -1px;
+    }
+}

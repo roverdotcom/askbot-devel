@@ -1,0 +1,32 @@
+// Colors
+$link-color: $aqua;
+
+// Typography
+$font-family-sans-serif: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-family-serif: "Raleway", Georgia, "Times New Roman", Times, serif;
+$font-size-base: 14px;
+$line-height-base: 1.6;
+$headings-font-family: $font-family-serif;
+
+// Common
+$padding-base-vertical: 8px;
+$padding-base-horizontal: 16px;
+$border-radius-base: 4px;
+$border-radius-large: $border-radius-base;
+$border-radius-small: $border-radius-base;
+
+// Shared Nav Styles
+$nav-link-padding: 10px;
+$navbar-default-bg: $navbar-color;
+$navbar-default-link-active-bg: #fff;
+$navbar-default-link-active-color: #000;
+$navbar-margin-bottom: 5px;
+$dropdown-link-active-bg: $aqua-light;
+
+// Forms
+$input-bg: #fafafa;
+
+// Z-indexes
+// Background and modal should be more closely associated
+$zindex-modal: 1050;
+$zindex-modal-background: $zindex-modal - 1;

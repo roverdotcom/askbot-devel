@@ -1,0 +1,11 @@
+.rover-btn-group {
+    @extend .btn-group;
+
+    // z-index ensures active button borders sit on top of siblings
+    .rover-btn-default.active {
+        background-color: $green-btn-bg;
+        border-color: $green-btn-bg-highlight;
+        color: white;
+        z-index: 3;
+    }
+}
