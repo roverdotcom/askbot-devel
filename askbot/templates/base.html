@@ -64,6 +64,7 @@
         {% elif settings.FOOTER_MODE == 'customize' %}
             {{ settings.CUSTOM_FOOTER }}
         {% endif %}
+        {% include "new_design/footer.html" %}
         {% include "custom_footer.html" ignore missing %}
         {% include "meta/bottom_scripts.html" %}
         {% block endjs %}
