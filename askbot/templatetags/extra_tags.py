@@ -7,6 +7,7 @@ from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from askbot.utils import functions
 from askbot.conf import settings as askbot_settings
+from seo.models import City
 
 register = template.Library()
 
@@ -109,3 +110,12 @@ def include_jinja(parser, token):
         raise template.TemplateSyntaxError('file name must be quoted')
 
     return IncludeJinja(filename, request_var)
+
+
+# Rover tags registered here.
+@register.inclusion_tag('new_design/footer_cities.html')
+def render_new_design_footer_cities():
+    return {
+        'footer_cities': City.objects.filter(
+            is_in_footer=True).order_by('name'),
+    }
