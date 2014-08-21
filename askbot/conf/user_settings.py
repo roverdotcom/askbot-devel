@@ -108,65 +108,62 @@ settings.register(
     )
 )
 
-# Moved to settings: ASKBOT_DEFAULT_AVATAR_URL
-# settings.register(
-#     livesettings.ImageValue(
-#         USER_SETTINGS,
-#         'DEFAULT_AVATAR_URL',
-#         description = _('Default avatar for users'),
-#         help_text = _(
-#                         'To change the avatar image, select new file, '
-#                         'then submit this whole form.'
-#                     ),
-#         default = '/images/nophoto.png',
-#         url_resolver = skin_utils.get_media_url
-#     )
-# )
+settings.register(
+    livesettings.ImageValue(
+        USER_SETTINGS,
+        'DEFAULT_AVATAR_URL',
+        description = _('Default avatar for users'),
+        help_text = _(
+                        'To change the avatar image, select new file, '
+                        'then submit this whole form.'
+                    ),
+        default = '/images/nophoto.png',
+        url_resolver = skin_utils.get_media_url
+    )
+)
 
-# def gravatar_url_callback(old, new):
-#     """strips trailing slash"""
-#     url_re = re.compile(r'([^/]*)/+$')
-#     return url_re.sub(r'\1', new)
 
-# Moved to settings: ASKBOT_GRAVATAR_BASE_URL
-# settings.register(
-#     livesettings.StringValue(
-#         USER_SETTINGS,
-#         'GRAVATAR_BASE_URL',
-#         description=_(
-#                 'Base URL for the gravatar service'
-#             ),
-#         default='//www.gravatar.com/avatar',
-#         update_callback=gravatar_url_callback
-#     )
-# )
+def gravatar_url_callback(old, new):
+    """strips trailing slash"""
+    url_re = re.compile(r'([^/]*)/+$')
+    return url_re.sub(r'\1', new)
 
-# Moved to settings: ASKBOT_ENABLE_GRAVATAR
-# settings.register(
-#     livesettings.BooleanValue(
-#         USER_SETTINGS,
-#         'ENABLE_GRAVATAR',
-#         default = True,
-#         description = _('Use automatic avatars from gravatar.com'),
-#         help_text=_(
-#             'Check this option if you want to allow the use of gravatar.com for avatars. Please, note that this feature might take about 10 minutes to become fully effective. You will have to enable uploaded avatars as well. For more information, please visit <a href="http://askbot.org/doc/optional-modules.html#uploaded-avatars">this page</a>.'
-#         )
-#     )
-# )
+settings.register(
+    livesettings.StringValue(
+        USER_SETTINGS,
+        'GRAVATAR_BASE_URL',
+        description=_(
+                'Base URL for the gravatar service'
+            ),
+        default='//www.gravatar.com/avatar',
+        update_callback=gravatar_url_callback
+    )
+)
 
-# Moved to settings: ASKBOT_GRAVATAR_TYPE
-# settings.register(
-#     livesettings.StringValue(
-#         USER_SETTINGS,
-#         'GRAVATAR_TYPE',
-#         default='identicon',
-#         choices=const.GRAVATAR_TYPE_CHOICES,
-#         description=_('Default Gravatar icon type'),
-#         help_text=_(
-#                     'This option allows you to set the default avatar type for email addresses without associated gravatar images.  For more information, please visit <a href="http://en.gravatar.com/site/implement/images/">this page</a>.'
-#                     )
-#     )
-# )
+settings.register(
+    livesettings.BooleanValue(
+        USER_SETTINGS,
+        'ENABLE_GRAVATAR',
+        default = False,
+        description = _('Use automatic avatars from gravatar.com'),
+        help_text=_(
+            'Check this option if you want to allow the use of gravatar.com for avatars. Please, note that this feature might take about 10 minutes to become fully effective. You will have to enable uploaded avatars as well. For more information, please visit <a href="http://askbot.org/doc/optional-modules.html#uploaded-avatars">this page</a>.'
+        )
+    )
+)
+
+settings.register(
+    livesettings.StringValue(
+        USER_SETTINGS,
+        'GRAVATAR_TYPE',
+        default='identicon',
+        choices=const.GRAVATAR_TYPE_CHOICES,
+        description=_('Default Gravatar icon type'),
+        help_text=_(
+                    'This option allows you to set the default avatar type for email addresses without associated gravatar images.  For more information, please visit <a href="http://en.gravatar.com/site/implement/images/">this page</a>.'
+                    )
+    )
+)
 
 settings.register(
     livesettings.StringValue(
