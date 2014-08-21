@@ -13,7 +13,7 @@ body {
   margin: 0;
   padding: 0;
   color: #666;
-  font-family: 'OpenSans', Arial;
+  font-family: 'Open Sans', Arial;
   padding-top: 50px;
 }
 div {
@@ -724,7 +724,7 @@ input[type="reset"],
   border-top: #eaf2f3 1px solid;
   cursor: pointer;
   color: #4a757f;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   font-size: 14px;
   font-weight: bold;
   height: 27px;
@@ -1635,7 +1635,7 @@ ul#related-tags li {
 /* ----- Ask and Edit Question Form template----- */
 .section-title {
   color: #7ea9b3;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Raleway', 'Open Sans Condensed', Arial, sans-serif;
   font-weight: bold;
   font-size: 24px;
 }
@@ -1934,7 +1934,7 @@ ul#related-tags li {
   min-height: 20px;
   overflow: auto;
   font-size: 13px;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
 }
 .wmd-preview p {
   margin-bottom: 14px;
@@ -2054,7 +2054,7 @@ ul#related-tags li {
 /* ----- Question template ----- */
 .question-page h1 {
   padding-top: 0px;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Raleway', 'Open Sans Condensed', Arial, sans-serif;
 }
 .question-page h1 a {
   color: #464646;
@@ -2072,7 +2072,7 @@ ul#related-tags li {
   background-position: center left;
 }
 .question-page p.rss a {
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   vertical-align: top;
 }
 .question-page .post {
@@ -2103,7 +2103,7 @@ ul#related-tags li {
 }
 .question-page .post-body {
   overflow: auto;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   color: #4b4b4b;
   word-wrap: break-word;
   max-width: 683px;
@@ -2136,7 +2136,7 @@ ul#related-tags li {
   background: #ffffff url(../images/background-user-info.png) repeat-x bottom;
   float: right;
   font-size: 9px;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   line-height: 12px;
   margin: 0px 0px 5px 5px;
   padding: 4px;
@@ -2187,7 +2187,7 @@ ul#related-tags li {
   cursor: pointer;
   border: none;
   font-size: 12px;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   text-decoration: none;
   height: 18px;
   line-height: 18px;
@@ -2293,7 +2293,7 @@ ul#related-tags li {
 .question-page .answer-controls .answer-convert input {
   font-size: 12px;
   color: #777;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   text-decoration: none;
   display: inline;
   white-space: nowrap;
@@ -2324,7 +2324,7 @@ ul#related-tags li {
 }
 .question-page #questionCount {
   float: left;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   line-height: 15px;
 }
 .question-page #fmanswer_button {
@@ -2344,7 +2344,7 @@ ul#related-tags li {
   color: #7ea9b3;
   font-weight: bold;
   font-size: 23px;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   float: left;
   padding-left: 0;
   width: 200px;
@@ -2371,7 +2371,7 @@ ul#related-tags li {
   border: none;
   color: #988e4c;
   padding: 0 3px 5px 22px;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   font-size: 13px;
   font-weight: normal;
   background: url(../images/comment.png) no-repeat center left;
@@ -2404,7 +2404,7 @@ ul#related-tags li {
 .question-page .comments textarea {
   box-sizing: border-box;
   color: #666;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   font-size: 13px;
   height: 54px;
   line-height: 1.3;
@@ -2442,14 +2442,14 @@ ul#related-tags li {
   display: inline-block;
   width: auto;
   vertical-align: top;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   float: right;
   text-align: right;
 }
 .question-page .comments .comment {
   border-bottom: 1px solid #edeeeb;
   display: table;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   font-size: 11px;
   margin: 0;
   min-height: 25px;
@@ -2526,7 +2526,7 @@ ul#related-tags li {
   border: none;
   height: 13px;
   width: auto;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   font-size: 13px;
   font-weight: normal;
   line-height: 13px;
@@ -2657,7 +2657,7 @@ ul#related-tags li {
   margin-top: 10px;
 }
 .question-page #fmanswer h2 {
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   color: #7ea9b3;
   font-size: 24px;
 }
@@ -2716,7 +2716,7 @@ ul#related-tags li {
   background: url(../images/vote-arrow-down-on-new.png) no-repeat;
 }
 .vote-number {
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   padding: 2px 0 5px 0;
   font-size: 25px;
   font-weight: bold;
@@ -2785,7 +2785,7 @@ ul#related-tags li {
   font-size: 13px;
   color: #707070;
   line-height: 1.3;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   color: #525252;
   margin-bottom: 12px;
 }
@@ -3046,7 +3046,7 @@ a:hover.medal {
 }
 .user-profile-page h2 {
   padding: 4px 0px 10px 0px;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
 }
 .user-profile-page h3 {
   padding: 0;
@@ -3157,13 +3157,13 @@ a:hover.medal {
   display: none;
 }
 .count {
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   font-size: 200%;
   font-weight: 700;
   color: #777777;
 }
 .scoreNumber {
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   font-size: 35px;
   font-weight: 800;
   color: #777;
@@ -3173,7 +3173,7 @@ a:hover.medal {
   margin-top: 3px;
 }
 .vote-count {
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   font-size: 160%;
   font-weight: 700;
   color: #777;
@@ -3187,7 +3187,7 @@ a:hover.medal {
   background-color: #EEEEEE;
   color: #555555;
   float: left;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   font-size: 15px;
   font-weight: bold;
   height: 17px;
@@ -3274,7 +3274,7 @@ a:hover.medal {
   color: #525252;
 }
 .revision h3 {
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   font-size: 21px;
   padding-left: 0px;
 }
@@ -3320,7 +3320,7 @@ a:hover.medal {
 .revision .revision-number {
   font-size: 300%;
   font-weight: bold;
-  font-family: sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 del,
 del .post-tag {
@@ -3346,7 +3346,7 @@ body.main-page ins {
   color: white;
   cursor: pointer;
   display: none;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   font-size: 14px;
   font-weight: normal;
   padding-bottom: 10px;
@@ -3390,7 +3390,7 @@ body.main-page ins {
   padding: 16px 0 0 0;
   background: #16160f;
   font-size: 16px;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
 }
 #ground p {
   margin-bottom: 0;
@@ -3684,7 +3684,7 @@ button::-moz-focus-inner {
   z-index: 100;
   padding: 5px 0;
   text-align: center;
-  font-family: sans-serif;
+  font-family: 'Open Sans', sans-serif;
   font-size: 120%;
   font-weight: Bold;
   color: #FFFFFF;
@@ -4301,7 +4301,7 @@ textarea.tipped-input {
 .tag-subscriptions .action {
   cursor: pointer;
   color: #4A757F;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   text-decoration: none;
 }
 .tag-subscriptions ul.tags li {
