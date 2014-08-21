@@ -53,7 +53,7 @@
                             <ul class="footer-list">
                                 <li><a href="/about-us/?ref=footer">About Us</a></li>
                                 <li><a href="{% url "app" %}?ref=footer">Get the App</a></li>
-                                <li><a href="{% filter require_full_uri:'http' %}{% url 'blog' 'in-the-press' %}{% endfilter %}?ref=footer">In the Press</a></li>
+                                <li><a href="{{ 'blog'|url('in-the-press')|require_full_uri('http') }}?ref=footer">In the Press</a></li>
                                 <li><a href="{% url 'rovercam:live' %}?ref=footer">RoverCam</a></li>
                                 <li><a href="http://jobs.rover.com/?ref=footer">Jobs</a></li>
                                 <li><a href="{% url 'partners-partner-list' %}?ref=footer">Partners</a></li>
