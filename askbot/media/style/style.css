@@ -343,6 +343,7 @@ body.user-messages {
   padding-top: 5px;
   white-space: nowrap;
   font-size: 16px;
+  font-weight: bold;
 }
 #userToolsNav a {
   height: 35px;
@@ -375,6 +376,8 @@ body.user-messages {
   /* for #header.with-logo it is modified */
 
   margin-right: 7px;
+  position: relative;
+  top: 4px;
 }
 #metaNav a {
   color: white;
@@ -382,8 +385,8 @@ body.user-messages {
   height: 35px;
   line-height: 25px;
   margin: 5px 0px 0px 10px;
-  font-size: 18px;
-  font-weight: 100;
+  font-size: 16px;
+  font-weight: bold;
   text-decoration: none;
   display: block;
   float: left;
@@ -458,6 +461,9 @@ body.user-messages {
 #header.without-logo #userToolsNav {
   float: left;
   margin-top: 7px;
+}
+.header-custom {
+  padding: 7px;
 }
 #secondaryHeader {
   /* Div containing Home button, scope navigation, search form and ask button, check blocks/secondary_header.html */
