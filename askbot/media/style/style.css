@@ -619,12 +619,12 @@ body.user-messages {
 .search-drop-menu ul li.selected a {
   color: whitesmoke;
 }
-.search-drop-menu .footer {
+.search-drop-menu .askbot-footer {
   text-align: center;
   margin: 0 0 1px 0;
   padding: 4px 0 10px 0;
 }
-.search-drop-menu.empty .footer {
+.search-drop-menu.empty .askbot-footer {
   padding-top: 9px;
 }
 .search-drop-menu.empty ul {
