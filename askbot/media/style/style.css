@@ -893,19 +893,19 @@ body.anon.ask-page .search-drop-menu {
   line-height: 30px;
   text-align: right;
   font-size: 18px !important;
-  font-weight: normal;
+  font-weight: 400;
   color: #656565;
   padding-right: 10px;
   margin-bottom: 10px;
-  font-family: 'Open Sans', Arial, sans-serif;
+  font-family: 'Raleway', Arial, sans-serif;
   width: 190px;
 }
 .box h3 {
   color: #4a757f;
   font-size: 18px;
   text-align: left;
-  font-weight: normal;
-  font-family: 'Open Sans', Arial, sans-serif;
+  font-weight: 400;
+  font-family: 'Raleway', Arial, sans-serif;
   padding-left: 0px;
 }
 .box .contributorback {
@@ -1214,12 +1214,12 @@ ul#searchTags {
 }
 .short-summary h2 {
   font-size: 20px;
-  font-weight: normal;
+  font-weight: 400;
   line-height: 26px;
   padding-left: 0;
   margin-bottom: 7px;
   display: block;
-  font-family: 'Open Sans', Arial, sans-serif;
+  font-family: 'Raleway', Arial, sans-serif;
 }
 .short-summary a {
   color: #464646;
@@ -1636,7 +1636,7 @@ ul#related-tags li {
 .section-title {
   color: #7ea9b3;
   font-family: 'Raleway', 'Open Sans Condensed', Arial, sans-serif;
-  font-weight: bold;
+  font-weight: 400;
   font-size: 24px;
 }
 #fmask {
@@ -2055,11 +2055,12 @@ ul#related-tags li {
 .question-page h1 {
   padding-top: 0px;
   font-family: 'Raleway', 'Open Sans Condensed', Arial, sans-serif;
+  font-weight: 400;
 }
 .question-page h1 a {
   color: #464646;
   font-size: 26px;
-  font-weight: normal;
+  font-weight: 400;
   line-height: 1;
 }
 .question-page p.rss {
@@ -2342,9 +2343,9 @@ ul#related-tags li {
 }
 .question-page h2.comment-title {
   color: #7ea9b3;
-  font-weight: bold;
+  font-weight: 400;
   font-size: 23px;
-  font-family: 'Open Sans', Arial, sans-serif;
+  font-family: 'Raleway', Arial, sans-serif;
   float: left;
   padding-left: 0;
   width: 200px;
@@ -2657,9 +2658,10 @@ ul#related-tags li {
   margin-top: 10px;
 }
 .question-page #fmanswer h2 {
-  font-family: 'Open Sans', Arial, sans-serif;
+  font-family: 'Raleway', Arial, sans-serif;
   color: #7ea9b3;
   font-size: 24px;
+  font-weight: 400;
 }
 .question-page #fmanswer label {
   font-size: 13px;
@@ -3046,11 +3048,14 @@ a:hover.medal {
 }
 .user-profile-page h2 {
   padding: 4px 0px 10px 0px;
-  font-family: 'Open Sans', Arial, sans-serif;
+  font-family: 'Raleway', Arial, sans-serif;
+  font-weight: 400;
 }
 .user-profile-page h3 {
   padding: 0;
   margin-top: -3px;
+  font-family: 'Raleway';
+  font-weight: 400;
 }
 .user-profile-page table.form-as-table {
   margin: 5px 0 12px;
@@ -3274,8 +3279,9 @@ a:hover.medal {
   color: #525252;
 }
 .revision h3 {
-  font-family: 'Open Sans', Arial, sans-serif;
+  font-family: 'Raleway', Arial, sans-serif;
   font-size: 21px;
+  font-weight: 400;
   padding-left: 0px;
 }
 .revision .header {
