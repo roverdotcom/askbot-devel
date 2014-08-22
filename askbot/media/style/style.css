@@ -305,6 +305,7 @@ body.user-messages {
   width: 960px;
   margin: auto;
   position: relative;
+  overflow: hidden;
 }
 #logo img {
   padding: 5px 0px 5px 0px;
@@ -3428,12 +3429,11 @@ body.main-page ins {
   width: 100%;
   clear: both;
   /* border-top: 1px solid #000; */
-  padding: 16px 0 0 0;
-  /* how do I colors */
-  /* background: $green-light; */
+  padding: 16px 0;
   background: #77c045;
   font-size: 16px;
   font-family: 'Open Sans', Arial, sans-serif;
+  margin-top: 15px;
 }
 #ground p {
   margin-bottom: 0;
