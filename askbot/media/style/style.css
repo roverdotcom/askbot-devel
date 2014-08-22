@@ -891,7 +891,8 @@ body.anon.ask-page .search-drop-menu {
 }
 .box h2 {
   padding-left: 0;
-  background: #eceeeb;
+  /* background: $grey-light; */
+  background: whitesmoke;
   line-height: 30px;
   text-align: right;
   font-size: 18px !important;
@@ -2619,7 +2620,8 @@ ul#related-tags li {
   margin-top: 10px;
 }
 .question-page .accepted-answer {
-  background-color: #f7fecc;
+  /* background-color: $alert-success-bg; */
+  background-color: #dff0d8;
   border-bottom-color: #9BD59B;
 }
 .question-page .answer .post-update-info a {
@@ -3124,7 +3126,8 @@ a:hover.medal {
   vertical-align: top;
 }
 .user-about {
-  background-color: #EEEEEE;
+  /* background-color: $grey-light; */
+  background-color: whitesmoke;
   height: 200px;
   line-height: 20px;
   overflow: auto;
