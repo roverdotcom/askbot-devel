@@ -3421,7 +3421,7 @@ body.main-page ins {
   float: left;
 }
 .footer-links a {
-  color: #e7e8a8;
+  color: white;
 }
 .powered-link {
   width: 450px;
@@ -3429,18 +3429,19 @@ body.main-page ins {
   text-align: left;
 }
 .powered-link a {
-  color: #8ebcc7;
+  /* color: $orange-light; */
+  color: white;
 }
-.copyright {
-  color: #616161;
+.askbot-copyright {
+  color: white;
   width: 500px;
   float: right;
   text-align: right;
 }
-.copyright a {
-  color: #8ebcc7;
+.askbot-copyright a {
+  color: white;
 }
-.copyright img.license-logo {
+.askbot-copyright img.license-logo {
   margin: 6px 0px 20px 10px;
   float: right;
 }
@@ -4526,7 +4527,7 @@ td.setting-input textarea {
   .main-page h1,
   #askButton,
   #metaNav #navBadges,
-  .copyright,
+  .askbot-copyright,
   .counts .views,
   .counts .votes,
   .help,
