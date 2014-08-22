@@ -912,7 +912,8 @@ body.anon.ask-page .search-drop-menu {
   padding-left: 0px;
 }
 .box .contributorback {
-  background: #eceeeb url(../images/contributorsback.png) no-repeat center left;
+  /* note: replace color with $grey-light */
+  background: whitesmoke url(../images/contributorsback.png) no-repeat center left;
 }
 .box form {
   margin: 0px;
@@ -1075,7 +1076,8 @@ body.anon.ask-page .search-drop-menu {
 }
 /* ----- Sorting top Tab, check main_page/tab_bar.html ------*/
 .tabBar {
-  background-color: #eff5f6;
+  /* background-color: $grey-light; */
+  background-color: whitesmoke;
   height: 30px;
   margin-bottom: 3px;
   margin-top: 3px;
@@ -1108,7 +1110,8 @@ body.anon.ask-page .search-drop-menu {
 .tabsA a,
 .tabsC a {
   border-left: 1px solid #d0e1e4;
-  color: #7ea9b3;
+  /* color: $aqua-light; */;
+  color: #45cddb;
   display: block;
   float: left;
   height: 20px;
@@ -1120,7 +1123,8 @@ body.anon.ask-page .search-drop-menu {
 .tabsC a.on,
 .tabsA a:hover,
 .tabsC a:hover {
-  color: #4a757f;
+  /* color: $aqua; */
+  color: #14a4be;
 }
 .tabsA .label,
 .tabsC .label {
@@ -1164,7 +1168,8 @@ body.anon.ask-page .search-drop-menu {
 #questionCount {
   font-weight: bold;
   font-size: 20px;
-  color: #7ea9b3;
+  /* color: $aqua; */
+  color: #14a4be;
   float: left;
   margin-bottom: 6px;
   padding-top: 6px;
@@ -1637,7 +1642,8 @@ ul#related-tags li {
 }
 /* ----- Ask and Edit Question Form template----- */
 .section-title {
-  color: #7ea9b3;
+  /* color: $aqua; */
+  color: #14a4be;
   font-family: 'Raleway', 'Open Sans Condensed', Arial, sans-serif;
   font-weight: 400;
   font-size: 24px;
