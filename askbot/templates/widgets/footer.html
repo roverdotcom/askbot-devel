@@ -3,7 +3,7 @@
     <div class="content-wrapper">
         {% if settings.USE_LICENSE %}{# could be factored out into separate template #}
             {% if settings.LICENSE_USE_URL %}
-            <div class="copyright">
+            <div class="askbot-copyright">
                 {% if settings.LICENSE_USE_LOGO %}
                 <a href="{{ settings.LICENSE_URL}}">
                         <img
@@ -21,7 +21,7 @@
 
             </div>
             {% else %}
-            <div class="copyright">
+            <div class="askbot-copyright">
                 {% if settings.LICENSE_USE_LOGO %}
                 <img 
                     class="license-logo"
