@@ -358,7 +358,7 @@ body.user-messages {
 }
 #userToolsNav .user-info,
 #userToolsNav .user-micro-info {
-  color: #b5b593;
+  color: white;
 }
 #userToolsNav a img {
   vertical-align: middle;
@@ -377,7 +377,7 @@ body.user-messages {
   margin-right: 7px;
 }
 #metaNav a {
-  color: #white;
+  color: white;
   padding: 0px 0px 0px 35px;
   height: 35px;
   line-height: 25px;
@@ -828,7 +828,7 @@ form.ajax-file-upload img.spinner {
   /* check blocks/secondary_header.html and widgets/ask_button.html*/
 
   float: right;
-  font-size: 20px;
+  font-size: 16px;
   height: 42px;
   line-height: 44px;
   margin: -1px 0 0 0;
@@ -957,7 +957,7 @@ body.anon.ask-page .search-drop-menu {
 .box .inputs #ignoredTagInput,
 .box .inputs #subscribedTagInput,
 .box .inputs #ab-tag-search {
-  width: 147px;
+  width: 142px;
   padding-left: 5px;
   border: #c9c9b5 1px solid;
   height: 25px;
