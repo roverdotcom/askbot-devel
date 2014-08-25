@@ -1,7 +1,3 @@
-.new-design {
-    .header {
-        .navbar-container {
+.new-design .header .navbar-container {
             width: 960px;
-        }
-    }
 }
