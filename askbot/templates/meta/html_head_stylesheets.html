@@ -10,10 +10,12 @@
         {{ skin.get_extra_css_link() }}
         <link href="{{'/bootstrap/css/bootstrap.css'|media}}" rel="stylesheet" type="text/css" />
         {# Add Rover style content here. #}
-        <link type="text/css"     rel="stylesheet" href="{{ '/new_design/vendor/jquery-ui/css/flick/jquery-ui-1.10.3.custom.css'|media }}" />
-        <link type="text/x-scss"  rel="stylesheet" href="{{ '/new_design/vendor/fontawesome/scss/font-awesome.scss'|media }}" />
-        <link type="text/css"  rel="stylesheet" href="{{ '/new_design/vendor/css/bootstrap-slider.css'|media }}" />
-        <link type="text/x-scss"  rel="stylesheet" href="{{ '/new_design/css/application.scss'|media }}" />
+        <link type="text/css"     rel="stylesheet" href="{% static 'new_design/vendor/jquery-ui/css/flick/jquery-ui-1.10.3.custom.css' %}" />
+        <link type="text/x-scss"  rel="stylesheet" href="{% static 'new_design/vendor/fontawesome/scss/font-awesome.scss' %}" />
+        <link type="text/css"  rel="stylesheet" href="{% static 'new_design/vendor/css/bootstrap-slider.css' %}" />
+        <link type="text/x-scss"  rel="stylesheet" href="{% static 'new_design/css/application.scss' %}" />
+        {# Override to fix the width of the header bar. #}
+        <link type="text/css" rel="stylesheet" href="{{ '/css/override.css'|media }}" />
     {% endcompress %}
 {% endif %}
 {% if settings.USE_CUSTOM_CSS %}
