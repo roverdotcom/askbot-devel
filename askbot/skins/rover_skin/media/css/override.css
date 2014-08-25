@@ -2,6 +2,6 @@
     width: 960px;
 }
 
-.new-design .navbar-nav .navbar-right:last-child {
+.new-design .navbar-nav.navbar-right:last-child {
     margin-right: -6px;
 }
