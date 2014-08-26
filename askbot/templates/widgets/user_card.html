@@ -31,7 +31,7 @@
 
         {# Add link to user's sitter profile. #}
         {% if view_user.person.homes %}
-            <a href="{{ view_user.person.homes.all()[0].get_absolute_url() }}">Rover home sitter profile</a>
+            <a href="{{ user.person.homes.all()[0].get_absolute_url() }}">Rover home sitter profile</a>
         {% endif %}
         {{ macros.user_website_link(user) }}
     </div>
