@@ -124,14 +124,14 @@
         </table>
     </div>
     <div class="col3 user-about">
-    Book on Rover & receive:
-    <ul>
+    <h2 class="user-about-heading">Book on Rover & receive:</h2>
+    <ul class="rover-benefits-list">
         <li>Premium pet insurance</li>
         <li>Our reservation guarantee</li>
         <li>24/7 customer support</li>
     </ul>
     {% if view_user.person.homes %}
-        <a href="{{ view_user.person.homes.all()[0].get_absolute_url() }}">Visit {{ view_user.get_full_name() }}'s home sitter profile</a> to book a stay!
+        <a class="button book-button" href="{{ view_user.person.homes.all()[0].get_absolute_url() }}">Book a Stay with {{ view_user.get_full_name() }}</a>
     {% endif %}
     {% if view_user.about and (not view_user.is_blocked()) %}
         {{view_user.about|linebreaks|escape}}

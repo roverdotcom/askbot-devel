@@ -1,0 +1,100 @@
+{# {% load require_full_uri seo cache %} #}
+
+<div class="new-design js-new-design">
+    <div class="footer">
+        <div class="container">
+
+            <div class="row visible-xs">
+                <div class="col-xs-12">
+                    <h3 class="xs-join-pack-heading">Join Our Pack</h3>
+                    <h5>Like Rover on Facebook</h5>
+                    <div class="fb-like" data-href="http://www.facebook.com/RoverDotCom" data-send="true" data-width="300" data-show-faces="false"></div>
+                    <div class="row footer-twitter">
+                        <div class="col-xs-6">
+                            <h5 class="nomargin">Follow Rover on Twitter</h5>
+                        </div>
+                        <div class="col-xs-6">
+                            <a href="https://twitter.com/roverdotcom" class="twitter-follow-button" data-show-count="false" >Follow @roverdotcom</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row visible-xs">
+                <h3 class="xs-footer-header">Need Help?</h3>
+                <ul class="xs-footer-links">
+                    <li class="xs-footer-link"><a href="https://support.rover.com/hc/en-us?ref=footer" target="_blank">Help Center</a></li>
+                    <li class="xs-footer-link"><a href="tel:888-453-7889">888-453-7889</a></li>
+                </ul>
+            </div>
+
+            <div class="row hidden-xs">
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <h4>Learn More</h4>
+                            <ul class="footer-list">
+                                <li><a href="{{ 'blog'|url("")|require_full_uri('http') }}?ref=footer">Read Our Blog</a></li>
+                                <li><a href="{% url 'questions' %}">Ask Rover</a></li>
+                                <li><a href="{ url 'insurance' %}?ref=footer">Premium Insurance</a></li>
+                                <li><a href="{% url 'sit-a-dog-save-a-life' %}?ref=footer">Sit a Dog, Save a Life</a></li>
+                                {% if request.user.is_staff %}
+                                    <li><a href="{% url 'admin:index' %}">Admin</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <h4>Need Help?</h4>
+                            <ul class="footer-list">
+                                <li><a href="https://support.rover.com/hc/en-us?ref=footer" target="_blank">Help Center</a></li>
+                                <li class="tel">Customer Support <span class="value prevent-break">888-453-7889</span></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <h4>About Rover</h4>
+                            <ul class="footer-list">
+                                <li><a href="/about-us/?ref=footer">About Us</a></li>
+                                <li><a href="{% url "app" %}?ref=footer">Get the App</a></li>
+                                <li><a href="{{ 'blog'|url('in-the-press')|require_full_uri('http') }}?ref=footer">In the Press</a></li>
+                                <li><a href="{% url 'rovercam:live' %}?ref=footer">RoverCam</a></li>
+                                <li><a href="http://jobs.rover.com/?ref=footer">Jobs</a></li>
+                                <li><a href="{% url 'partners-partner-list' %}?ref=footer">Partners</a></li>
+                                <li><a href="{% url 'privacy' %}?ref=footer">Privacy Policy</a></li>
+                                <li><a href="{% url 'tos' %}?ref=footer">Terms of Service</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <h4>Join Our Pack</h4>
+                            <h5 class="tiny-heading">Like Rover on Facebook</h5>
+                            <div class="fb-like" data-href="http://www.facebook.com/RoverDotCom" data-send="true" data-width="300" data-show-faces="false"></div>
+                            <div class="row footer-twitter">
+                                <div class="col-lg-4 col-md-4 col-sm-4">
+                                    <h5 class="nomargin">Follow Rover on Twitter</h5>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <a href="https://twitter.com/roverdotcom" class="twitter-follow-button" data-show-count="false" >Follow @roverdotcom</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <h4>Top Rover Cities</h4>
+                    <div class="row">
+                        {# Cache for a day #}
+                        {% cache 86400 "new_design_footer_cities" %}
+                            {{ render_new_design_footer_cities() }}
+                        {% endcache %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <hr class="shadow-line copyright-shadow-line">
+                <p class="copyright">
+                    &copy; 2014 Rover.com. All Rights Reserved.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

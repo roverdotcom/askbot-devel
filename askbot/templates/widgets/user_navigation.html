@@ -15,7 +15,7 @@
     {%- endif -%}
     </span>
     {% if settings.USE_ASKBOT_LOGIN_SYSTEM %}
-         <a href="{{ settings.LOGOUT_URL }}?next={{ settings.LOGOUT_REDIRECT_URL }}">{% trans %}sign out{% endtrans %}</a>
+         <a href="{{ settings.LOGOUT_URL }}?next={{request.path|clean_login_url|escape}}">{% trans %}sign out{% endtrans %}</a>
     {% endif %}
 {% elif settings.USE_ASKBOT_LOGIN_SYSTEM %}
     <a href="{{ settings.LOGIN_URL }}?next={{request.path|clean_login_url|escape}}">{% trans %}Hi there! Please sign in{% endtrans %}</a>

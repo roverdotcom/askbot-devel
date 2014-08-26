@@ -36,7 +36,7 @@ settings.register(
     livesettings.StringValue(
         KARMA_AND_BADGE_VISIBILITY,
         'BADGES_MODE',
-        default = 'public',
+        default = 'private',
         choices = (
             ('public', 'show publicly'),
             ('hidden', 'hide completely')

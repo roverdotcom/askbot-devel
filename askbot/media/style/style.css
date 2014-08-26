@@ -13,7 +13,8 @@ body {
   margin: 0;
   padding: 0;
   color: #666;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
+  padding-top: 50px;
 }
 div {
   margin: 0 auto;
@@ -226,7 +227,7 @@ body.user-messages {
   padding: 0;
   text-align: center;
   background-color: #f5dd69;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
 }
 .notify .notification {
   color: #424242;
@@ -294,8 +295,9 @@ body.user-messages {
 /* ----- Header, check blocks/header.html ----- */
 #header {
   margin-top: 0px;
-  background: #16160f;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  /* background: $green-light; */
+  background: #77c045;
+  font-family: 'Raleway', Arial, sans-serif;
 }
 .content-wrapper {
   /* wrapper positioning class */
@@ -303,6 +305,7 @@ body.user-messages {
   width: 960px;
   margin: auto;
   position: relative;
+  overflow: hidden;
 }
 #logo img {
   padding: 5px 0px 5px 0px;
@@ -338,15 +341,16 @@ body.user-messages {
 
   height: 20px;
   padding-bottom: 5px;
+  padding-top: 5px;
   white-space: nowrap;
   font-size: 16px;
+  font-weight: bold;
 }
 #userToolsNav a {
   height: 35px;
   text-align: right;
   margin-left: 20px;
-  text-decoration: underline;
-  color: #d0e296;
+  color: white; /* appropriate? */
 }
 #userToolsNav a:first-child {
   margin-left: 0;
@@ -356,7 +360,7 @@ body.user-messages {
 }
 #userToolsNav .user-info,
 #userToolsNav .user-micro-info {
-  color: #b5b593;
+  color: white;
 }
 #userToolsNav a img {
   vertical-align: middle;
@@ -373,15 +377,17 @@ body.user-messages {
   /* for #header.with-logo it is modified */
 
   margin-right: 7px;
+  position: relative;
+  top: 4px;
 }
 #metaNav a {
-  color: #e2e2ae;
+  color: white;
   padding: 0px 0px 0px 35px;
   height: 35px;
   line-height: 25px;
   margin: 5px 0px 0px 10px;
-  font-size: 18px;
-  font-weight: 100;
+  font-size: 16px;
+  font-weight: bold;
   text-decoration: none;
   display: block;
   float: left;
@@ -457,15 +463,19 @@ body.user-messages {
   float: left;
   margin-top: 7px;
 }
+.header-custom {
+  padding: 7px;
+}
 #secondaryHeader {
   /* Div containing Home button, scope navigation, search form and ask button, check blocks/secondary_header.html */
 
   height: 55px;
-  background: #e9e9e1;
+  /* background: $grey; */
+  background: #e0e0e0;
   border-bottom: #d3d3c2 1px solid;
   border-top: #fcfcfc 1px solid;
   margin-bottom: 10px;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -549,7 +559,7 @@ body.user-messages {
   background: transparent;
   border: 0px;
   color: #484848;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   width: 100%;
   margin: 8px 0 6px 0;
   padding: 0 80px 0 8px;
@@ -616,12 +626,12 @@ body.user-messages {
 .search-drop-menu ul li.selected a {
   color: whitesmoke;
 }
-.search-drop-menu .footer {
+.search-drop-menu .askbot-footer {
   text-align: center;
   margin: 0 0 1px 0;
   padding: 4px 0 10px 0;
 }
-.search-drop-menu.empty .footer {
+.search-drop-menu.empty .askbot-footer {
   padding-top: 9px;
 }
 .search-drop-menu.empty ul {
@@ -723,7 +733,7 @@ input[type="reset"],
   border-top: #eaf2f3 1px solid;
   cursor: pointer;
   color: #4a757f;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   font-size: 14px;
   font-weight: bold;
   height: 27px;
@@ -825,7 +835,7 @@ form.ajax-file-upload img.spinner {
   /* check blocks/secondary_header.html and widgets/ask_button.html*/
 
   float: right;
-  font-size: 20px;
+  font-size: 16px;
   height: 42px;
   line-height: 44px;
   margin: -1px 0 0 0;
@@ -879,7 +889,7 @@ body.anon.ask-page .search-drop-menu {
 .box p {
   margin-bottom: 4px;
   color: #707070;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   font-size: 14px;
 }
 .box p.info-box-follow-up-links {
@@ -888,27 +898,29 @@ body.anon.ask-page .search-drop-menu {
 }
 .box h2 {
   padding-left: 0;
-  background: #eceeeb;
+  /* background: $grey-light; */
+  background: whitesmoke;
   line-height: 30px;
   text-align: right;
   font-size: 18px !important;
-  font-weight: normal;
+  font-weight: 400;
   color: #656565;
   padding-right: 10px;
   margin-bottom: 10px;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Raleway', Arial, sans-serif;
   width: 190px;
 }
 .box h3 {
   color: #4a757f;
   font-size: 18px;
   text-align: left;
-  font-weight: normal;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-weight: 400;
+  font-family: 'Raleway', Arial, sans-serif;
   padding-left: 0px;
 }
 .box .contributorback {
-  background: #eceeeb url(../images/contributorsback.png) no-repeat center left;
+  /* note: replace color with $grey-light */
+  background: whitesmoke url(../images/contributorsback.png) no-repeat center left;
 }
 .box form {
   margin: 0px;
@@ -919,7 +931,7 @@ body.anon.ask-page .search-drop-menu {
   vertical-align: bottom;
   display: inline;
   text-align: left;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
 }
 .box #displayTagFilterControl label,
 .box #emailTagFilterControl label {
@@ -952,7 +964,7 @@ body.anon.ask-page .search-drop-menu {
 .box .inputs #ignoredTagInput,
 .box .inputs #subscribedTagInput,
 .box .inputs #ab-tag-search {
-  width: 147px;
+  width: 142px;
   padding-left: 5px;
   border: #c9c9b5 1px solid;
   height: 25px;
@@ -1001,7 +1013,7 @@ body.anon.ask-page .search-drop-menu {
 .box .favorite-number {
   padding: 5px 0 0 5px;
   font-size: 100%;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   font-weight: bold;
   color: #777;
   text-align: center;
@@ -1071,12 +1083,13 @@ body.anon.ask-page .search-drop-menu {
 }
 /* ----- Sorting top Tab, check main_page/tab_bar.html ------*/
 .tabBar {
-  background-color: #eff5f6;
+  /* background-color: $grey-light; */
+  background-color: whitesmoke;
   height: 30px;
   margin-bottom: 3px;
   margin-top: 3px;
   float: right;
-  font-family: Georgia, serif;
+  font-family: 'Open Sans', Georgia, serif;
   font-size: 16px;
   border-radius: 5px;
   -ms-border-radius: 5px;
@@ -1104,7 +1117,8 @@ body.anon.ask-page .search-drop-menu {
 .tabsA a,
 .tabsC a {
   border-left: 1px solid #d0e1e4;
-  color: #7ea9b3;
+  /* color: $aqua-light; */;
+  color: #45cddb;
   display: block;
   float: left;
   height: 20px;
@@ -1116,7 +1130,8 @@ body.anon.ask-page .search-drop-menu {
 .tabsC a.on,
 .tabsA a:hover,
 .tabsC a:hover {
-  color: #4a757f;
+  /* color: $aqua; */
+  color: #14a4be;
 }
 .tabsA .label,
 .tabsC .label {
@@ -1150,7 +1165,7 @@ body.anon.ask-page .search-drop-menu {
   padding-top: 3px;
   background: #ffffff url(../images/feed-icon-small.png) no-repeat center right;
   float: right;
-  font-family: Georgia, serif;
+  font-family: 'Open Sans', Georgia, serif;
   font-size: 16px;
 }
 .rss:hover {
@@ -1160,18 +1175,19 @@ body.anon.ask-page .search-drop-menu {
 #questionCount {
   font-weight: bold;
   font-size: 20px;
-  color: #7ea9b3;
+  /* color: $aqua; */
+  color: #14a4be;
   float: left;
   margin-bottom: 6px;
   padding-top: 6px;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
 }
 #listSearchTags {
   float: left;
   margin-top: 3px;
   color: #707070;
   font-size: 16px;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
 }
 ul#searchTags {
   margin-left: 10px;
@@ -1186,7 +1202,7 @@ ul#searchTags {
   margin: 5px 0 10px 0;
   padding: 0px;
   float: left;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
 }
 .search-tips a {
   text-decoration: underline;
@@ -1213,12 +1229,12 @@ ul#searchTags {
 }
 .short-summary h2 {
   font-size: 20px;
-  font-weight: normal;
+  font-weight: 400;
   line-height: 26px;
   padding-left: 0;
   margin-bottom: 7px;
   display: block;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Raleway', Arial, sans-serif;
 }
 .short-summary a {
   color: #464646;
@@ -1226,7 +1242,7 @@ ul#searchTags {
 .short-summary .userinfo {
   text-align: right;
   line-height: 16px;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   padding-right: 4px;
 }
 .short-summary .userinfo .timeago,
@@ -1243,12 +1259,12 @@ ul#searchTags {
 .short-summary .counts {
   float: right;
   margin: 4px 0 0 5px;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
 }
 .short-summary .counts .item-count {
   padding: 0px 5px 0px 5px;
   font-size: 25px;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
 }
 .short-summary .counts .votes div,
 .short-summary .counts .views div,
@@ -1499,7 +1515,7 @@ ul#related-tags li {
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   color: #717179;
 }
 .deletable-tag {
@@ -1599,7 +1615,7 @@ ul#related-tags li {
   cursor: default;
   color: #fff;
   border-top: #cfdbdb 1px solid;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
   -moz-border-radius-topright: 4px;
@@ -1633,9 +1649,10 @@ ul#related-tags li {
 }
 /* ----- Ask and Edit Question Form template----- */
 .section-title {
-  color: #7ea9b3;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
-  font-weight: bold;
+  /* color: $aqua; */
+  color: #14a4be;
+  font-family: 'Raleway', 'Open Sans Condensed', Arial, sans-serif;
+  font-weight: 400;
   font-size: 24px;
 }
 #fmask {
@@ -1933,7 +1950,7 @@ ul#related-tags li {
   min-height: 20px;
   overflow: auto;
   font-size: 13px;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
 }
 .wmd-preview p {
   margin-bottom: 14px;
@@ -2053,12 +2070,13 @@ ul#related-tags li {
 /* ----- Question template ----- */
 .question-page h1 {
   padding-top: 0px;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Raleway', 'Open Sans Condensed', Arial, sans-serif;
+  font-weight: 400;
 }
 .question-page h1 a {
   color: #464646;
   font-size: 26px;
-  font-weight: normal;
+  font-weight: 400;
   line-height: 1;
 }
 .question-page p.rss {
@@ -2071,7 +2089,7 @@ ul#related-tags li {
   background-position: center left;
 }
 .question-page p.rss a {
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   vertical-align: top;
 }
 .question-page .post {
@@ -2102,7 +2120,7 @@ ul#related-tags li {
 }
 .question-page .post-body {
   overflow: auto;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   color: #4b4b4b;
   word-wrap: break-word;
   max-width: 683px;
@@ -2135,7 +2153,7 @@ ul#related-tags li {
   background: #ffffff url(../images/background-user-info.png) repeat-x bottom;
   float: right;
   font-size: 9px;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   line-height: 12px;
   margin: 0px 0px 5px 5px;
   padding: 4px;
@@ -2186,7 +2204,7 @@ ul#related-tags li {
   cursor: pointer;
   border: none;
   font-size: 12px;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   text-decoration: none;
   height: 18px;
   line-height: 18px;
@@ -2292,7 +2310,7 @@ ul#related-tags li {
 .question-page .answer-controls .answer-convert input {
   font-size: 12px;
   color: #777;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   text-decoration: none;
   display: inline;
   white-space: nowrap;
@@ -2323,7 +2341,7 @@ ul#related-tags li {
 }
 .question-page #questionCount {
   float: left;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   line-height: 15px;
 }
 .question-page #fmanswer_button {
@@ -2341,9 +2359,9 @@ ul#related-tags li {
 }
 .question-page h2.comment-title {
   color: #7ea9b3;
-  font-weight: bold;
+  font-weight: 400;
   font-size: 23px;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Raleway', Arial, sans-serif;
   float: left;
   padding-left: 0;
   width: 200px;
@@ -2370,7 +2388,7 @@ ul#related-tags li {
   border: none;
   color: #988e4c;
   padding: 0 3px 5px 22px;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   font-size: 13px;
   font-weight: normal;
   background: url(../images/comment.png) no-repeat center left;
@@ -2403,7 +2421,7 @@ ul#related-tags li {
 .question-page .comments textarea {
   box-sizing: border-box;
   color: #666;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   font-size: 13px;
   height: 54px;
   line-height: 1.3;
@@ -2441,14 +2459,14 @@ ul#related-tags li {
   display: inline-block;
   width: auto;
   vertical-align: top;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   float: right;
   text-align: right;
 }
 .question-page .comments .comment {
   border-bottom: 1px solid #edeeeb;
   display: table;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   font-size: 11px;
   margin: 0;
   min-height: 25px;
@@ -2525,7 +2543,7 @@ ul#related-tags li {
   border: none;
   height: 13px;
   width: auto;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   font-size: 13px;
   font-weight: normal;
   line-height: 13px;
@@ -2615,7 +2633,8 @@ ul#related-tags li {
   margin-top: 10px;
 }
 .question-page .accepted-answer {
-  background-color: #f7fecc;
+  /* background-color: $alert-success-bg; */
+  background-color: #dff0d8;
   border-bottom-color: #9BD59B;
 }
 .question-page .answer .post-update-info a {
@@ -2656,9 +2675,10 @@ ul#related-tags li {
   margin-top: 10px;
 }
 .question-page #fmanswer h2 {
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Raleway', Arial, sans-serif;
   color: #7ea9b3;
   font-size: 24px;
+  font-weight: 400;
 }
 .question-page #fmanswer label {
   font-size: 13px;
@@ -2715,7 +2735,7 @@ ul#related-tags li {
   background: url(../images/vote-arrow-down-on-new.png) no-repeat;
 }
 .vote-number {
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   padding: 2px 0 5px 0;
   font-size: 25px;
   font-weight: bold;
@@ -2784,7 +2804,7 @@ ul#related-tags li {
   font-size: 13px;
   color: #707070;
   line-height: 1.3;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   color: #525252;
   margin-bottom: 12px;
 }
@@ -3045,11 +3065,14 @@ a:hover.medal {
 }
 .user-profile-page h2 {
   padding: 4px 0px 10px 0px;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Raleway', Arial, sans-serif;
+  font-weight: 400;
 }
 .user-profile-page h3 {
   padding: 0;
   margin-top: -3px;
+  font-family: 'Raleway';
+  font-weight: 400;
 }
 .user-profile-page table.form-as-table {
   margin: 5px 0 12px;
@@ -3116,12 +3139,31 @@ a:hover.medal {
   vertical-align: top;
 }
 .user-about {
-  background-color: #EEEEEE;
+  /* background-color: $grey-light; */
+  background-color: whitesmoke;
   height: 200px;
   line-height: 20px;
   overflow: auto;
-  padding: 10px;
+  padding: 20px;
   width: 90%;
+  box-sizing: border-box;
+  background: whitesmoke url(/static/new_design/images/favicon.png) no-repeat 380px 20px;
+}
+.user-about-heading {
+  line-height: normal;
+  margin-top: -8px;
+}
+.rover-benefits-list {
+  font-size: 130%;
+  margin-bottom: 35px;
+}
+.rover-benefits-list li {
+  margin-bottom: 7px;
+}
+.book-button {
+  padding: 10px;
+  display: block;
+  height: auto;
 }
 .user-about p {
   font-size: 13px;
@@ -3156,13 +3198,13 @@ a:hover.medal {
   display: none;
 }
 .count {
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   font-size: 200%;
   font-weight: 700;
   color: #777777;
 }
 .scoreNumber {
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   font-size: 35px;
   font-weight: 800;
   color: #777;
@@ -3172,7 +3214,7 @@ a:hover.medal {
   margin-top: 3px;
 }
 .vote-count {
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   font-size: 160%;
   font-weight: 700;
   color: #777;
@@ -3186,7 +3228,7 @@ a:hover.medal {
   background-color: #EEEEEE;
   color: #555555;
   float: left;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   font-size: 15px;
   font-weight: bold;
   height: 17px;
@@ -3273,8 +3315,9 @@ a:hover.medal {
   color: #525252;
 }
 .revision h3 {
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Raleway', Arial, sans-serif;
   font-size: 21px;
+  font-weight: 400;
   padding-left: 0px;
 }
 .revision .header {
@@ -3319,7 +3362,7 @@ a:hover.medal {
 .revision .revision-number {
   font-size: 300%;
   font-weight: bold;
-  font-family: sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 del,
 del .post-tag {
@@ -3345,7 +3388,7 @@ body.main-page ins {
   color: white;
   cursor: pointer;
   display: none;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
   font-size: 14px;
   font-weight: normal;
   padding-bottom: 10px;
@@ -3385,11 +3428,12 @@ body.main-page ins {
 #ground {
   width: 100%;
   clear: both;
-  border-top: 1px solid #000;
-  padding: 16px 0 0 0;
-  background: #16160f;
+  /* border-top: 1px solid #000; */
+  padding: 16px 0;
+  background: #77c045;
   font-size: 16px;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
+  margin-top: 15px;
 }
 #ground p {
   margin-bottom: 0;
@@ -3401,7 +3445,7 @@ body.main-page ins {
   float: left;
 }
 .footer-links a {
-  color: #e7e8a8;
+  color: white;
 }
 .powered-link {
   width: 450px;
@@ -3409,18 +3453,19 @@ body.main-page ins {
   text-align: left;
 }
 .powered-link a {
-  color: #8ebcc7;
+  /* color: $orange-light; */
+  color: white;
 }
-.copyright {
-  color: #616161;
+.askbot-copyright {
+  color: white;
   width: 500px;
   float: right;
   text-align: right;
 }
-.copyright a {
-  color: #8ebcc7;
+.askbot-copyright a {
+  color: white;
 }
-.copyright img.license-logo {
+.askbot-copyright img.license-logo {
   margin: 6px 0px 20px 10px;
   float: right;
 }
@@ -3683,7 +3728,7 @@ button::-moz-focus-inner {
   z-index: 100;
   padding: 5px 0;
   text-align: center;
-  font-family: sans-serif;
+  font-family: 'Open Sans', sans-serif;
   font-size: 120%;
   font-weight: Bold;
   color: #FFFFFF;
@@ -4300,7 +4345,7 @@ textarea.tipped-input {
 .tag-subscriptions .action {
   cursor: pointer;
   color: #4A757F;
-  font-family: 'Open Sans Condensed', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   text-decoration: none;
 }
 .tag-subscriptions ul.tags li {
@@ -4506,7 +4551,7 @@ td.setting-input textarea {
   .main-page h1,
   #askButton,
   #metaNav #navBadges,
-  .copyright,
+  .askbot-copyright,
   .counts .views,
   .counts .votes,
   .help,
