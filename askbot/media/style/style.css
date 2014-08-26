@@ -3147,7 +3147,7 @@ a:hover.medal {
   padding: 20px;
   width: 90%;
   box-sizing: border-box;
-  background: whitesmoke url(/static/rover_skin/media/new_design/images/favicon.png) no-repeat 380px 20px;
+  background: whitesmoke url(/static/new_design/images/favicon.png) no-repeat 380px 20px;
 }
 .user-about-heading {
   line-height: normal;
