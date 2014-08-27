@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import loading
 from django.utils.translation import ugettext_lazy
 from django.core.exceptions import ImproperlyConfigured
+from django.db import DatabaseError
 from keyedcache import cache_key, cache_get, cache_set, NotCachedError
 from keyedcache.models import CachedObjectMixin
 from askbot.deps.livesettings.overrides import get_overrides
@@ -48,12 +49,12 @@ def find_setting(group, key, site=None):
                 try:
                     setting = Setting.objects.get(site__id__exact=siteid, key__exact=key, group__exact=group)
 
-                except (Setting.DoesNotExist, ImproperlyConfigured):
+                except (Setting.DoesNotExist, ImproperlyConfigured, DatabaseError):
                     # maybe it is a "long setting"
                     try:
                         setting = LongSetting.objects.get(site__id__exact=siteid, key__exact=key, group__exact=group)
 
-                    except (LongSetting.DoesNotExist, ImproperlyConfigured):
+                    except (LongSetting.DoesNotExist, ImproperlyConfigured, DatabaseError):
                         pass
 
                 cache_set(ck, value=setting)
