@@ -90,7 +90,7 @@ div.fieldcontainer { float: left; margin-right: 0; }
 		</div>
 	{% admin_site_views 'satchmo_site_settings' %}
 	<br class="clear:both;" />
-	<input type="submit" value="{% trans %}Save{% endtrans %}" class="default" />
+	<input type="submit" value="{% trans 'Save' %}" class="default" />
 	<p><a onclick="javascript:CollapsedFieldsets.uncollapse_all(); return false;" href="#">{% trans 'Uncollapse all' %}</a></p>
 	<p><a href="{% url settings_export %}">Export</a></p>
 	</form>
