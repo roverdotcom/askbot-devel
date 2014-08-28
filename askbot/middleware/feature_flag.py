@@ -12,5 +12,5 @@ class AskbotFeatureFlagMiddleware(object):
     def process_request(self, request):
         if request.path.startswith('/' + django_settings.ASKBOT_URL) and \
                 not request.user.is_staff and \
-                not gargoyle.is_active('askrover'):
+                not gargoyle.is_active('askrover', request):
             return HttpResponseRedirect(reverse('index'))
