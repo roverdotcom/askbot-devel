@@ -212,7 +212,7 @@ settings.register(
                     ('customize', 'customize'),
                     ('disable', 'disable')
                 ),
-        default = 'default',
+        default = 'disable',
     )
 )
 
