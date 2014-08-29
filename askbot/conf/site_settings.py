@@ -22,7 +22,7 @@ settings.register(
     livesettings.StringValue(
         QA_SITE_SETTINGS,
         'APP_TITLE',
-        default=u'Askbot: Open Source Q&A Forum',
+        default=u'Ask Rover',
         description=_('Site title for the Q&A forum')
     )
 )
