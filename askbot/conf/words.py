@@ -851,15 +851,6 @@ settings.register(
 settings.register(
     values.StringValue(
         WORDS,
-        'WORDS_GIVE_AN_ANSWER_INTERESTING_TO_THIS_COMMUNITY',
-        default=_('give an answer interesting to this community'),
-        description=_('give an answer interesting to this community'),
-    )
-)
-
-settings.register(
-    values.StringValue(
-        WORDS,
         'WORDS_GIVE_A_GOOD_ANSWER',
         default=_('give a substantial answer'),
         description=_('give a substantial answer'),
