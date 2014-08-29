@@ -99,7 +99,7 @@ settings.register(
                     ) % {'favicon_info_url': const.DEPENDENCY_URLS['favicon']},
         allowed_file_extensions = ('ico',),#only allow .ico files
         default = '/static/new_design/images/favicon.png',
-        url_resolver = skin_utils.get_media_url
+        # url_resolver = skin_utils.get_media_url
     )
 )
 
