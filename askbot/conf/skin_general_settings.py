@@ -98,7 +98,7 @@ settings.register(
                         'at <a href="%(favicon_info_url)s">this page</a>.'
                     ) % {'favicon_info_url': const.DEPENDENCY_URLS['favicon']},
         allowed_file_extensions = ('ico',),#only allow .ico files
-        default = '/images/favicon.gif',
+        default = '/static/new_design/images/favicon.png',
         url_resolver = skin_utils.get_media_url
     )
 )
