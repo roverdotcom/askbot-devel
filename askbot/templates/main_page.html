@@ -29,10 +29,6 @@
     <script type="text/javascript">
         {# cant cache this #}
         askbot['settings']['showSortByRelevance'] = {{ show_sort_by_relevance|as_js_bool }};
-        askbot['messages']['questionSingular'] = '{{ settings.WORDS_QUESTION_SINGULAR|escapejs }}';
-        askbot['messages']['answerSingular'] = '{{ settings.WORDS_ANSWER_SINGULAR|escapejs }}';
-        askbot['messages']['acceptOwnAnswer'] = '{{ settings.WORDS_ACCEPT_OR_UNACCEPT_OWN_ANSWER|escapejs }}';
-        askbot['messages']['followQuestions'] = '{{ settings.WORDS_FOLLOW_QUESTIONS|escapejs }}';
     </script>
     {% include "main_page/javascript.html" %}
     {% include "main_page/custom_javascript.html" ignore missing %}
