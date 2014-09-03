@@ -726,8 +726,8 @@ settings.register(
     values.StringValue(
         WORDS,
         'WORDS_CLOSE_QUESTION',
-        default=_('Close question'),
-        description=_('Close question'),
+        default=_('Close Question'),
+        description=_('Close Question'),
     )
 )
 
@@ -744,8 +744,8 @@ settings.register(
     values.StringValue(
         WORDS,
         'WORDS_EDIT_QUESTION',
-        default=_('Edit question'),
-        description=_('Edit question'),
+        default=_('Edit Question'),
+        description=_('Edit Question'),
     )
 )
 
@@ -762,8 +762,8 @@ settings.register(
     values.StringValue(
         WORDS,
         'WORDS_RETAG_QUESTION',
-        default=_('Retag question'),
-        description=_('Retag question'),
+        default=_('Retag Question'),
+        description=_('Retag Question'),
     )
 )
 
@@ -780,8 +780,8 @@ settings.register(
     values.StringValue(
         WORDS,
         'WORDS_REOPEN_QUESTION',
-        default=_('Reopen question'),
-        description=_('Reopen question'),
+        default=_('Reopen Question'),
+        description=_('Reopen Question'),
     )
 )
 
