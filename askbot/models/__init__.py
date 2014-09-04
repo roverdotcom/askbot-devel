@@ -2918,12 +2918,12 @@ def user_edit_group_membership(self, user=None, group=None,
             level = GroupMembership.FULL
 
         membership, created = GroupMembership.objects.get_or_create(
-                        user=user, group=group, level=level
+                        user=user.user, group=group, level=level
                     )
         return membership
 
     elif action == 'remove':
-        GroupMembership.objects.get(user = user, group = group).delete()
+        GroupMembership.objects.get(user = user.user, group = group).delete()
         return None
     else:
         raise ValueError('invalid action')
@@ -2942,11 +2942,11 @@ def user_is_group_member(self, group=None):
     """
     if isinstance(group, str):
         return GroupMembership.objects.filter(
-                user=self, group__name=group
+                user=self.user, group__name=group
             ).count() == 1
     else:
         return GroupMembership.objects.filter(
-                                user=self, group=group
+                                user=self.user, group=group
                             ).count() == 1
 
 User.add_to_class(
