@@ -376,7 +376,9 @@ class AskbotUser(models.Model):
             return self.user.person.get_large_uncropped_image_url()
 
 
-@receiver(post_save, sender=AuthUser)
+# This signal could be removed completely; the AskbotUserMiddleware will
+# take care of creating new users, when appropriate.
+# @receiver(post_save, sender=AuthUser)
 def create_corresponding_askbot_user(sender, instance, created, **kwargs):
     """Create a new AskbotUser whenever an AuthUser is saved."""
     if created:
