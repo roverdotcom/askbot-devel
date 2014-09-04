@@ -6,6 +6,7 @@ from django.db.backends.dummy.base import IntegrityError
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 # from django.contrib.auth.models import User
+from django.contrib.auth.models import User as AuthUser
 from askbot.models.askbot_user import AskbotUser as User
 from django.contrib.auth.models import Group as AuthGroup
 from django.core import exceptions
@@ -389,7 +390,7 @@ class AuthUserGroups(models.Model):
     """explicit model for the auth_user_groups bridge table.
     """
     group = models.ForeignKey(AuthGroup)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(AuthUser)
 
     class Meta:
         app_label = 'auth'
