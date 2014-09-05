@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
+import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
@@ -41,19 +41,28 @@ class Migration(SchemaMigration):
             ('new_response_count', self.gf('django.db.models.fields.IntegerField')(default=0)),
             ('seen_response_count', self.gf('django.db.models.fields.IntegerField')(default=0)),
             ('consecutive_days_visit_count', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('languages', self.gf('django.db.models.fields.CharField')(default='en', max_length=128)),
+            ('languages', self.gf('django.db.models.fields.CharField')(default='en-us', max_length=128)),
             ('twitter_access_token', self.gf('django.db.models.fields.CharField')(default='', max_length=256)),
             ('twitter_handle', self.gf('django.db.models.fields.CharField')(default='', max_length=32)),
             ('social_sharing_mode', self.gf('django.db.models.fields.IntegerField')(default=0)),
         ))
         db.send_create_signal('askbot', ['AskbotUser'])
 
+        # Adding M2M table for field following on 'AskbotUser'
+        m2m_table_name = db.shorten_name(u'askbot_askbotuser_following')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('from_askbotuser', models.ForeignKey(orm['askbot.askbotuser'], null=False)),
+            ('to_askbotuser', models.ForeignKey(orm['askbot.askbotuser'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['from_askbotuser_id', 'to_askbotuser_id'])
+
         # Adding model 'Tag'
         db.create_table(u'askbot_tag', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
             ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='created_tags', to=orm['askbot.AskbotUser'])),
-            ('language_code', self.gf('django.db.models.fields.CharField')(default='en', max_length=16)),
+            ('language_code', self.gf('django.db.models.fields.CharField')(default='en-us', max_length=16)),
             ('status', self.gf('django.db.models.fields.SmallIntegerField')(default=1)),
             ('used_count', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
             ('deleted', self.gf('django.db.models.fields.BooleanField')(default=False)),
@@ -93,7 +102,7 @@ class Migration(SchemaMigration):
             ('owned_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='tag_synonyms', to=orm['askbot.AskbotUser'])),
             ('auto_rename_count', self.gf('django.db.models.fields.IntegerField')(default=0)),
             ('last_auto_rename_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('language_code', self.gf('django.db.models.fields.CharField')(default='en', max_length=16)),
+            ('language_code', self.gf('django.db.models.fields.CharField')(default='en-us', max_length=16)),
         ))
         db.send_create_signal('askbot', ['TagSynonym'])
 
@@ -224,7 +233,7 @@ class Migration(SchemaMigration):
             ('answer_count', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
             ('last_activity_at', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
             ('last_activity_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='unused_last_active_in_threads', to=orm['askbot.AskbotUser'])),
-            ('language_code', self.gf('django.db.models.fields.CharField')(default='en', max_length=16)),
+            ('language_code', self.gf('django.db.models.fields.CharField')(default='en-us', max_length=16)),
             ('closed', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('closed_by', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['askbot.AskbotUser'], null=True, blank=True)),
             ('closed_at', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
@@ -339,7 +348,7 @@ class Migration(SchemaMigration):
             ('last_edited_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='last_edited_posts', null=True, to=orm['askbot.AskbotUser'])),
             ('html', self.gf('django.db.models.fields.TextField')(null=True)),
             ('text', self.gf('django.db.models.fields.TextField')(null=True)),
-            ('language_code', self.gf('django.db.models.fields.CharField')(default='en', max_length=16)),
+            ('language_code', self.gf('django.db.models.fields.CharField')(default='en-us', max_length=16)),
             ('summary', self.gf('django.db.models.fields.TextField')(null=True)),
             ('is_anonymous', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
@@ -531,6 +540,9 @@ class Migration(SchemaMigration):
         # Deleting model 'AskbotUser'
         db.delete_table(u'askbot_askbotuser')
 
+        # Removing M2M table for field following on 'AskbotUser'
+        db.delete_table(db.shorten_name(u'askbot_askbotuser_following'))
+
         # Deleting model 'Tag'
         db.delete_table(u'askbot_tag')
 
@@ -702,13 +714,14 @@ class Migration(SchemaMigration):
             'email_key': ('django.db.models.fields.CharField', [], {'max_length': '32', 'null': 'True'}),
             'email_signature': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'email_tag_filter_strategy': ('django.db.models.fields.SmallIntegerField', [], {'default': '1'}),
+            'following': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'followed_by'", 'symmetrical': 'False', 'to': "orm['askbot.AskbotUser']"}),
             'gold': ('django.db.models.fields.SmallIntegerField', [], {'default': '0'}),
             'gravatar': ('django.db.models.fields.CharField', [], {'max_length': '32'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'ignored_tags': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'interesting_tags': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'is_fake': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'languages': ('django.db.models.fields.CharField', [], {'default': "'en'", 'max_length': '128'}),
+            'languages': ('django.db.models.fields.CharField', [], {'default': "'en-us'", 'max_length': '128'}),
             'last_seen': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'location': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'new_response_count': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
@@ -846,7 +859,7 @@ class Migration(SchemaMigration):
             'html': ('django.db.models.fields.TextField', [], {'null': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_anonymous': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'language_code': ('django.db.models.fields.CharField', [], {'default': "'en'", 'max_length': '16'}),
+            'language_code': ('django.db.models.fields.CharField', [], {'default': "'en-us'", 'max_length': '16'}),
             'last_edited_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'last_edited_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'last_edited_posts'", 'null': 'True', 'to': "orm['askbot.AskbotUser']"}),
             'locked': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -948,7 +961,7 @@ class Migration(SchemaMigration):
             'deleted_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'deleted_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'deleted_tags'", 'null': 'True', 'to': "orm['askbot.AskbotUser']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'language_code': ('django.db.models.fields.CharField', [], {'default': "'en'", 'max_length': '16'}),
+            'language_code': ('django.db.models.fields.CharField', [], {'default': "'en-us'", 'max_length': '16'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'status': ('django.db.models.fields.SmallIntegerField', [], {'default': '1'}),
             'suggested_by': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'suggested_tags'", 'symmetrical': 'False', 'to': "orm['askbot.AskbotUser']"}),
@@ -960,7 +973,7 @@ class Migration(SchemaMigration):
             'auto_rename_count': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'language_code': ('django.db.models.fields.CharField', [], {'default': "'en'", 'max_length': '16'}),
+            'language_code': ('django.db.models.fields.CharField', [], {'default': "'en-us'", 'max_length': '16'}),
             'last_auto_rename_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'owned_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'tag_synonyms'", 'to': "orm['askbot.AskbotUser']"}),
             'source_tag_name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
@@ -983,7 +996,7 @@ class Migration(SchemaMigration):
             'followed_by': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'followed_threads'", 'symmetrical': 'False', 'to': "orm['askbot.AskbotUser']"}),
             'groups': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'group_threads'", 'symmetrical': 'False', 'through': "orm['askbot.ThreadToGroup']", 'to': "orm['askbot.Group']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'language_code': ('django.db.models.fields.CharField', [], {'default': "'en'", 'max_length': '16'}),
+            'language_code': ('django.db.models.fields.CharField', [], {'default': "'en-us'", 'max_length': '16'}),
             'last_activity_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'last_activity_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'unused_last_active_in_threads'", 'to': "orm['askbot.AskbotUser']"}),
             'points': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_column': "'score'"}),
@@ -1011,7 +1024,7 @@ class Migration(SchemaMigration):
             'Meta': {'unique_together': "(('group', 'user'),)", 'object_name': 'AuthUserGroups', 'db_table': "'auth_user_groups'", 'managed': 'False'},
             'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.Group']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['askbot.AskbotUser']"})
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         },
         u'auth.group': {
             'Meta': {'object_name': 'Group'},
