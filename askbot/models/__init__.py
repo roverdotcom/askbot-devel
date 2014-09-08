@@ -2453,7 +2453,7 @@ def user_get_group_membership(self, group):
     if it is not there
     """
     try:
-        return GroupMembership.objects.get(user=self, group=group)
+        return GroupMembership.objects.get(user=self.user, group=group)
     except GroupMembership.DoesNotExist:
         return None
 
@@ -2468,7 +2468,7 @@ def user_get_groups_membership_info(self, groups):
     """
     group_ids = groups.values_list('id', flat = True)
     memberships = GroupMembership.objects.filter(
-                                user__id = self.id,
+                                user__id = self.user.id,
                                 group__id__in = group_ids
                             )
 
