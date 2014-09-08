@@ -549,14 +549,9 @@ class Group(AuthGroup):
         """Ugly hack: make sure that this Group is being initialized with
         an auth User, not an AskbotUser.
         """
-        try:
-            kwargs['user'] = kwargs['user'].user
-        except KeyError, AttributeError:
-            # KeyError if no "user" argument was supplied.
-            # AttributeError if the "user" supplied wasn't an AskbotUser
-            # (or anything else without a "user" attribute).
-            # In both cases, leave what's there & let it duck-punch itself.
-            pass
+        user = kwargs.get('user')
+        if isinstance(user, AskbotUser):
+            kwargs['user'] = user.user
 
         return super(Group, self).__init__(*args, **kwargs)
 
