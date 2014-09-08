@@ -3667,7 +3667,7 @@ def add_user_to_personal_group(sender, instance, created, **kwargs):
         #identical group names!!!
         group_name = format_personal_group_name(instance)
         group = Group.objects.get_or_create(
-                    name=group_name, user=instance
+                    name=group_name, user=instance.user
                 )
         instance.edit_group_membership(
                     group=group, user=instance, action='add'
