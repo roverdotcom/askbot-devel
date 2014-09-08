@@ -550,7 +550,8 @@ class Group(AuthGroup):
         an auth User, not an AskbotUser.
         """
         user = kwargs.get('user')
-        if isinstance(user, AskbotUser):
+        # User is AskbotUser.
+        if isinstance(user, User):
             kwargs['user'] = user.user
 
         return super(Group, self).__init__(*args, **kwargs)
