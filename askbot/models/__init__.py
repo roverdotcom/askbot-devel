@@ -3777,7 +3777,7 @@ def make_admin_if_first_user(user, **kwargs):
 
 def moderate_group_joining(sender, instance=None, created=False, **kwargs):
     if created and instance.level == GroupMembership.PENDING:
-        user = instance.user
+        user = instance.user.askbot_user
         group = instance.group
         user.notify_users(
                 notification_type=const.TYPE_ACTIVITY_ASK_TO_JOIN_GROUP,
