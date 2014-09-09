@@ -247,7 +247,7 @@ class AskbotUserManager(PassThroughManager):
     ):
         """Create a new AskbotUser as a superuser.
 
-        See documentation for AskbotManager.create_user for
+        See documentation for AskbotUserManager.create_user for
         implementation notes.
         """
         new_askbot_user = self.create_user(
