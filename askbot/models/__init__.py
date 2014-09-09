@@ -2453,7 +2453,7 @@ def user_get_group_membership(self, group):
     if it is not there
     """
     try:
-        return GroupMembership.objects.get(user=self, group=group)
+        return GroupMembership.objects.get(user=self.user, group=group)
     except GroupMembership.DoesNotExist:
         return None
 
@@ -2468,7 +2468,7 @@ def user_get_groups_membership_info(self, groups):
     """
     group_ids = groups.values_list('id', flat = True)
     memberships = GroupMembership.objects.filter(
-                                user__id = self.id,
+                                user__id = self.user.id,
                                 group__id__in = group_ids
                             )
 
@@ -2918,12 +2918,12 @@ def user_edit_group_membership(self, user=None, group=None,
             level = GroupMembership.FULL
 
         membership, created = GroupMembership.objects.get_or_create(
-                        user=user, group=group, level=level
+                        user=user.user, group=group, level=level
                     )
         return membership
 
     elif action == 'remove':
-        GroupMembership.objects.get(user = user, group = group).delete()
+        GroupMembership.objects.get(user = user.user, group = group).delete()
         return None
     else:
         raise ValueError('invalid action')
@@ -2942,11 +2942,11 @@ def user_is_group_member(self, group=None):
     """
     if isinstance(group, str):
         return GroupMembership.objects.filter(
-                user=self, group__name=group
+                user=self.user, group__name=group
             ).count() == 1
     else:
         return GroupMembership.objects.filter(
-                                user=self, group=group
+                                user=self.user, group=group
                             ).count() == 1
 
 User.add_to_class(
@@ -3667,7 +3667,7 @@ def add_user_to_personal_group(sender, instance, created, **kwargs):
         #identical group names!!!
         group_name = format_personal_group_name(instance)
         group = Group.objects.get_or_create(
-                    name=group_name, user=instance
+                    name=group_name, user=instance.user
                 )
         instance.edit_group_membership(
                     group=group, user=instance, action='add'
@@ -3777,7 +3777,7 @@ def make_admin_if_first_user(user, **kwargs):
 
 def moderate_group_joining(sender, instance=None, created=False, **kwargs):
     if created and instance.level == GroupMembership.PENDING:
-        user = instance.user
+        user = instance.user.askbot_user
         group = instance.group
         user.notify_users(
                 notification_type=const.TYPE_ACTIVITY_ASK_TO_JOIN_GROUP,

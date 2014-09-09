@@ -230,6 +230,11 @@ class AskbotUserManager(PassThroughManager):
         new_user.save()
 
         # new_user's post_save signal creates an AskbotUser.
+        # Verify that the AskbotUser has actually been created.
+        # Will test in a moment.
+        # if not hasattr(new_user, 'askbot_user'):
+        #     create_corresponding_askbot_user('dummy_sender', new_user, True)
+
         return new_user.askbot_user
 
     def create_superuser(
@@ -376,6 +381,8 @@ class AskbotUser(models.Model):
             return self.user.person.get_large_uncropped_image_url()
 
 
+# This signal could be removed completely; the AskbotUserMiddleware will
+# take care of creating new users, when appropriate.
 # @receiver(post_save, sender=AuthUser)
 def create_corresponding_askbot_user(sender, instance, created, **kwargs):
     """Create a new AskbotUser whenever an AuthUser is saved."""

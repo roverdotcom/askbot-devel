@@ -6,6 +6,7 @@ from django.db.backends.dummy.base import IntegrityError
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 # from django.contrib.auth.models import User
+from django.contrib.auth.models import User as AuthUser
 from askbot.models.askbot_user import AskbotUser as User
 from django.contrib.auth.models import Group as AuthGroup
 from django.core import exceptions
@@ -389,7 +390,7 @@ class AuthUserGroups(models.Model):
     """explicit model for the auth_user_groups bridge table.
     """
     group = models.ForeignKey(AuthGroup)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(AuthUser)
 
     class Meta:
         app_label = 'auth'
@@ -448,10 +449,10 @@ class GroupQuerySet(models.query.QuerySet):
         if private:
             global_group = Group.objects.get_global_group()
             return self.filter(
-                        user=user
+                        user=user.user
                     ).exclude(id=global_group.id)
         else:
-            return self.filter(user = user)
+            return self.filter(user = user.user)
 
     def get_by_name(self, group_name = None):
         from askbot.models.tag import clean_group_name#todo - delete this
@@ -487,6 +488,7 @@ class GroupManager(BaseQuerySetManager):
             pass
         return super(GroupManager, self).create(**kwargs)
 
+    # Takes user as an argument, but doesn't seem to do anything with it.
     def get_or_create(self, name = None, user = None, openness=None):
         """creates a group tag or finds one, if exists"""
         #todo: here we might fill out the group profile
@@ -542,6 +544,17 @@ class Group(AuthGroup):
     read_only = models.BooleanField(default=False)
 
     objects = GroupManager()
+
+    def __init__(self, *args, **kwargs):
+        """Ugly hack: make sure that this Group is being initialized with
+        an auth User, not an AskbotUser.
+        """
+        user = kwargs.get('user')
+        # User is AskbotUser.
+        if isinstance(user, User):
+            kwargs['user'] = user.user
+
+        return super(Group, self).__init__(*args, **kwargs)
 
     class Meta:
         app_label = 'askbot'
