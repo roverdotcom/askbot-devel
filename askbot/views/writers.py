@@ -304,7 +304,7 @@ def ask(request):#view used to ask a new question
             draft_tagnames = draft.tagnames
 
     form.initial = {
-        'ask_anonymously': request.REQUEST.get('ask_anonymousy', False),
+        'ask_anonymously': request.REQUEST.get('ask_anonymously', False),
         'tags': request.REQUEST.get('tags', draft_tagnames),
         'text': request.REQUEST.get('text', draft_text),
         'title': request.REQUEST.get('title', draft_title),
