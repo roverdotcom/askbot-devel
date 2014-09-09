@@ -203,11 +203,11 @@ class AskbotUserManager(PassThroughManager):
             password=None,
             **extra_fields
     ):
-        """Create a new User and return the AskbotUser created in post_save.
+        """Create a new User-AskbotUser pair. Return the AskbotUser.
 
         Note on implementation: inheriting from UserManager and calling
 
-        super(AskbotUserPassThroughManager, self).create_user
+        super(AskbotUserManager, self).create_user
 
         won't work here because UserManager.create_user creates a self.model,
         which ends up being an AskbotUser. contrib.auth.get_user_model is
@@ -229,13 +229,14 @@ class AskbotUserManager(PassThroughManager):
         new_user.set_password(password)
         new_user.save()
 
-        # new_user's post_save signal creates an AskbotUser.
-        # Verify that the AskbotUser has actually been created.
-        # Will test in a moment.
-        # if not hasattr(new_user, 'askbot_user'):
-        #     create_corresponding_askbot_user('dummy_sender', new_user, True)
+        new_askbot_user = AskbotUser(user=new_user)
 
-        return new_user.askbot_user
+        # AskbotUser.save() performs a save() on User, as well. We had to
+        # save new_user separately in order to create its id, so avoid
+        # saving it again unecessarily by calling AskbotUser's superclass save.
+        super(AskbotUser, new_askbot_user).save()
+
+        return new_askbot_user
 
     def create_superuser(
         self,
@@ -246,7 +247,7 @@ class AskbotUserManager(PassThroughManager):
     ):
         """Create a new AskbotUser as a superuser.
 
-        See documentation for AskbotUserPassThroughManager.create_user for
+        See documentation for AskbotManager.create_user for
         implementation notes.
         """
         new_askbot_user = self.create_user(
@@ -384,12 +385,12 @@ class AskbotUser(models.Model):
 # This signal could be removed completely; the AskbotUserMiddleware will
 # take care of creating new users, when appropriate.
 # @receiver(post_save, sender=AuthUser)
-def create_corresponding_askbot_user(sender, instance, created, **kwargs):
-    """Create a new AskbotUser whenever an AuthUser is saved."""
-    if created:
-        new_askbot_user = AskbotUser()
-        new_askbot_user.user = instance
+# def create_corresponding_askbot_user(sender, instance, created, **kwargs):
+#     """Create a new AskbotUser whenever an AuthUser is saved."""
+#     if created:
+#         new_askbot_user = AskbotUser()
+#         new_askbot_user.user = instance
 
-        # Don't need to perform another save() on user - we're in its
-        # post_save signal.
-        super(AskbotUser, new_askbot_user).save()
+#         # Don't need to perform another save() on user - we're in its
+#         # post_save signal.
+#         super(AskbotUser, new_askbot_user).save()
