@@ -15,6 +15,15 @@ from django.contrib import admin
 
 from askbot.views import askbot_user
 
+from urlmiddleware.conf import middleware, mpatterns
+from askbot.middleware.anon_user import ConnectToSessionMessagesMiddleware
+from askbot.middleware.askbot_user import AskbotUserMiddleware
+from askbot.middleware.cancel import CancelActionMiddleware
+from askbot.middleware.forum_mode import ForumModeMiddleware
+from askbot.middleware.locale import LocaleMiddleware
+from askbot.middleware.spaceless import SpacelessMiddleware
+from askbot.middleware.view_log import ViewLogMiddleware
+
 admin.autodiscover()
 
 if getattr(settings, 'ASKBOT_MULTILINGUAL', False) == True:
@@ -57,3 +66,19 @@ if 'rosetta' in settings.INSTALLED_APPS:
                 )
 
 handler500 = 'askbot.views.error.internal_error'
+
+
+# Add middleware.
+middlewarepatterns = mpatterns(
+    '',
+    middleware(
+        r'%s' % settings.ASKBOT_URL,
+        ConnectToSessionMessagesMiddleware
+    ),
+    middleware(r'%s' % settings.ASKBOT_URL, AskbotUserMiddleware),
+    middleware(r'%s' % settings.ASKBOT_URL, CancelActionMiddleware),
+    middleware(r'%s' % settings.ASKBOT_URL, ForumModeMiddleware),
+    middleware(r'%s' % settings.ASKBOT_URL, LocaleMiddleware),
+    middleware(r'%s' % settings.ASKBOT_URL, SpacelessMiddleware),
+    middleware(r'%s' % settings.ASKBOT_URL, ViewLogMiddleware),
+)
