@@ -6,7 +6,7 @@ http://www.davidcramer.net/code/369/spaceless-html-in-django.html
 import re
 from django.utils.functional import allow_lazy
 from django.utils.encoding import force_unicode
-from django.conf import settings
+
 
 def reduce_spaces_between_tags(value):
     """Returns the given HTML with all spaces between tags removed.
@@ -22,9 +22,6 @@ class SpacelessMiddleware(object):
         """strips whitespace from all documents
         whose content type is text/html
         """
-        if not request.path.startswith('/' + settings.ASKBOT_URL):
-            return response
-
         if 'Content-Type' in response and 'text/html' in response['Content-Type']:
             response.content = reduce_spaces_between_tags(response.content)
             response['Content-Length'] = str(len(response.content))

@@ -7,13 +7,10 @@ Add to the MIDDLEWARE_CLASSES:
 
     'askbot.middleware.remote_ip.SetRemoteIPFromXForwardedFor',
 """
-from django.conf import settings
+
 
 class SetRemoteIPFromXForwardedFor(object):
     def process_request(self, request):
-        if not request.path.startswith('/' + settings.ASKBOT_URL):
-            return
-
         try:
             real_ip = request.META['HTTP_X_FORWARDED_FOR']
         except KeyError:

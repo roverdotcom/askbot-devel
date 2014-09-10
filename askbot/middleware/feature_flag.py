@@ -1,5 +1,8 @@
 """Middleware that redirects non-staff requests to Askbot urls to the home
 page if Askbot's feature flag is switched off.
+
+This is the single Askbot middleware class that isn't managed by urlmiddleware,
+as it needs to be active for all urls.
 """
 from gargoyle import gargoyle
 from django.http import HttpResponseRedirect

@@ -48,9 +48,6 @@ class ForumModeMiddleware(object):
         it will let through only authenticated users.
         All others will be redirected to the login url.
         """
-        if not request.path.startswith('/' + settings.ASKBOT_URL):
-            return
-
         if (askbot_settings.ASKBOT_CLOSED_FORUM_MODE
                 and request.user.is_anonymous()):
             resolver_match = ResolverMatch(resolve(request.path))

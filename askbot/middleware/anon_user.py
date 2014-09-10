@@ -43,10 +43,12 @@ class ConnectToSessionMessagesMiddleware(object):
         """Enables anonymous users to receive messages
         the same way as authenticated users, and sets
         the anonymous user greeting, if it should be shown"""
-        if not request.path.startswith('/' + django_settings.ASKBOT_URL):
-            #todo: a hack, for real we need to remove this middleware
-            #and switch to the new-style session messages
-            return
+        # This middleware will now be enabled via the urlmiddleware package,
+        # which does this check automatically.
+        # if not request.path.startswith('/' + django_settings.ASKBOT_URL):
+        #     #todo: a hack, for real we need to remove this middleware
+        #     #and switch to the new-style session messages
+        #     return
         if request.user.is_anonymous():
             #1) Attach the ability to receive messages
             #plug on deepcopy which may be called by django db "driver"
@@ -68,10 +70,12 @@ class ConnectToSessionMessagesMiddleware(object):
         """Adds the ``'askbot_visitor'``key to cookie if user ever
         authenticates so that the anonymous user message won't
         be shown after the user logs out"""
-        if not request.path.startswith('/' + django_settings.ASKBOT_URL):
-            #todo: a hack, for real we need to remove this middleware
-            #and switch to the new-style session messages
-            return response
+        # This middleware will now be enabled via the urlmiddleware package,
+        # which does this check automatically.
+        # if not request.path.startswith('/' + django_settings.ASKBOT_URL):
+        #     #todo: a hack, for real we need to remove this middleware
+        #     #and switch to the new-style session messages
+        #     return response
         if hasattr(request, 'user') and \
                 request.user.is_authenticated() and \
                 'askbot_visitor' not in request.COOKIES :
