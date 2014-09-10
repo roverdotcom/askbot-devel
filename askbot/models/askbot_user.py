@@ -275,9 +275,7 @@ class AskbotUser(models.Model):
         related_name='followed_by'
     )
 
-    objects = AskbotUserManager.for_queryset_class(
-        AskbotUserQuerySet
-    )()
+    objects = AskbotUserManager.for_queryset_class(AskbotUserQuerySet)()
 
     class Meta(object):
         app_label = 'askbot'
