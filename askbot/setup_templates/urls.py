@@ -22,6 +22,8 @@ from askbot.middleware.cancel import CancelActionMiddleware
 from askbot.middleware.forum_mode import ForumModeMiddleware
 from askbot.middleware.spaceless import SpacelessMiddleware
 from askbot.middleware.view_log import ViewLogMiddleware
+# A Django middleware class used only by Askbot.
+from django.middleware.transaction import TransactionMiddleware
 # Middleware classes unused in default Askbot installation.
 # from askbot.middleware.locale import LocaleMiddleware
 # from askbot.middleware.remote_ip import SetRemoteIPFromXForwardedFor
@@ -73,15 +75,16 @@ handler500 = 'askbot.views.error.internal_error'
 # Add middleware.
 middlewarepatterns = mpatterns(
     '',
+    middleware(r'%s' % settings.ASKBOT_URL, AskbotUserMiddleware),
     middleware(
         r'%s' % settings.ASKBOT_URL,
         ConnectToSessionMessagesMiddleware
     ),
-    middleware(r'%s' % settings.ASKBOT_URL, AskbotUserMiddleware),
-    middleware(r'%s' % settings.ASKBOT_URL, CancelActionMiddleware),
     middleware(r'%s' % settings.ASKBOT_URL, ForumModeMiddleware),
-    middleware(r'%s' % settings.ASKBOT_URL, SpacelessMiddleware),
+    middleware(r'%s' % settings.ASKBOT_URL, CancelActionMiddleware),
+    middleware(r'%s' % settings.ASKBOT_URL, TransactionMiddleware),
     middleware(r'%s' % settings.ASKBOT_URL, ViewLogMiddleware),
+    middleware(r'%s' % settings.ASKBOT_URL, SpacelessMiddleware),
     # Middleware classes unused in default Askbot installation.
     # middleware(r'%s' % settings.ASKBOT_URL, LocaleMiddleware),
     # middleware(r'%s' % settings.ASKBOT_URL, SetRemoteIPFromXForwardedFor),
