@@ -20,9 +20,11 @@ from askbot.middleware.anon_user import ConnectToSessionMessagesMiddleware
 from askbot.middleware.askbot_user import AskbotUserMiddleware
 from askbot.middleware.cancel import CancelActionMiddleware
 from askbot.middleware.forum_mode import ForumModeMiddleware
-from askbot.middleware.locale import LocaleMiddleware
 from askbot.middleware.spaceless import SpacelessMiddleware
 from askbot.middleware.view_log import ViewLogMiddleware
+# Middleware classes unused in default Askbot installation.
+# from askbot.middleware.locale import LocaleMiddleware
+# from askbot.middleware.remote_ip import SetRemoteIPFromXForwardedFor
 
 admin.autodiscover()
 
@@ -78,7 +80,9 @@ middlewarepatterns = mpatterns(
     middleware(r'%s' % settings.ASKBOT_URL, AskbotUserMiddleware),
     middleware(r'%s' % settings.ASKBOT_URL, CancelActionMiddleware),
     middleware(r'%s' % settings.ASKBOT_URL, ForumModeMiddleware),
-    middleware(r'%s' % settings.ASKBOT_URL, LocaleMiddleware),
     middleware(r'%s' % settings.ASKBOT_URL, SpacelessMiddleware),
     middleware(r'%s' % settings.ASKBOT_URL, ViewLogMiddleware),
+    # Middleware classes unused in default Askbot installation.
+    # middleware(r'%s' % settings.ASKBOT_URL, LocaleMiddleware),
+    # middleware(r'%s' % settings.ASKBOT_URL, SetRemoteIPFromXForwardedFor),
 )
