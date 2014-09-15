@@ -1004,7 +1004,7 @@ def run_startup_tests():
     test_group_messaging()
     test_haystack()
     test_jinja2()
-    test_longerusername()
+    # test_longerusername()
     test_new_skins()
     test_media_url()
     #test_postgres()
