@@ -24,7 +24,7 @@ else:
     BAD_STUFF = "<script>alert('hohoho')</script>"
 
 # Defining template inputs.
-USERNAME_TEMPLATE = BAD_STUFF + "test_user_%s"
+USERNAME_TEMPLATE = "test_user_%s"
 FIRST_NAME_TEMPLATE = "test_%s"
 LAST_NAME_TEMPLATE = "%s_testington"
 PASSWORD_TEMPLATE = "test_password_%s"
