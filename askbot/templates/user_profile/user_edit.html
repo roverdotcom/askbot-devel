@@ -62,7 +62,15 @@
                 </tr>
                 <tr>
                     <td>{{ form.realname.label_tag() }}:</td>
-                    <td>{{ form.realname }} <span class="form-error"> {{ form.realname.errors }} </span></td>
+                    <td>
+                        {% if settings.EDITABLE_REAL_NAME %}
+                            {{ form.realname }}
+                            <span class="form-error"> {{ form.realname.errors }} </span>
+                        {% else %}
+                            {{ view_user.first_name }} {{ view_user.last_name }}
+                            {% trans %}(cannot be changed){% endtrans %}
+                        {% endif %}
+                    </td>
                 </tr>
                 <tr>
                     <td>{{ form.website.label_tag() }}:</td>
