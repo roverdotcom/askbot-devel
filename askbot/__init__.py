@@ -37,6 +37,7 @@ REQUIREMENTS = {
     'tinymce': 'django-tinymce==1.5.1b2',
     'bs4': 'beautifulsoup4',
     'picklefield': 'django-picklefield==0.3.0',
+    'pytidylib': 'pytidylib',
     #'stopforumspam': 'stopforumspam'
 }
 
