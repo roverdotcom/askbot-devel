@@ -746,9 +746,9 @@ class Post(models.Model):
 
         from askbot.tasks import send_instant_notifications_about_activity_in_post
         send_instant_notifications_about_activity_in_post.apply_async((
-                                update_activity,
-                                self,
-                                notify_sets['for_email']),
+                                update_activity.id,
+                                self.id,
+                                [user.id for user in notify_sets['for_email']]),
                                 countdown = django_settings.NOTIFICATION_DELAY_TIME
                             )
 
