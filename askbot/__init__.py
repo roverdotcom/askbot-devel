@@ -14,13 +14,11 @@ VERSION = (0, 7, 49)
 REQUIREMENTS = {
     'akismet': 'akismet',
     'django': 'django>=1.3.1,<1.6',
-    'compressor': 'django-compressor==1.2',
     'jinja2': 'Jinja2',
     'coffin': 'Coffin>=0.3',
     'south': 'South>=0.7.1',
     'oauth2': 'oauth2',
     'markdown2': 'markdown2',
-    'html5lib': 'html5lib==0.90',
     'keyedcache': 'django-keyedcache',
     'threaded_multihost': 'django-threaded-multihost',
     'robots': 'django-robots',
@@ -29,16 +27,20 @@ REQUIREMENTS = {
     'django_countries': 'django-countries==1.0.5',
     'djcelery': 'django-celery>=3.0.11',
     'djkombu': 'django-kombu==0.9.4',
-    # 'followit': 'django-followit',
     'recaptcha_works': 'django-recaptcha-works',
     'openid': 'python-openid',
     'pystache': 'pystache>=0.5.0',
-    'pytz': 'pytz==2013b',
     'tinymce': 'django-tinymce==1.5.1b2',
-    'longerusername': 'longerusername',
     'bs4': 'beautifulsoup4',
     'picklefield': 'django-picklefield==0.3.0',
     #'stopforumspam': 'stopforumspam'
+}
+
+# These are satisfied by Rover's requirements
+EXTERNALLY_SATISFIED_REQUIREMENTS = {
+    'pytz': 'pytz==2013b',
+    'html5lib': 'html5lib==0.90',
+    'compressor': 'django-compressor==1.2',
 }
 
 if platform.system() != 'Windows':

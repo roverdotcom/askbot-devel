@@ -24,7 +24,7 @@ setup(
     },
     url = 'http://askbot.org',
     include_package_data = True,
-    # install_requires = askbot.REQUIREMENTS.values(),
+    install_requires = askbot.REQUIREMENTS.values(),
     classifiers = [
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',

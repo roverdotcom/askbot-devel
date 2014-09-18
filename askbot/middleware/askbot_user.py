@@ -6,9 +6,11 @@ __init__ a function that it can use to reliably find the User instance it
 should look up. By default, this is auth.get_user. This middleware replaces
 that SimpleLazyObject with one that instead uses get_askbot_user, defined
 here.
+
+This middleware is also responsible for backfilling AskbotUsers for existing
+Rover users.
 """
 
-from django.conf import settings as django_settings
 from django.contrib.auth import get_user
 from django.contrib.auth.models import User
 from django.utils.functional import SimpleLazyObject
@@ -19,8 +21,7 @@ def get_askbot_user(request):
     """Call auth.get_user, and, if its return value is a User object,
     translate it into an AskbotUser object.
     """
-    # Replaced cached auth Users with AskbotUsers. Rover can treat AskbotUsers
-    # exactly the same way it treats auth Users, by design.
+    # Replace cached auth Users with AskbotUsers.
     if not hasattr(request, '_cached_user') or \
             isinstance(request._cached_user, User):
         user = get_user(request)
@@ -37,6 +38,4 @@ class AskbotUserMiddleware(object):
     Load after Django's AuthenticationMiddleware.
     """
     def process_request(self, request):
-        # Only modify requests coming to ASKBOT_URL.
-        if request.path.startswith('/' + django_settings.ASKBOT_URL):
-            request.user = SimpleLazyObject(lambda: get_askbot_user(request))
+        request.user = SimpleLazyObject(lambda: get_askbot_user(request))
