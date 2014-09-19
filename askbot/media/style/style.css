@@ -4917,6 +4917,7 @@ body.lang-nb_NO .box .inputs #ab-tag-search {
 .disclaimer {
   position: absolute;
   bottom: 0;
+  width: 730px;
 }
 .disclaimer-wrapper {
   padding-bottom: 50px;
