@@ -2,6 +2,7 @@
 <!-- template faq.html -->
 {% block title %}{% spaceless %}{% trans %}FAQ{% endtrans %}{% endspaceless %}{% endblock %}
 {% block content %}
+<div>
 <h1>{% trans %}Frequently Asked Questions {% endtrans %}({% trans %}FAQ{% endtrans %})</h1>
 <h2 class="first">{% trans %}What kinds of questions can I ask here?{% endtrans %}</h2>
 <p>{% trans %}Most importantly - questions should be <strong>relevant</strong> to this community.{% endtrans %}
@@ -78,8 +79,8 @@
 <h2>{% trans %}Still have questions?{% endtrans %}</h2>
 <p>{% trans %}Please <a href='{{ask_question_url}}'>ask</a> your question, help make our community better!{% endtrans %}
 </p>
-</div>
 {% include "disclaimer.html" %}
+</div>
 <script type="text/javascript">
     //highlihts section if url has matching #anchor_name
     $(document).ready(function (){

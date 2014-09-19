@@ -306,6 +306,7 @@ body.user-messages {
   margin: auto;
   position: relative;
   overflow: hidden;
+  padding-bottom: 50px;
 }
 #logo img {
   padding: 5px 0px 5px 0px;
@@ -4913,4 +4914,8 @@ body.lang-nb_NO .box .inputs #subscribedTagInput,
 body.lang-nb_NO .box .inputs #ab-tag-search,
 body.lang-nb_NO .box .inputs #ab-tag-search {
   width: 133px;
+}
+.disclaimer {
+  position: absolute;
+  bottom: 0;
 }
