@@ -3324,7 +3324,10 @@ def notify_author_of_published_revision(
     #only email about first revision
     if revision.should_notify_author_about_publishing(was_approved):
         from askbot.tasks import notify_author_of_published_revision_celery_task
-        notify_author_of_published_revision_celery_task.delay(revision.id)
+        notify_author_of_published_revision_celery_task.apply_async(
+            args=[revision.id],
+            countdown=5
+        )
 
 
 #todo: move to utils
@@ -3364,15 +3367,19 @@ def record_post_update_activity(
 
     from askbot import tasks
 
-    tasks.record_post_update_celery_task.delay(
-        post_id=post.id,
-        post_content_type_id=ContentType.objects.get_for_model(post).id,
-        newly_mentioned_user_id_list=[u.id for u in newly_mentioned_users],
-        updated_by_id=updated_by.id,
-        suppress_email=suppress_email,
-        timestamp=timestamp,
-        created=created,
-        diff=diff,
+    task_kwargs = {
+        'post_id': post.id,
+        'post_content_type_id': ContentType.objects.get_for_model(post).id,
+        'newly_mentioned_user_id_list': [u.id for u in newly_mentioned_users],
+        'updated_by_id': updated_by.id,
+        'suppress_email': suppress_email,
+        'timestamp': timestamp,
+        'created': created,
+        'diff': diff,
+    }
+    tasks.record_post_update_celery_task.apply_async(
+        kwargs=task_kwargs,
+        countdown=5
     )
 
 
