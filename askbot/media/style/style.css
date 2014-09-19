@@ -306,7 +306,6 @@ body.user-messages {
   margin: auto;
   position: relative;
   overflow: hidden;
-  padding-bottom: 50px;
 }
 #logo img {
   padding: 5px 0px 5px 0px;
@@ -4918,4 +4917,7 @@ body.lang-nb_NO .box .inputs #ab-tag-search {
 .disclaimer {
   position: absolute;
   bottom: 0;
+}
+.disclaimer-wrapper {
+  padding-bottom: 50px;
 }
