@@ -693,7 +693,7 @@ def __generate_comments_json(obj, user):#non-view generates json data for the po
 
 
         comment_owner = comment.author
-        tz = ' ' + template_filters.TIMEZONE_STR
+        tz = ' ' + timezone.now().strftime('%z')
         comment_data = {'id' : comment.id,
             'object_id': obj.id,
             'comment_added_at': str(comment.added_at.replace(microsecond = 0)) + tz,
