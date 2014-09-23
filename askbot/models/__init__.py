@@ -6,6 +6,10 @@ from askbot.models.askbot_user import AskbotUserQuerySet
 from askbot.models.askbot_user import AskbotUser
 User = AskbotUser
 
+# Need to import AuthUser so we can connect one of its attributes to a
+# m2m_changed signal handler.
+from django.contrib.auth.models import User as AuthUser
+
 # set up a possibility for the users to follow others
 # try:
 #     import followit
@@ -3870,7 +3874,10 @@ django_signals.post_save.connect(record_answer_accepted, sender=Post)
 django_signals.post_save.connect(record_vote, sender=Vote)
 django_signals.post_save.connect(record_favorite_question, sender=FavoriteQuestion)
 django_signals.post_save.connect(moderate_group_joining, sender=GroupMembership)
-django_signals.m2m_changed.connect(group_membership_changed, sender=User.groups.through)
+django_signals.m2m_changed.connect(
+    group_membership_changed,
+    sender=AuthUser.groups.through
+)
 
 if 'avatar' in django_settings.INSTALLED_APPS:
     from avatar.models import Avatar
