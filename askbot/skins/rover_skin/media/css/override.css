@@ -5,3 +5,37 @@
 .new-design .navbar-nav.navbar-right:last-child {
     margin-right: -6px;
 }
+
+.disclaimer {
+  position: absolute;
+  bottom: 0;
+  width: 730px;
+}
+
+.disclaimer-wrapper {
+  padding-bottom: 50px;
+}
+
+.book-button {
+  padding: 10px;
+  display: block;
+  height: auto;
+}
+
+.header-custom {
+  padding: 7px;
+}
+
+.user-about-heading {
+  line-height: normal;
+  margin-top: -8px;
+}
+
+.rover-benefits-list {
+  font-size: 130%;
+  margin-bottom: 35px;
+}
+
+.rover-benefits-list li {
+  margin-bottom: 7px;
+}

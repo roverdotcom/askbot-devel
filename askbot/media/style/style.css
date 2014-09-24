@@ -463,9 +463,6 @@ body.user-messages {
   float: left;
   margin-top: 7px;
 }
-.header-custom {
-  padding: 7px;
-}
 #secondaryHeader {
   /* Div containing Home button, scope navigation, search form and ask button, check blocks/secondary_header.html */
 
@@ -3149,22 +3146,6 @@ a:hover.medal {
   box-sizing: border-box;
   background: whitesmoke url(/static/new_design/images/favicon.png) no-repeat 380px 20px;
 }
-.user-about-heading {
-  line-height: normal;
-  margin-top: -8px;
-}
-.rover-benefits-list {
-  font-size: 130%;
-  margin-bottom: 35px;
-}
-.rover-benefits-list li {
-  margin-bottom: 7px;
-}
-.book-button {
-  padding: 10px;
-  display: block;
-  height: auto;
-}
 .user-about p {
   font-size: 13px;
 }
@@ -4913,12 +4894,4 @@ body.lang-nb_NO .box .inputs #subscribedTagInput,
 body.lang-nb_NO .box .inputs #ab-tag-search,
 body.lang-nb_NO .box .inputs #ab-tag-search {
   width: 133px;
-}
-.disclaimer {
-  position: absolute;
-  bottom: 0;
-  width: 730px;
-}
-.disclaimer-wrapper {
-  padding-bottom: 50px;
 }
