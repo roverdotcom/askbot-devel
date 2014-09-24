@@ -399,6 +399,21 @@ class AuthUserGroups(models.Model):
         managed = False
 
 
+class GroupMembershipManager(models.Manager):
+    def create(self, **kwargs):
+        user = kwargs['user']
+        group = kwargs['group']
+        try:
+            #need this for the cases where auth User_groups is there,
+            #but ours is not
+            auth_gm = AuthUserGroups.objects.get(user=user, group=group)
+            #use this as link for the One to One relation
+            kwargs['authusergroups_ptr'] = auth_gm
+        except AuthUserGroups.DoesNotExist:
+            pass
+        super(GroupMembershipManager, self).create(**kwargs)
+
+
 class GroupMembership(AuthUserGroups):
     """contains one-to-one relation to ``auth_user_group``
     and extra membership profile fields"""
@@ -416,6 +431,8 @@ class GroupMembership(AuthUserGroups):
                         default=FULL,
                         choices=LEVEL_CHOICES,
                     )
+
+    objects = GroupMembershipManager()
 
 
     class Meta:

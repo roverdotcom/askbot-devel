@@ -6,6 +6,10 @@ from askbot.models.askbot_user import AskbotUserQuerySet
 from askbot.models.askbot_user import AskbotUser
 User = AskbotUser
 
+# Need to import AuthUser so we can connect one of its attributes to a
+# m2m_changed signal handler.
+from django.contrib.auth.models import User as AuthUser
+
 # set up a possibility for the users to follow others
 # try:
 #     import followit
@@ -2887,7 +2891,9 @@ def user_update_wildcard_tag_selections(
 
 
 def user_edit_group_membership(self, user=None, group=None,
-                               action=None, force=False):
+                               action=None, force=False,
+                               level=None
+                            ):
     """allows one user to add another to a group
     or remove user from group.
 
@@ -2909,13 +2915,13 @@ def user_edit_group_membership(self, user=None, group=None,
                 openness = 'open'
 
             if openness == 'open':
-                level = GroupMembership.FULL
+                level = level or GroupMembership.FULL
             elif openness == 'moderated':
-                level = GroupMembership.PENDING
+                level = level or GroupMembership.PENDING
             elif openness == 'closed':
                 raise django_exceptions.PermissionDenied()
         else:
-            level = GroupMembership.FULL
+            level = level or GroupMembership.FULL
 
         membership, created = GroupMembership.objects.get_or_create(
                         user=user.user, group=group, level=level
@@ -2928,9 +2934,10 @@ def user_edit_group_membership(self, user=None, group=None,
     else:
         raise ValueError('invalid action')
 
-def user_join_group(self, group, force=False):
+def user_join_group(self, group, force=False, level=None):
     return self.edit_group_membership(group=group, user=self,
-                                      action='add', force=force)
+                                      action='add', force=force,
+                                      level=level)
 
 def user_leave_group(self, group):
     self.edit_group_membership(group=group, user=self, action='remove')
@@ -3792,6 +3799,49 @@ def moderate_group_joining(sender, instance=None, created=False, **kwargs):
                 content_object = group
             )
 
+#this variable and the signal handler below is
+#needed to work around the issue in the django admin
+#where auth_user table editing affects group memberships
+GROUP_MEMBERSHIP_LEVELS = dict()
+def group_membership_changed(**kwargs):
+    sender = kwargs['sender']
+    user = kwargs['instance']
+    action = kwargs['action']
+    reverse = kwargs['reverse']
+    model = kwargs['model']
+    pk_set = kwargs['pk_set']
+
+    if reverse:
+        raise NotImplementedError()
+
+    #store group memberships info
+    #and then delete group memberships
+    if action == 'pre_clear':
+        #get membership info, if exists, save
+        memberships = GroupMembership.objects.filter(user=user)
+        for gm in memberships:
+            GROUP_MEMBERSHIP_LEVELS[(user.id, gm.group.id)] = gm.level
+        memberships.delete()
+    elif action == 'post_add':
+        group_ids = pk_set
+        for group_id in group_ids:
+            gm_key = (user.id, group_id)
+            #mend group membership if it does not exist
+            if not GroupMembership.objects.filter(user=user, group__id=group_id).exists():
+                try:
+                    group = Group.objects.get(id=group_id)
+                except Group.DoesNotExist:
+                    #this is not an Askbot group, no group profile
+                    #so we don't add anything here
+                    pass
+                else:
+                    #restore group membership here
+                    level = GROUP_MEMBERSHIP_LEVELS.get(gm_key)
+                    GroupMembership.objects.create(user=user, group=group, level=level)
+
+            GROUP_MEMBERSHIP_LEVELS.pop(gm_key, None)
+
+
 def tweet_new_post(sender, user=None, question=None, answer=None, form_data=None, **kwargs):
     """seends out tweets about the new post"""
     from askbot.tasks import tweet_new_post_task
@@ -3824,6 +3874,10 @@ django_signals.post_save.connect(record_answer_accepted, sender=Post)
 django_signals.post_save.connect(record_vote, sender=Vote)
 django_signals.post_save.connect(record_favorite_question, sender=FavoriteQuestion)
 django_signals.post_save.connect(moderate_group_joining, sender=GroupMembership)
+django_signals.m2m_changed.connect(
+    group_membership_changed,
+    sender=AuthUser.groups.through
+)
 
 if 'avatar' in django_settings.INSTALLED_APPS:
     from avatar.models import Avatar
