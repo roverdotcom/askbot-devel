@@ -130,8 +130,9 @@
         <li>Our reservation guarantee</li>
         <li>24/7 customer support</li>
     </ul>
-    {% if view_user.person.homes.count() %}
-        <a class="button book-button" href="{{ view_user.person.homes.all()[0].get_absolute_url() }}">Book a Stay with {{ view_user.get_full_name() }}</a>
+    {% set active_services = view_user.person.get_active_services() %}
+    {% if active_services %}
+        <a class="button book-button" href="{{ active_services[0].get_absolute_url() }}">Book a Stay with {{ view_user.get_full_name() }}</a>
     {% endif %}
     {#
     {% if view_user.about and (not view_user.is_blocked()) %}
