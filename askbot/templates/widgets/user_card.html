@@ -32,9 +32,9 @@
         <br/>
 
         {# Add link to user's sitter profile. #}
-        {% if user.person.homes.count() %}
-            <a href="{{ user.person.homes.all()[0].get_absolute_url() }}">Rover home sitter profile</a>
+        {% set active_services = user.person.get_active_services() %}
+        {% if active_services %}
+            <a href="{{ active_services[0].get_absolute_url() }}">Book a Stay With Me</a>
         {% endif %}
-        {{ macros.user_website_link(user) }}
     </div>
 </div>
