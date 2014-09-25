@@ -821,6 +821,24 @@ FollowUser.prototype.decorate = function(element){
     setupButtonEventHandlers(this._element, function(){ me.go() });
 };
 
+//This function is copied from the Django page on CSRF protection.
+//see https://docs.djangoproject.com/en/1.5/ref/contrib/csrf/#ajax
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 FollowUser.prototype.go = function(){
     if (askbot['data']['userIsAuthenticated'] === false){
         var message = gettext('Please <a href="%(signin_url)s">signin</a> to follow %(username)s');
@@ -844,6 +862,15 @@ FollowUser.prototype.go = function(){
         cache: false,
         dataType: 'json',
         url: url.replace('{{userId}}', user_id),
+
+        //Add a beforeSend to add the csrf token to this request.
+        //see https://docs.djangoproject.com/en/1.5/ref/contrib/csrf/#ajax
+        beforeSend: function(xhr, settings) {
+            if (!this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+        },
+
         success: function(){ me.toggleState() }
     });
 };
