@@ -31,7 +31,7 @@
 {% if new_answer_allowed %}
     {% include "question/new_answer_form.html" %}
 {% else %}
-    <div style="margin-top: 15px">
+    <div style="margin: 15px auto 15px">
         <a
             class="button submit"
             href="{% url "edit_answer" previous_answer.id %}"
