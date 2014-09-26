@@ -844,6 +844,15 @@ FollowUser.prototype.go = function(){
         cache: false,
         dataType: 'json',
         url: url.replace('{{userId}}', user_id),
+
+        //Add a beforeSend to add the csrf token to this request.
+        //see https://docs.djangoproject.com/en/1.5/ref/contrib/csrf/#ajax
+        beforeSend: function(xhr, settings) {
+            if (!this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+            }
+        },
+
         success: function(){ me.toggleState() }
     });
 };
