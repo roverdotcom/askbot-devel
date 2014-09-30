@@ -76,6 +76,11 @@ urlpatterns = patterns('',
         name='question'
     ),
     url(
+        r'%s/recent/(?P<id>\d+)/' % QUESTION_PAGE_BASE_URL,
+        views.askrover.MostRecentQuestion.as_view(),
+        name='most_recent_question'
+    ),
+    url(
         r'^%s$' % _('tags/'),
         views.readers.tags,
         name='tags'
