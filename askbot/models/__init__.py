@@ -10,6 +10,8 @@ User = AskbotUser
 # m2m_changed signal handler.
 from django.contrib.auth.models import User as AuthUser
 
+from django.contrib.auth.signals import user_logged_in
+
 # set up a possibility for the users to follow others
 # try:
 #     import followit
@@ -3918,6 +3920,7 @@ django_signals.m2m_changed.connect(
     group_membership_changed,
     sender=AuthUser.groups.through
 )
+user_logged_in.connect(post_anonymous_askbot_content)
 
 if 'avatar' in django_settings.INSTALLED_APPS:
     from avatar.models import Avatar
@@ -3935,7 +3938,8 @@ signals.user_registered.connect(greet_new_user)
 signals.user_registered.connect(make_admin_if_first_user)
 signals.user_updated.connect(record_user_full_updated, sender=User)
 signals.user_logged_in.connect(complete_pending_tag_subscriptions)#todo: add this to fake onlogin middleware
-signals.user_logged_in.connect(post_anonymous_askbot_content)
+# Askbot defines its own user_logged_in signal. Seriously, what the hell.
+# signals.user_logged_in.connect(post_anonymous_askbot_content)
 signals.post_updated.connect(record_post_update_activity)
 signals.new_answer_posted.connect(tweet_new_post)
 signals.new_question_posted.connect(tweet_new_post)
