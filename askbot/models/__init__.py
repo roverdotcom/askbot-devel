@@ -1269,29 +1269,18 @@ def user_post_object_description(
     return description_post
 
 
-# No longer used in askrover. Possibly wasn't even used or was a noop in
-# Askbot. This whole workflow is totally fubar.
-def user_post_anonymous_askbot_content(user, session_key):
-    """posts any posts added just before logging in
-    the posts are identified by the session key, thus the second argument
+def user_post_anonymous_askbot_content(user, anon_content):
+    """Post content created before login.
 
-    this function is used by the signal handler with a similar name
+    Used by the signal handler with a similar name.
     """
-    aq_list = AnonymousQuestion.objects.filter(session_key = session_key)
-    aa_list = AnonymousAnswer.objects.filter(session_key = session_key)
-
-
     is_on_read_only_group = user.get_groups().filter(read_only=True).count()
     if is_on_read_only_group:
         user.message_set.create(message = _('Sorry, but you have only read access'))
     #from askbot.conf import settings as askbot_settings
     if askbot_settings.EMAIL_VALIDATION == True:#add user to the record
-        for aq in aq_list:
-            aq.author = user
-            aq.save()
-        for aa in aa_list:
-            aa.author = user
-            aa.save()
+        anon_content.author = user
+        anon_content.save()
         #maybe add pending posts message?
     else:
         if user.is_blocked() or user.is_suspended():
@@ -1304,11 +1293,35 @@ def user_post_anonymous_askbot_content(user, session_key):
                 'your_account_is': account_status
             })
         else:
-            for aq in aq_list:
-                aq.publish(user)
-            for aa in aa_list:
-                aa.publish(user)
+            if isinstance(anon_content, AnonymousQuestion):
+                created_content = user.post_question(
+                    title=anon_content.title,
+                    body_text=anon_content.text,
+                    tags=anon_content.tagnames,
+                    wiki=anon_content.wiki,
+                    is_anonymous=anon_content.is_anonymous,
+                    ip_addr=anon_content.ip_addr,
+                    timestamp=anon_content.added_at,
+                    # is_private=False,
+                    # group_id=None,
+                    # by_email=False,
+                    # email_address=None,
+                    # language=None,
+                )
 
+            elif isinstance(anon_content, AnonymousAnswer):
+                created_content = user.post_answer(
+                    question=anon_content.question,
+                    body_text=anon_content.text,
+                    wiki=anon_content.wiki,
+                    timestamp=anon_content.added_at,
+                    ip_addr=anon_content.ip_addr,
+                    # follow=False,
+                    # is_private=False,
+                    # by_email=False,
+                )
+
+            return created_content
 
 def user_mark_tags(
             self,
@@ -3775,9 +3788,10 @@ def post_anonymous_askbot_content(sender, request, user):
             pass
 
         else:
-            pass
+            user.post_anonymous_askbot_content(anon_question)
 
         finally:
+            anon_question.delete()
             del request.session['anon_question']
             request.session.modified = True
 
@@ -3791,9 +3805,10 @@ def post_anonymous_askbot_content(sender, request, user):
             pass
 
         else:
-            pass
+            user.post_anonymous_askbot_content(anon_answer)
 
         finally:
+            anon_answer.delete()
             del request.session['anon_answer']
             request.session.modified = True
 
