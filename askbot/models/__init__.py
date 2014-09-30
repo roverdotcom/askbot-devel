@@ -3776,7 +3776,7 @@ def add_missing_tag_subscriptions(sender, instance, created, **kwargs):
                 instance.mark_tags(tagnames = tag_list,
                                 reason='subscribed', action='add')
 
-def post_anonymous_askbot_content(sender, request, user):
+def post_anonymous_askbot_content(sender, request, user, **kwargs):
     """Post any anonymous content that was created in this session prior
     to login.
     """
