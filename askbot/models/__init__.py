@@ -3790,7 +3790,8 @@ def post_anonymous_askbot_content(sender, request, user, **kwargs):
             pass
 
         else:
-            user.post_anonymous_askbot_content(anon_question)
+            askbot_user = User.objects.get_or_create(user=user)[0]
+            askbot_user.post_anonymous_askbot_content(anon_question)
 
         finally:
             anon_question.delete()
@@ -3807,7 +3808,8 @@ def post_anonymous_askbot_content(sender, request, user, **kwargs):
             pass
 
         else:
-            user.post_anonymous_askbot_content(anon_answer)
+            askbot_user = User.objects.get_or_create(user=user)[0]
+            askbot_user.post_anonymous_askbot_content(anon_answer)
 
         finally:
             anon_answer.delete()
