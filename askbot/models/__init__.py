@@ -1269,6 +1269,8 @@ def user_post_object_description(
     return description_post
 
 
+# No longer used in askrover. Possibly wasn't even used or was a noop in
+# Askbot. This whole workflow is totally fubar.
 def user_post_anonymous_askbot_content(user, session_key):
     """posts any posts added just before logging in
     the posts are identified by the session key, thus the second argument
@@ -3759,18 +3761,41 @@ def add_missing_tag_subscriptions(sender, instance, created, **kwargs):
                 instance.mark_tags(tagnames = tag_list,
                                 reason='subscribed', action='add')
 
-def post_anonymous_askbot_content(
-                                sender,
-                                request,
-                                user,
-                                session_key,
-                                signal,
-                                *args,
-                                **kwargs):
-    """signal handler, unfortunately extra parameters
-    are necessary for the signal machinery, even though
-    they are not used in this function"""
-    user.post_anonymous_askbot_content(session_key)
+def post_anonymous_askbot_content(sender, request, user):
+    """Post any anonymous content that was created in this session prior
+    to login.
+    """
+    if request.session.get('anon_question', False):
+        try:
+            anon_question = AnonymousQuestion.objects.get(
+                id=request.session['anon_question']
+            )
+
+        except AnonymousQuestion.DoesNotExist:
+            pass
+
+        else:
+            pass
+
+        finally:
+            del request.session['anon_question']
+            request.session.modified = True
+
+    elif request.session.get('anon_answer', False):
+        try:
+            anon_answer = AnonymousAnswer.objects.get(
+                id=request.session['anon_answer']
+            )
+
+        except AnonymousAnswer.DoesNotExist:
+            pass
+
+        else:
+            pass
+
+        finally:
+            del request.session['anon_answer']
+            request.session.modified = True
 
 def set_user_avatar_type_flag(instance, created, **kwargs):
     instance.user.update_avatar_type()
