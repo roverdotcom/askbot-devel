@@ -286,7 +286,16 @@ def ask(request):#view used to ask a new question
                     ip_addr = request.META['REMOTE_ADDR'],
                 )
                 request.session['anon_question'] = anon_question.id
-                return HttpResponseRedirect(url_utils.get_login_url())
+                return HttpResponseRedirect(
+                    url_utils.add_query_params(
+                        url_utils.get_login_url(),
+                        next=reverse(
+                            'user_recent_question',
+                            args=[request.user.id]
+                        ),
+                        anon_only=1
+                    )
+                )
 
     if request.method == 'GET':
         form = forms.AskForm(user=request.user)
@@ -663,7 +672,16 @@ def answer(request, id, form_class=forms.AnswerForm):#process a new answer
                     ip_addr=request.META['REMOTE_ADDR'],
                 )
                 request.session['anon_answer'] = anon_answer.id
-                return HttpResponseRedirect(url_utils.get_login_url())
+                return HttpResponseRedirect(
+                    url_utils.add_query_params(
+                        url_utils.get_login_url(),
+                        next=reverse(
+                            'user_recent_answer',
+                            args=[request.user.id]
+                        ),
+                        anon_only=1
+                    )
+                )
 
     return HttpResponseRedirect(question.get_absolute_url())
 
