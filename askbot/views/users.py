@@ -1024,7 +1024,10 @@ def user_email_subscriptions(request, user, context):
         'subscribed_tag_names': user.get_marked_tag_names('subscribed'),
         'page_class': 'user-profile-page',
         'tab_name': 'email_subscriptions',
-        'page_title': _('profile - email subscriptions'),
+        'page_title' : USER_PROFILE_TITLE % (
+            user.get_full_name(),
+            'Email Subscriptions'
+        ),
         'email_feeds_form': email_feeds_form,
         'tag_filter_selection_form': tag_filter_form,
         'action_status': action_status,
