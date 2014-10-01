@@ -51,6 +51,8 @@ from askbot.search.state_manager import SearchState
 from askbot.utils import url_utils
 from askbot.utils.loading import load_module
 
+USER_PROFILE_TITLE = "%s's Ask Rover Profile - %s"
+
 def owner_or_moderator_required(f):
     @functools.wraps(f)
     def wrapped_func(request, profile_owner, context):
@@ -291,7 +293,7 @@ def user_moderate(request, subject, context):
         'active_tab': 'users',
         'page_class': 'user-profile-page',
         'tab_name': 'moderation',
-        'page_title': _('moderate user'),
+        'page_title': USER_PROFILE_TITLE % (user.get_full_name(), 'Moderate'),
         'change_user_status_form': user_status_form,
         'change_user_reputation_form': user_rep_form,
         'send_message_form': send_message_form,
@@ -540,7 +542,7 @@ def user_stats(request, user, context):
         'page_class': 'user-profile-page',
         'support_custom_avatars': ('avatar' in django_settings.INSTALLED_APPS),
         'tab_name' : 'stats',
-        'page_title' : _('user profile overview'),
+        'page_title' : USER_PROFILE_TITLE % (user.get_full_name(), 'Overview'),
         'user_status_for_display': user.get_status_display(soft = True),
         'questions' : questions,
         'question_count': question_count,
@@ -663,7 +665,10 @@ def user_recent(request, user, context):
         'active_tab': 'users',
         'page_class': 'user-profile-page',
         'tab_name' : 'recent',
-        'page_title' : _('profile - recent activity'),
+        'page_title' : USER_PROFILE_TITLE % (
+            user.get_full_name(),
+            'Recent Activity'
+        ),
         'activities' : activities
     }
     context.update(data)
@@ -694,7 +699,10 @@ def show_group_join_requests(request, user, context):
         'inbox_section': 'group-join-requests',
         'page_class': 'user-profile-page',
         'tab_name' : 'join_requests',
-        'page_title' : _('profile - moderation'),
+        'page_title' : USER_PROFILE_TITLE % (
+            user.get_full_name(),
+            'Moderation'
+        ),
         'groups_dict': groups_dict,
         'join_requests': join_requests
     }
@@ -750,7 +758,10 @@ def user_responses(request, user, context):
             'page_class': 'user-profile-page',
             'tab_name' : 'inbox',
             'inbox_section': section,
-            'page_title' : _('profile - messages')
+            'page_title' : USER_PROFILE_TITLE % (
+                user.get_full_name(),
+                'Messages'
+            )
         }
         context.update(data)
         if 'thread_id' in request.GET:
@@ -829,7 +840,10 @@ def user_responses(request, user, context):
         'page_class': 'user-profile-page',
         'tab_name' : 'inbox',
         'inbox_section': section,
-        'page_title' : _('profile - responses'),
+        'page_title' : USER_PROFILE_TITLE % (
+            user.get_full_name(),
+            'Responses'
+        ),
         'post_reject_reasons': reject_reasons,
         'messages' : filtered_message_list,
     }
@@ -874,7 +888,10 @@ def user_votes(request, user, context):
         'active_tab':'users',
         'page_class': 'user-profile-page',
         'tab_name' : 'votes',
-        'page_title' : _('profile - votes'),
+        'page_title' : USER_PROFILE_TITLE % (
+            user.get_full_name(),
+            'Votes'
+        ),
         'votes' : votes[:const.USER_VIEW_DATA_SIZE]
     }
     context.update(data)
@@ -895,7 +912,7 @@ def user_reputation(request, user, context):
         'active_tab':'users',
         'page_class': 'user-profile-page',
         'tab_name': 'reputation',
-        'page_title': _("Profile - User's Karma"),
+        'page_title': USER_PROFILE_TITLE % (user.get_full_name(), 'Karma'),
         'reputation': reputes,
         'reps': reps
     }
@@ -930,7 +947,10 @@ def user_favorites(request, user, context):
         'active_tab':'users',
         'page_class': 'user-profile-page',
         'tab_name' : 'favorites',
-        'page_title' : _('profile - favorites'),
+        'page_title' : USER_PROFILE_TITLE % (
+            user.get_full_name(),
+            'Favorites'
+        ),
         'questions' : questions,
         'q_paginator_context': q_paginator_context,
         'question_count': question_count,
