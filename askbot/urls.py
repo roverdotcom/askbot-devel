@@ -76,11 +76,6 @@ urlpatterns = patterns('',
         name='question'
     ),
     url(
-        r'%s/recent/(?P<id>\d+)/' % QUESTION_PAGE_BASE_URL,
-        views.askrover.MostRecentQuestion.as_view(),
-        name='most_recent_question'
-    ),
-    url(
         r'^%s$' % _('tags/'),
         views.readers.tags,
         name='tags'
@@ -123,6 +118,16 @@ urlpatterns = patterns('',
         r'^%s(?P<id>\d+)/$' % _('users/'),
         views.users.user,
         name='user_profile'
+    ),
+    url(
+        r'%s(?P<id>\d+)/%srecent/' % (_('users/'), QUESTION_PAGE_BASE_URL),
+        views.askrover.MostRecentQuestion.as_view(),
+        name='user_recent_question'
+    ),
+    url(
+        r'%s(?P<id>\d+)/%srecent/' % (_('users/'), 'answer/'),
+        views.askrover.MostRecentAnswer.as_view(),
+        name='user_recent_answer'
     ),
     url(
         r'^%s$' % _('groups/'),
