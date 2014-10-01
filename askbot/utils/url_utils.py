@@ -1,5 +1,6 @@
 import os
 import urlparse
+from django.utils.http import urlquote_plus
 from django.core.urlresolvers import reverse
 from django.conf import settings
 try:
@@ -91,3 +92,16 @@ def get_logout_redirect_url():
         return settings.LOGOUT_REDIRECT_URL
     else:
         return reverse('askbot-index')
+
+def add_query_params(url, **kwargs):
+    """Return a copy of url with params named in kwargs added to its
+    query string.
+    """
+    parsed = list(urlparse.urlparse(url))
+    for param, value in kwargs:
+        parsed[4] += '%s%s=%s' % (
+            '&' if parsed[4] else '',
+            param,
+            urlquote_plus(value)
+        )
+    return urlparse.urlunparse(parsed)
