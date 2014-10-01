@@ -861,6 +861,10 @@ def user_network(request, user, context):
         'tab_name': 'network',
         'followed_users': user.get_followed_users(),
         'followers': user.get_followers(),
+        'page_title': USER_PROFILE_TITLE % (
+            user.get_full_name(),
+            'Network'
+        ),
     }
     context.update(data)
     return render(request, 'user_profile/user_network.html', context)
