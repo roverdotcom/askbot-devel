@@ -13,7 +13,7 @@ from django.shortcuts import redirect
 
 class LoginToPostMiddleware(object):
     """Redirect to a newly-posted question or answer, if posted anonymously."""
-    def process_response(request, response):
+    def process_response(self, request, response):
         if request.method == 'POST':
             try:
                 anon_post = \
