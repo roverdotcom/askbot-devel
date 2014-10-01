@@ -19,6 +19,7 @@ class LoginToPostMiddleware(object):
                 anon_post = \
                     Post.objects.get(id=request.session.get('anon_post', None))
                 del request.session['anon_post']
+                request.session.modified = True
 
             except KeyError, Post.DoesNotExist:
                 pass
