@@ -293,7 +293,10 @@ def user_moderate(request, subject, context):
         'active_tab': 'users',
         'page_class': 'user-profile-page',
         'tab_name': 'moderation',
-        'page_title': USER_PROFILE_TITLE % (user.get_full_name(), 'Moderate'),
+        'page_title': USER_PROFILE_TITLE % (
+            subject.get_full_name(),
+            'Moderate'
+        ),
         'change_user_status_form': user_status_form,
         'change_user_reputation_form': user_rep_form,
         'send_message_form': send_message_form,
