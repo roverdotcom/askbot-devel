@@ -21,7 +21,7 @@ class LoginToPostMiddleware(object):
                 del request.session['anon_post']
                 request.session.modified = True
 
-            except KeyError, Post.DoesNotExist:
+            except (KeyError, Post.DoesNotExist):
                 pass
 
             else:
