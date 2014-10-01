@@ -1,16 +1,11 @@
 from django.views.generic.base import View
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-from django.http import HttpResponseRedirect
 from django.utils import simplejson
-from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
 from askbot.models import User
-from askbot.models import AnonymousAnswer
-from askbot.models import AnonymousQuestion
 from askbot.models import Post
-from askbot.models import Answer
 
 
 class FollowUser(View):
@@ -73,7 +68,27 @@ class MostRecentQuestion(View):
     """
 
     def get(self, request, id=None, **kwargs):
-        pass
+        if request.GET.get('anon_only', False):
+            try:
+                question = Post.objects.get(
+                    id=request.session.get('anon_question', None),
+                    author__id=id,
+                )
+            except Post.DoesNotExist:
+                return redirect('askbot-index')
+            else:
+                return redirect(question)
+
+        else:
+            questions = Post.objects.filter(
+                author__id=id,
+                post_type='question'
+            ).order_by('-added_at')
+
+            if questions:
+                return redirect(questions[0])
+            else:
+                return redirect('askbot-index')
 
 
 class MostRecentAnswer(View):
@@ -85,4 +100,24 @@ class MostRecentAnswer(View):
     """
 
     def get(self, request, id=None, **kwargs):
-        pass
+        if request.GET.get('anon_only', False):
+            try:
+                answer = Post.objects.get(
+                    id=request.session.get('anon_answer', None),
+                    author__id=id,
+                )
+            except Post.DoesNotExist:
+                return redirect('askbot-index')
+            else:
+                return redirect(answer)
+
+        else:
+            answers = Post.objects.filter(
+                author__id=id,
+                post_type='answer'
+            ).order_by('-added_at')
+
+            if answers:
+                return redirect(answers[0])
+            else:
+                return redirect('askbot-index')
