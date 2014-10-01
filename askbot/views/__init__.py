@@ -10,7 +10,7 @@ from askbot.views import sharing
 from askbot.views import widgets
 from askbot.views import api_v1
 from askbot.views import moderation
-from askbot.views import askbot_user
+from askbot.views import askrover
 from django.conf import settings
 if 'avatar' in settings.INSTALLED_APPS:
     from askbot.views import avatar_views
