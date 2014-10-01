@@ -3781,44 +3781,35 @@ def post_anonymous_askbot_content(sender, request, user, **kwargs):
     to login.
     """
     if request.session.get('anon_question', False):
-        try:
-            anon_question = AnonymousQuestion.objects.get(
-                id=request.session['anon_question']
-            )
-
-        except AnonymousQuestion.DoesNotExist:
-            pass
-
-        else:
-            askbot_user = User.objects.get_or_create(user=user)[0]
-            anon_content = \
-                askbot_user.post_anonymous_askbot_content(anon_question)
-
-        finally:
-            anon_question.delete()
-            del request.session['anon_question']
-            request.session['anon_post'] = anon_content.id
-            request.session.modified = True
+        anon_content_object, anon_id = \
+            AnonymousQuestion, request.session['anon_question']
 
     elif request.session.get('anon_answer', False):
-        try:
-            anon_answer = AnonymousAnswer.objects.get(
-                id=request.session['anon_answer']
-            )
+        anon_content_object, anon_id = \
+            AnonymousAnswer, request.session['anon_answer']
 
-        except AnonymousAnswer.DoesNotExist:
+    else:
+        anon_content_object, anon_id = None, None
+
+    if anon_content_object and anon_id:
+        try:
+            anon_content = anon_content_object.objects.get(id=anon_id)
+
+        except anon_content_object.DoesNotExist:
             pass
 
         else:
             askbot_user = User.objects.get_or_create(user=user)[0]
-            anon_content = \
-                askbot_user.post_anonymous_askbot_content(anon_answer)
+            anon_post = \
+                askbot_user.post_anonymous_askbot_content(anon_content)
+            anon_content.delete()
+            request.session['anon_post'] = anon_post.id
 
         finally:
-            anon_answer.delete()
+            del request.session['anon_question']
             del request.session['anon_answer']
-            request.session['anon_post'] = anon_content.id
             request.session.modified = True
+
 
 def set_user_avatar_type_flag(instance, created, **kwargs):
     instance.user.update_avatar_type()
