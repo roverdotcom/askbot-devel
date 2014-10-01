@@ -3791,11 +3791,13 @@ def post_anonymous_askbot_content(sender, request, user, **kwargs):
 
         else:
             askbot_user = User.objects.get_or_create(user=user)[0]
-            askbot_user.post_anonymous_askbot_content(anon_question)
+            anon_content = \
+                askbot_user.post_anonymous_askbot_content(anon_question)
 
         finally:
             anon_question.delete()
             del request.session['anon_question']
+            request.session['anon_post'] = anon_content.id
             request.session.modified = True
 
     elif request.session.get('anon_answer', False):
@@ -3809,11 +3811,13 @@ def post_anonymous_askbot_content(sender, request, user, **kwargs):
 
         else:
             askbot_user = User.objects.get_or_create(user=user)[0]
-            askbot_user.post_anonymous_askbot_content(anon_answer)
+            anon_content = \
+                askbot_user.post_anonymous_askbot_content(anon_answer)
 
         finally:
             anon_answer.delete()
             del request.session['anon_answer']
+            request.session['anon_post'] = anon_content.id
             request.session.modified = True
 
 def set_user_avatar_type_flag(instance, created, **kwargs):
