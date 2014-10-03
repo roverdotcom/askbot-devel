@@ -20,11 +20,9 @@ class LoginToPostMiddleware(object):
                     Post.objects.get(id=request.session.get('anon_post', None))
                 del request.session['anon_post']
                 request.session.modified = True
+                return redirect(anon_post)
 
             except (KeyError, Post.DoesNotExist):
                 pass
-
-            else:
-                return redirect(anon_post)
 
         return response
