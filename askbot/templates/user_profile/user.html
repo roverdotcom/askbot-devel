@@ -1,6 +1,9 @@
 {% extends "one_column_body.html" %}
 <!-- user.html -->
 {% block title %}{% spaceless %}{{ page_title }}{% endspaceless %}{% endblock %}
+{% block meta_addl %}
+    <meta name="robots" content="noindex, follow" />
+{% endblock %}
 {% block forestyle %}
 <style type="text/css">
     .history-table td { padding: 5px; }

@@ -14,6 +14,7 @@
         {% endif %}
         <meta name="referrer" content="always" />
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        {% block meta_addl %}{% endblock %}
         {% if settings.SITE_FAVICON %}
         <link rel="shortcut icon" href="{{ settings.SITE_FAVICON|media }}" />
         {% endif %}
