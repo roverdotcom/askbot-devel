@@ -275,10 +275,8 @@ def ask(request):#view used to ask a new question
                     return HttpResponseRedirect(reverse('askbot-index'))
 
             else:
-                request.session.flush()
-                session_key = request.session.session_key
-                models.AnonymousQuestion.objects.create(
-                    session_key = session_key,
+                anon_question = models.AnonymousQuestion.objects.create(
+                    session_key = 'dummy_key',
                     title       = title,
                     tagnames = tagnames,
                     wiki = wiki,
@@ -287,6 +285,7 @@ def ask(request):#view used to ask a new question
                     added_at = timestamp,
                     ip_addr = request.META['REMOTE_ADDR'],
                 )
+                request.session['anon_question'] = anon_question.id
                 return HttpResponseRedirect(url_utils.get_login_url())
 
     if request.method == 'GET':
@@ -656,14 +655,14 @@ def answer(request, id, form_class=forms.AnswerForm):#process a new answer
                 except exceptions.PermissionDenied, e:
                     request.user.message_set.create(message = unicode(e))
             else:
-                request.session.flush()
-                models.AnonymousAnswer.objects.create(
+                anon_answer = models.AnonymousAnswer.objects.create(
                     question=question,
                     wiki=form.cleaned_data['wiki'],
                     text=form.cleaned_data['text'],
-                    session_key=request.session.session_key,
+                    session_key='dummy_key',
                     ip_addr=request.META['REMOTE_ADDR'],
                 )
+                request.session['anon_answer'] = anon_answer.id
                 return HttpResponseRedirect(url_utils.get_login_url())
 
     return HttpResponseRedirect(question.get_absolute_url())

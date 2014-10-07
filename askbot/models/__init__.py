@@ -10,6 +10,8 @@ User = AskbotUser
 # m2m_changed signal handler.
 from django.contrib.auth.models import User as AuthUser
 
+from django.contrib.auth.signals import user_logged_in
+
 # set up a possibility for the users to follow others
 # try:
 #     import followit
@@ -1269,27 +1271,18 @@ def user_post_object_description(
     return description_post
 
 
-def user_post_anonymous_askbot_content(user, session_key):
-    """posts any posts added just before logging in
-    the posts are identified by the session key, thus the second argument
+def user_post_anonymous_askbot_content(user, anon_content):
+    """Post content created before login.
 
-    this function is used by the signal handler with a similar name
+    Used by the signal handler with a similar name.
     """
-    aq_list = AnonymousQuestion.objects.filter(session_key = session_key)
-    aa_list = AnonymousAnswer.objects.filter(session_key = session_key)
-
-
     is_on_read_only_group = user.get_groups().filter(read_only=True).count()
     if is_on_read_only_group:
         user.message_set.create(message = _('Sorry, but you have only read access'))
     #from askbot.conf import settings as askbot_settings
     if askbot_settings.EMAIL_VALIDATION == True:#add user to the record
-        for aq in aq_list:
-            aq.author = user
-            aq.save()
-        for aa in aa_list:
-            aa.author = user
-            aa.save()
+        anon_content.author = user
+        anon_content.save()
         #maybe add pending posts message?
     else:
         if user.is_blocked() or user.is_suspended():
@@ -1302,11 +1295,35 @@ def user_post_anonymous_askbot_content(user, session_key):
                 'your_account_is': account_status
             })
         else:
-            for aq in aq_list:
-                aq.publish(user)
-            for aa in aa_list:
-                aa.publish(user)
+            if isinstance(anon_content, AnonymousQuestion):
+                created_content = user.post_question(
+                    title=anon_content.title,
+                    body_text=anon_content.text,
+                    tags=anon_content.tagnames,
+                    wiki=anon_content.wiki,
+                    is_anonymous=anon_content.is_anonymous,
+                    ip_addr=anon_content.ip_addr,
+                    timestamp=anon_content.added_at,
+                    # is_private=False,
+                    # group_id=None,
+                    # by_email=False,
+                    # email_address=None,
+                    # language=None,
+                )
 
+            elif isinstance(anon_content, AnonymousAnswer):
+                created_content = user.post_answer(
+                    question=anon_content.question,
+                    body_text=anon_content.text,
+                    wiki=anon_content.wiki,
+                    timestamp=anon_content.added_at,
+                    ip_addr=anon_content.ip_addr,
+                    # follow=False,
+                    # is_private=False,
+                    # by_email=False,
+                )
+
+            return created_content
 
 def user_mark_tags(
             self,
@@ -3759,18 +3776,40 @@ def add_missing_tag_subscriptions(sender, instance, created, **kwargs):
                 instance.mark_tags(tagnames = tag_list,
                                 reason='subscribed', action='add')
 
-def post_anonymous_askbot_content(
-                                sender,
-                                request,
-                                user,
-                                session_key,
-                                signal,
-                                *args,
-                                **kwargs):
-    """signal handler, unfortunately extra parameters
-    are necessary for the signal machinery, even though
-    they are not used in this function"""
-    user.post_anonymous_askbot_content(session_key)
+def post_anonymous_askbot_content(sender, request, user, **kwargs):
+    """Post any anonymous content that was created in this session prior
+    to login.
+    """
+    if request.session.get('anon_question', False):
+        anon_content_object, anon_id = \
+            AnonymousQuestion, request.session['anon_question']
+
+    elif request.session.get('anon_answer', False):
+        anon_content_object, anon_id = \
+            AnonymousAnswer, request.session['anon_answer']
+
+    else:
+        anon_content_object, anon_id = None, None
+
+    if anon_content_object and anon_id:
+        try:
+            anon_content = anon_content_object.objects.get(id=anon_id)
+
+        except anon_content_object.DoesNotExist:
+            pass
+
+        else:
+            askbot_user = User.objects.get_or_create(user=user)[0]
+            anon_post = \
+                askbot_user.post_anonymous_askbot_content(anon_content)
+            anon_content.delete()
+            request.session['anon_post'] = anon_post.id
+
+        finally:
+            del request.session['anon_question']
+            del request.session['anon_answer']
+            request.session.modified = True
+
 
 def set_user_avatar_type_flag(instance, created, **kwargs):
     instance.user.update_avatar_type()
@@ -3878,6 +3917,7 @@ django_signals.m2m_changed.connect(
     group_membership_changed,
     sender=AuthUser.groups.through
 )
+user_logged_in.connect(post_anonymous_askbot_content)
 
 if 'avatar' in django_settings.INSTALLED_APPS:
     from avatar.models import Avatar
@@ -3895,7 +3935,8 @@ signals.user_registered.connect(greet_new_user)
 signals.user_registered.connect(make_admin_if_first_user)
 signals.user_updated.connect(record_user_full_updated, sender=User)
 signals.user_logged_in.connect(complete_pending_tag_subscriptions)#todo: add this to fake onlogin middleware
-signals.user_logged_in.connect(post_anonymous_askbot_content)
+# Askbot defines its own user_logged_in signal. Seriously, what the hell.
+# signals.user_logged_in.connect(post_anonymous_askbot_content)
 signals.post_updated.connect(record_post_update_activity)
 signals.new_answer_posted.connect(tweet_new_post)
 signals.new_question_posted.connect(tweet_new_post)
