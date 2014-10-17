@@ -242,6 +242,24 @@ settings.register(
 settings.register(
     values.StringValue(
         WORDS,
+        'WORDS_TAG_SINGULAR',
+        default=_('Keyword'),
+        description=_('question (noun, singular)'),
+    )
+)
+
+settings.register(
+    values.StringValue(
+        WORDS,
+        'WORDS_TAG_PLURAL',
+        default=_('Keywords'),
+        description=_('questions (noun, plural)'),
+    )
+)
+
+settings.register(
+    values.StringValue(
+        WORDS,
         'WORDS_QUESTION_SINGULAR',
         default=_('question'),
         description=_('question (noun, singular)'),
