@@ -5,8 +5,21 @@ For reasons that models, views can't have unicode
 text in this project, all unicode text go here.
 """
 from django.utils.translation import ugettext_lazy as _
-from askbot.conf import settings as askbot_settings
 import re
+
+
+# Ugly, but not as ugly as trying to merge const into conf.
+def words_tag_singular():
+    """Wrapper function around setting to prevent circular import."""
+    from askbot.conf import settings
+    return settings.WORDS_TAG_SINGULAR.lower()
+
+
+def words_tag_plural():
+    """Wrapper function around setting to prevent circular import."""
+    from askbot.conf import settings
+    return settings.WORDS_TAG_PLURAL.lower()
+
 
 #todo: customize words
 CLOSE_REASONS = (
@@ -219,8 +232,7 @@ TYPE_ACTIVITY = (
     (TYPE_ACTIVITY_DELETE_QUESTION, _('deleted question')),
     (TYPE_ACTIVITY_DELETE_ANSWER, _('deleted answer')),
     (TYPE_ACTIVITY_MARK_OFFENSIVE, _('marked offensive')),
-    (TYPE_ACTIVITY_UPDATE_TAGS, _(
-        'updated {}'.format(askbot_settings.WORDS_TAG_PLURAL.lower()))),
+    (TYPE_ACTIVITY_UPDATE_TAGS, _('updated {}'.format(words_tag_plural()))),
     (TYPE_ACTIVITY_FAVORITE, _('selected favorite')),
     (TYPE_ACTIVITY_USER_FULL_UPDATED, _('completed user profile')),
     (TYPE_ACTIVITY_EMAIL_UPDATE_SENT, _('email update sent to user')),
@@ -236,15 +248,11 @@ TYPE_ACTIVITY = (
     (TYPE_ACTIVITY_MENTION, _('mentioned in the post')),
     (
         TYPE_ACTIVITY_CREATE_TAG_WIKI,
-        _('created {} description'.format(
-            askbot_settings.WORDS_TAG_SINGULAR.lower()
-        )),
+        _('created {} description'.format(words_tag_singular())),
     ),
     (
         TYPE_ACTIVITY_UPDATE_TAG_WIKI,
-        _('updated {} description'.format(
-            askbot_settings.WORDS_TAG_SINGULAR.lower()
-        ))
+        _('updated {} description'.format(words_tag_singular()))
     ),
     (TYPE_ACTIVITY_MODERATED_NEW_POST, _('made a new post')),
     (
@@ -318,9 +326,7 @@ POST_STATUS = {
     'closed': _('[closed]'),
     'deleted': _('[deleted]'),
     'default_version': _('initial version'),
-    'retagged': _('{} edited'.format(
-        askbot_settings.WORDS_TAG_PLURAL.lower())
-    ),
+    'retagged': _('{} edited'.format(words_tag_plural())),
     'private': _('[private]')
 }
 
@@ -330,59 +336,31 @@ EXCLUDE_IGNORED = 1
 INCLUDE_INTERESTING = 2
 INCLUDE_SUBSCRIBED = 3
 TAG_DISPLAY_FILTER_STRATEGY_MINIMAL_CHOICES = (
-    (INCLUDE_ALL, _(
-        'show all {}'.format(askbot_settings.WORDS_TAG_PLURAL.lower())
-    )),
-    (EXCLUDE_IGNORED, _(
-        'exclude ignored {}'.format(askbot_settings.WORDS_TAG_PLURAL.lower())
-    )),
-    (INCLUDE_INTERESTING, _(
-        'only interesting {}'.format(askbot_settings.WORDS_TAG_PLURAL.lower())
-    ))
+    (INCLUDE_ALL, _('show all {}'.format(words_tag_plural()))),
+    (EXCLUDE_IGNORED, _('exclude ignored {}'.format(words_tag_plural()))),
+    (INCLUDE_INTERESTING, _('only interesting {}'.format(words_tag_plural())))
 )
 TAG_DISPLAY_FILTER_STRATEGY_CHOICES = \
     TAG_DISPLAY_FILTER_STRATEGY_MINIMAL_CHOICES + \
-    ((INCLUDE_SUBSCRIBED, _(
-        'only subscribed {}'.format(askbot_settings.WORDS_TAG_PLURAL.lower())
-    )),)
+    ((INCLUDE_SUBSCRIBED, _('only subscribed {}'.format(words_tag_plural()))),)
 
 TAG_EMAIL_FILTER_SIMPLE_STRATEGY_CHOICES = (
-    (INCLUDE_ALL, _(
-        'email for all {}'.format(askbot_settings.WORDS_TAG_PLURAL.lower())
-    )),
-    (EXCLUDE_IGNORED, _(
-        'exclude ignored {}'.format(askbot_settings.WORDS_TAG_PLURAL.lower())
-    )),
-    (INCLUDE_INTERESTING, _(
-        'only interesting {}'.format(askbot_settings.WORDS_TAG_PLURAL.lower())
-    )),
+    (INCLUDE_ALL, _('email for all {}'.format(words_tag_plural()))),
+    (EXCLUDE_IGNORED, _('exclude ignored {}'.format(words_tag_plural()))),
+    (INCLUDE_INTERESTING, _('only interesting {}'.format(words_tag_plural()))),
 )
 
 TAG_EMAIL_FILTER_ADVANCED_STRATEGY_CHOICES = (
-    (INCLUDE_ALL, _(
-        'email for all {}'.format(askbot_settings.WORDS_TAG_PLURAL.lower())
-    )),
-    (EXCLUDE_IGNORED, _(
-        'exclude ignored {}'.format(askbot_settings.WORDS_TAG_PLURAL.lower())
-    )),
-    (INCLUDE_SUBSCRIBED, _(
-        'only subscribed {}'.format(askbot_settings.WORDS_TAG_PLURAL.lower())
-    )),
+    (INCLUDE_ALL, _('email for all {}'.format(words_tag_plural()))),
+    (EXCLUDE_IGNORED, _('exclude ignored {}'.format(words_tag_plural()))),
+    (INCLUDE_SUBSCRIBED, _('only subscribed {}'.format(words_tag_plural()))),
 )
 
 TAG_EMAIL_FILTER_FULL_STRATEGY_CHOICES = (
-    (INCLUDE_ALL, _(
-        'email for all {}'.format(askbot_settings.WORDS_TAG_PLURAL.lower())
-    )),
-    (EXCLUDE_IGNORED, _(
-        'exclude ignored {}'.format(askbot_settings.WORDS_TAG_PLURAL.lower())
-    )),
-    (INCLUDE_INTERESTING, _(
-        'only interesting {}'.format(askbot_settings.WORDS_TAG_PLURAL.lower())
-    )),
-    (INCLUDE_SUBSCRIBED, _(
-        'only subscribed {}'.format(askbot_settings.WORDS_TAG_PLURAL.lower())
-    )),
+    (INCLUDE_ALL, _('email for all {}'.format(words_tag_plural()))),
+    (EXCLUDE_IGNORED, _('exclude ignored {}'.format(words_tag_plural()))),
+    (INCLUDE_INTERESTING, _('only interesting {}'.format(words_tag_plural()))),
+    (INCLUDE_SUBSCRIBED, _('only subscribed {}'.format(words_tag_plural()))),
 )
 
 NOTIFICATION_DELIVERY_SCHEDULE_CHOICES = (
