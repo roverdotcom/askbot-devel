@@ -23,13 +23,13 @@
     <div class="form-item question-tags">
         {% if use_category_selector %}
             {% include "widgets/three_column_category_selector.html" %}
-            <div class="tags-desc">{% trans %}Tags{% endtrans %}</div>
+            <div class="tags-desc">{% trans tags=settings.WORDS_TAG_PLURAL %}{{ tags }}{% endtrans %}</div>
             {% include "widgets/tag_editor.html" %}
         {% else %}
             {% if tags_are_required %}
                 <label for="id_tags">
                 {% if mandatory_tags %}
-                    <strong>{% trans %}tags{% endtrans %}</strong>
+                    <strong>{% trans tags=settings.WORDS_TAG_PLURAL|lower %}{{ tags }}{% endtrans %}</strong>
                     {% trans %}, one of these is required{% endtrans %}
                     {{
                         tag_list_widget(
@@ -39,12 +39,12 @@
                         )
                     }}
                 {% else %}
-                    <strong>{% trans %}tags:{% endtrans %}</strong> 
+                    <strong>{% trans tags=settings.WORDS_TAG_PLURAL|lower%}{{ tags }}:{% endtrans %}</strong>
                     {% trans %}(required){% endtrans %}
                 {% endif %}
                 </label>
             {% else %}
-                <strong>{% trans %}tags:{% endtrans %}</strong>
+                <strong>{% trans tags=settings.WORDS_TAG_PLURAL|lower %}{{ tags }}:{% endtrans %}</strong>
             {% endif %}
             <span class="form-error">{{ post_form.tags.errors }}</span><br/>
             {{ post_form.tags }}

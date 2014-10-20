@@ -16,7 +16,7 @@
             <a href="{{ search_state.remove_author().full_url() }}">{% trans %}resetting author{% endtrans %}</a>
         {% endif %}
         {% if search_state.tags %}{% if search_state.author and search_state.query %}, {% elif search_state.author %}{% trans %} or {% endtrans %}{% endif %}
-            <a href="{{ search_state.remove_tags().full_url() }}">{% trans %}resetting tags{% endtrans %}</a>
+            <a href="{{ search_state.remove_tags().full_url() }}">{% trans tags=settings.WORDS_TAG_PLURAL|lower %}resetting {{ tags }}{% endtrans %}</a>
         {% endif %}
         {% if search_state.query %}{% trans %} or {% endtrans %}
             <a href="{% url questions %}">{% trans %}starting over{% endtrans %}</a>

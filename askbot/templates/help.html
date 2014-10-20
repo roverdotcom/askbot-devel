@@ -29,12 +29,12 @@
 <p>{% trans %}Search has advanced capabilities:{% endtrans %}</p>
 <ul>
     <li>{% trans %}to search in title - enter [title: your text]{% endtrans %}</li>
-    <li>{% trans %}to search by tags - enter [tag: sometag] or #sometag{% endtrans %}</li>
+    <li>{% trans tag=settings.WORDS_TAG_SINGULAR|lower %}to search by {{ tag }} - enter [{{ tag }}: some{{ tag }}] or #some{{ tag }}{% endtrans %}</li>
     <li>{% trans %}to search by user - enter [user: somename] or @somename or @"some name"{% endtrans %}</li>
 </ul>
-<p>{% trans %}In addition, it is possible to click on tags to add them to the search query.{% endtrans %}
+<p>{% trans tags=settings.WORDS_TAG_PLURAL|lower %}In addition, it is possible to click on {{ tags }} to add them to the search query.{% endtrans %}
 {% if settings.TAG_SEARCH_INPUT_ENABLED %}
-    {% trans %}Finally, a separate tag search box is available in the side bar of the main page, where the search tags can be entered as well{% endtrans %}
+    {% trans tag=settings.WORDS_TAG_SINGULAR|lower tags=settings.WORDS_TAG_PLURAL|lower %}Finally, a separate {{ tag }} search box is available in the side bar of the main page, where the search {{ tags }} can be entered as well{% endtrans %}
 {% endif %}
 </p>
 <p>{% trans %}<em>Important!!!</em> All search terms are combined with a logical "AND" expression - to narrow the search by adding new terms.{% endtrans %}</p>

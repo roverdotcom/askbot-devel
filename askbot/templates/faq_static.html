@@ -6,7 +6,7 @@
 <h1>{% trans %}Frequently Asked Questions {% endtrans %}({% trans %}FAQ{% endtrans %})</h1>
 <h2 class="first">{% trans %}What kinds of questions can I ask here?{% endtrans %}</h2>
 <p>{% trans %}Most importantly - questions should be <strong>relevant</strong> to this community.{% endtrans %}
-{% trans %}Before you ask - please make sure to search for a similar question. You can search questions by their title or tags.{% endtrans %}
+{% trans tags=settings.WORDS_TAG_PLURAL|lower %}Before you ask - please make sure to search for a similar question. You can search questions by their title or {{ tags }}.{% endtrans %}
 </p>
 <h2>{% trans %}What kinds of questions should be avoided?{% endtrans %}</h2>
 <p>{% trans %}Please avoid asking questions that are not relevant to this community, too subjective and argumentative.{% endtrans %}
@@ -48,7 +48,7 @@
     </tr>
     <tr>
         <td class="faq-rep-item"><strong>{{settings.MIN_REP_TO_RETAG_OTHERS_QUESTIONS}}</strong></td>
-        <td>{% trans %}retag other's questions{% endtrans %}</td>
+        <td>{% trans tags=settings.WORDS_TAG_PLURAL|lower %}change {{ tags }} on other's questions{% endtrans %}</td>
     </tr>
     {% if settings.WIKI_ON %}
     <tr>

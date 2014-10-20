@@ -33,7 +33,7 @@
     </div>
     <a name="tags"></a>
     {% spaceless %}
-        <h2>{% trans counter=user_tags|length %}<span class="count">{{counter}}</span> Tag{% pluralize %}<span class="count">{{counter}}</span> Tags{% endtrans %}</h2>
+        <h2>{% trans counter=user_tags|length, tag=settings.WORDS_TAG_SINGULAR, tags=settings.WORDS_TAG_PLURAL %}<span class="count">{{counter}}</span> {{ tag }}{% pluralize %}<span class="count">{{counter}}</span> {{ tags }}{% endtrans %}</h2>
     {% endspaceless %}
     <div class="user-stats-table">
         <ul id="ab-user-tags" class="tags">

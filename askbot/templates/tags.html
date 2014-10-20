@@ -1,6 +1,6 @@
 {% extends "two_column_body.html" %}
 <!-- tags.html -->
-{% block title %}{% spaceless %}{% trans %}Tags{% endtrans %}{% endspaceless %}{% endblock %}
+{% block title %}{% spaceless %}{% trans tags=settings.WORDS_TAG_PLURAL %}{{ tags }}{% endtrans %}{% endspaceless %}{% endblock %}
 {% block content %}
 {% include "tags/content.html" %}
 {% endblock %}
@@ -14,7 +14,7 @@
             Hilite.elementid = "searchtags";
             Hilite.debug_referrer = location.href;
         });
-        askbot['data']['tagSearchPromptText'] = "{% trans %}search for tags{% endtrans %}";
+        askbot['data']['tagSearchPromptText'] = "{% trans tags=settings.WORDS_TAG_PLURAL|lower %}search for {{ tags }}{% endtrans %}";
     /*]]>*/
     </script>
     {% include "tags/custom_javascript.httml" ignore missing %}
