@@ -185,7 +185,9 @@ class SearchStateTests(AskbotTestCase):
         )
 
     def test_extract_tags(self):
-        ss = self._ss(query='#tag1 [tag: tag2] some text [tag3] query')
+        ss = self._ss(query='#tag1 [{}: tag2] some text [tag3] query'.format(
+            askbot.conf.settings.WORDS_TAG_SINGULAR.lower()
+        ))
         self.assertEqual(set(ss.query_tags), set(['tag1', 'tag2', 'tag3']))
         self.assertEqual(ss.stripped_query, 'some text query')
 
@@ -218,7 +220,8 @@ class SearchStateTests(AskbotTestCase):
         ss = SearchState(
             scope='unanswered',
             sort='votes-desc',
-            query='hejho #tag1 [tag: tag2] @user @user2 title:"what is this?"',
+            query='hejho #tag1 [{}: tag2] @user @user2 title:"what is this?"'
+                .format(askbot.conf.settings.WORDS_TAG_SINGULAR.lower()),
             tags='miki, mini',
             author='12',
             page='2',
@@ -233,7 +236,11 @@ class SearchStateTests(AskbotTestCase):
         self.assertEqual(ss.sort, 'votes-desc')
         self.assertTrue(ss.sort is ss2.sort)
 
-        self.assertEqual(ss.query, 'hejho #tag1 [tag: tag2] @user @user2 title:"what is this?"')
+        self.assertEqual(
+            ss.query,
+            'hejho #tag1 [{}: tag2] @user @user2 title:"what is this?"'.format(
+                askbot.conf.settings.WORDS_TAG_SINGULAR.lower())
+            )
         self.assertTrue(ss.query is ss2.query)
 
         self.assertFalse(ss.tags is ss2.tags)
