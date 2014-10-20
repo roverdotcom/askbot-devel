@@ -239,12 +239,22 @@ settings.register(
     )
 )
 
+# NOTE TO FUTURE DEVS - the WORDS_TAG_SINGULAR and WORDS_TAG_PLURAL
+# constants also need to be changed in askbot.const.__init__ in order for
+# changes in these two livesettings to take complete effect. askbot.conf
+# can't be accessed from that package, as it introduces an absolutely
+# disgusting circular import.
+
 settings.register(
     values.StringValue(
         WORDS,
         'WORDS_TAG_SINGULAR',
         default=_('Keyword'),
-        description=_('question (noun, singular)'),
+        description=_(
+            'Singular user-facing name for Tag.'
+            " Python changes are required to completely change this setting -"
+            " contact the dev team."
+        ),
     )
 )
 
@@ -253,7 +263,11 @@ settings.register(
         WORDS,
         'WORDS_TAG_PLURAL',
         default=_('Keywords'),
-        description=_('questions (noun, plural)'),
+        description=_(
+            'Plural user-facing name for Tag.'
+            " Python changes are required to completely change this setting -"
+            " contact the dev team."
+        ),
     )
 )
 
