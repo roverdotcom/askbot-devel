@@ -8,7 +8,7 @@
         <table class="suggested-tags-table">
             <thead>
                 <tr>
-                    <th class="tags-col">{% trans %}{{ settings.WORDS_TAG_SINGULAR }}{% endtrans %}</th>
+                    <th class="tags-col">{% trans tag=settings.WORDS_TAG_SINGULAR %}{{ tag }}{% endtrans %}</th>
                     <th class="users-col">{% trans %}Suggested by{% endtrans %}</th>
                     <th class="decision-col">{% trans %}Your decision{% endtrans %}</th>
                     <th>{% trans tag=settings.WORDS_TAG_SINGULAR|lower %}Where the {{ tag }} was used{% endtrans %}</th>
@@ -58,7 +58,7 @@
                 <tr class="per-tag-controls" data-tag-id="{{ tag.id }}">
                     <td colspan="4">
                         {% if tag.threads.count() > 1 %}
-                            <button class="accept">{% trans name=tag.name tag=settings.WORDS_TAG_SINGULAR|lower %}Apply {{ tag }} "{{ name }}" to the above{% endtrans %}</button>
+                            <button class="accept">{% trans name=tag.name, tag=settings.WORDS_TAG_SINGULAR|lower %}Apply {{ tag }} "{{ name }}" to the above{% endtrans %}</button>
                             <button class="reject">{% trans tag=settings.WORDS_TAG_SINGULAR|lower %}Reject {{ tag }}{% endtrans %}</button>
                         {% endif %}
                     </td>
