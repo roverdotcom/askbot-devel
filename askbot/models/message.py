@@ -12,7 +12,7 @@ class Message(models.Model):
     actions. For example, "The poll Foo was created successfully." is a
     message.
     """
-    user = models.ForeignKey(AskbotUser, related_name='_message_set')
+    user = models.ForeignKey(AskbotUser, related_name='message_set')
     message = models.TextField(ugettext_lazy('message'))
 
     class Meta:
