@@ -34,6 +34,39 @@ class ReputeAdmin(admin.ModelAdmin):
 class ActivityAdmin(admin.ModelAdmin):
     """  admin class"""
 
+
+class AskbotUserAdmin(admin.ModelAdmin):
+    """AskbotUser admin class."""
+    exclude = (
+        'user',
+
+        # This will try to populate a multiple selection widget with every
+        # AskbotUser in the system. Something similar would be useful to
+        # have on the admin page, though.
+        'following',
+
+        'bronze',
+        'silver',
+        'gold',
+        'is_fake',
+        'last_seen',
+    )
+
+    def user_display(self):
+        """Fake admin field displaying a link to this profile's 'User' object.
+        """
+        pass
+
+    def person_display(self):
+        """Fake admin field displaying a link to this profile's 'Person'
+        object.
+        """
+        pass
+
+    def last_seen_display(self):
+        """Fake admin field displaying 'last_seen' date."""
+        pass
+
 admin.site.register(models.Post)
 admin.site.register(models.Tag, TagAdmin)
 admin.site.register(models.Vote, VoteAdmin)
@@ -43,3 +76,4 @@ admin.site.register(models.Award, AwardAdmin)
 admin.site.register(models.Repute, ReputeAdmin)
 admin.site.register(models.Activity, ActivityAdmin)
 admin.site.register(models.BulkTagSubscription)
+admin.site.register(models.AskbotUser, AskbotUserAdmin)
