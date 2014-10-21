@@ -49,7 +49,6 @@ class AskbotUserAdmin(admin.ModelAdmin):
         'silver',
         'gold',
         'is_fake',
-        'last_seen',
     )
 
     readonly_fields = (
