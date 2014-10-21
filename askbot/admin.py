@@ -52,18 +52,24 @@ class AskbotUserAdmin(admin.ModelAdmin):
         'last_seen',
     )
 
-    def user_display(self):
+    readonly_fields = (
+        'user',
+        'person',
+        'last_seen',
+    )
+
+    def user(self, obj):
         """Fake admin field displaying a link to this profile's 'User' object.
         """
         pass
 
-    def person_display(self):
+    def person(self, obj):
         """Fake admin field displaying a link to this profile's 'Person'
         object.
         """
         pass
 
-    def last_seen_display(self):
+    def last_seen(self, obj):
         """Fake admin field displaying 'last_seen' date."""
         pass
 
