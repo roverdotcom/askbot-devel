@@ -15,14 +15,15 @@
     {%- endif -%}
     </span>
     {% if settings.USE_ASKBOT_LOGIN_SYSTEM %}
-         <a href="{{ settings.LOGOUT_URL }}?next={{request.path|clean_login_url|escape}}">{% trans %}sign out{% endtrans %}</a>
+         <a href="{{ settings.LOGOUT_URL }}?next={{request.path|clean_login_url|escape}}">{% trans %}Sign Out{% endtrans %}</a>
     {% endif %}
 {% elif settings.USE_ASKBOT_LOGIN_SYSTEM %}
-    <a href="{{ settings.LOGIN_URL }}?next={{request.path|clean_login_url|escape}}">{% trans %}Hi there! Please sign in{% endtrans %}</a>
+    <a href="{{ settings.LOGIN_URL }}?next={{request.path|clean_login_url|escape}}">{% trans %}Hi there! Please sign in.{% endtrans %}</a>
 {% endif %}
 {% if request.user.is_authenticated() and request.user.is_administrator() %}
-    <a class="settings" href="{% url site_settings %}">{% trans %}settings{% endtrans %}</a>
-    <a class="widgets" href="{% url widgets %}">{% trans %}widgets{% endtrans %}</a>
+    <a class="settings" href="{% url site_settings %}">{% trans %}Settings{% endtrans %}</a>
+    <a class="widgets" href="{% url widgets %}">{% trans %}Widgets{% endtrans %}</a>
 {% endif %}
-<a class="help" href="{% url "help" %}" title="{% trans %}help{% endtrans %}">{% trans %}Ask Rover help{% endtrans %}</a>
+<a class="help" href="{% url "help" %}" title="{% trans %}help{% endtrans %}">{% trans %}Ask Rover Help{% endtrans %}</a>
 <a class="faq" href="{% url "faq" %}" title="{% trans %}faq{% endtrans %}">{% trans %}Ask Rover FAQ{% endtrans %}</a>
+<a class="faq" href="{% url "feedback" %}" title="{% trans %}faq{% endtrans %}">{% trans %}Leave Feedback{% endtrans %}</a>
