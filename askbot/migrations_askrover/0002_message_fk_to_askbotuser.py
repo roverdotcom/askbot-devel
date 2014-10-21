@@ -11,9 +11,9 @@ class Migration(DataMigration):
         """Drop ForeignKey from Message to AuthUser, add ForeignKey from
         Message to AskbotUser.
         """
-        db.drop_foreign_key('Message', 'user_id')
+        db.drop_foreign_key('auth_message', 'user_id')
         db.alter_column(
-            'Message',
+            'auth_message',
             'user_id',
             models.ForeignKey(to=orm['askbot.AskbotUser'])
         )
@@ -21,9 +21,9 @@ class Migration(DataMigration):
     def backwards(self, orm):
         """Drop ForeignKey from Message to AskbotUser, add ForeignKey from
         Message to AuthUser."""
-        db.drop_foreign_key('Message', 'user_id')
+        db.drop_foreign_key('auth_message', 'user_id')
         db.alter_column(
-            'Message',
+            'auth_message',
             'user_id',
             models.ForeignKey(to=orm['auth.User'])
         )
