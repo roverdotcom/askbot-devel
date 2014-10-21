@@ -2,7 +2,7 @@
 <script type="text/javascript">
     var retagUrl = "{% url retag_question question.id %}";
 </script>
-<a id="retag" class="question-retag" href="{% url retag_question question.id %}">{% trans %}retag{% endtrans %}</a>
+<a id="retag" class="question-retag" href="{% url retag_question question.id %}">{% trans tags=settings.WORDS_TAG_PLURAL|lower %}edit {{ tags }}{% endtrans %}</a>
 {% if question.offensive_flag_count > 0 %}
     <span
         id="question-offensive-remove-flag-{{ question.id }}"

@@ -1,20 +1,20 @@
 {% extends "one_column_body.html" %}
 {% import "macros.html" as macros %}
 <!-- template list_bulk_tag_subscription.html -->
-{% block title %}{% spaceless %}{% trans %}Manage Tag subscriptions{% endtrans %}{% endspaceless %}{% endblock %}
+{% block title %}{% spaceless %}{% trans tag=settings.WORDS_TAG_SINGULAR|lower %}Manage {{ tag }} subscriptions{% endtrans %}{% endspaceless %}{% endblock %}
 {% block content %}
-  <h1 class="section-title">{% trans %}Manage Tag subscription</a> {% endtrans %}(<a href="{% url create_bulk_tag_subscription %}">{%trans%}Create New{%endtrans%}</a>)</h1>
+  <h1 class="section-title">{% trans tag=settings.WORDS_TAG_SINGULAR|lower %}Manage {{ tag }} subscription</a> {% endtrans %}(<a href="{% url create_bulk_tag_subscription %}">{%trans%}Create New{%endtrans%}</a>)</h1>
 <p>
 </p>
 <table class='tag-subscriptions'>
     <thead>
       <th>{% trans %}Date{%endtrans%} </th>
-      <th>{% trans %}Tags{%endtrans%} </th>
+      <th>{% trans tags=settings.WORDS_TAG_PLURAL %}{{ tags }}{% endtrans %} </th>
       <th>{% trans %}Users{%endtrans%}</th>
         {% if settings.GROUPS_ENABLED %}
-          <th>{%trans%}Groups{%endtrans%} </th>
+          <th>{%trans%}Groups{% endtrans %} </th>
       {%endif%}
-      <th>{%trans%}Action{%endtrans%}</th>
+      <th>{%trans%}Action{% endtrans %}</th>
     </thead>
     <tbody>
       {% for subscription in object_list %}

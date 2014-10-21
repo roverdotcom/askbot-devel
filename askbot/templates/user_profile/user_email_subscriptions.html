@@ -45,7 +45,7 @@
     {% endif %}
 
     {%if settings.SUBSCRIBED_TAG_SELECTOR_ENABLED %}
-        <h2>{% trans %}Subscribed Tags{% endtrans %}</h2>
+        <h2>{% trans tags=settings.WORDS_TAG_PLURAL %}Subscribed {{ tags }}{% endtrans %}</h2>
             {{
                 macros.tag_list_widget(
                     subscribed_tag_names,

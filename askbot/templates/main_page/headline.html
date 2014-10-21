@@ -8,7 +8,7 @@
         </h1>
         <div class="clearfix"></div>
         <div id="listSearchTags" {% if not search_tags %}style="display: none;"{% endif %}>
-            <span class="left">{% trans %}Tagged{% endtrans %}</span>
+            <span class="left">{% trans tags=settings.WORDS_TAG_PLURAL|lower %}With {{ tags }}{% endtrans %}</span>
             {{ macros.tag_list_widget(
                     search_tags,
                     id = 'searchTags',
@@ -25,7 +25,7 @@
                     <a href="{{ search_state.remove_author().full_url() }}">{% trans %}reset author{% endtrans %}</a>
                 {% endif %}
                 {% if search_tags %}{% if author_name and query %}, {% elif author_name %}{% trans %} or {% endtrans %}{% endif %}
-                    <a href="{{ search_state.remove_tags().full_url() }}">{% trans %}reset tags{% endtrans %}</a>
+                    <a href="{{ search_state.remove_tags().full_url() }}">{% trans tags=settings.WORDS_TAG_PLURAL|lower %}reset {{ tags }}{% endtrans %}</a>
                 {% endif %}
                 {% if query %}{% trans %} or {% endtrans %}
                     <a href="{% url questions %}">{% trans %}start over{% endtrans %}</a>
@@ -33,9 +33,9 @@
             {% else %}
                 <a href="{% url questions %}">{% trans %}start over{% endtrans %}</a>
             {% endif %}
-            {% trans %} - to expand, or dig in by adding more tags and revising the query.{% endtrans %}
+            {% trans tags=settings.WORDS_TAG_PLURAL|lower %} - to expand, or dig in by adding more {{ tags }} and revising the query.{% endtrans %}
             </p>
         {% else %}
-            <p class="search-tips"><b>{% trans %}Search tip:{% endtrans %}</b> {% trans %}add tags and a query to focus your search{% endtrans %}</p>
+            <p class="search-tips"><b>{% trans %}Search tip:{% endtrans %}</b> {% trans tags=settings.WORDS_TAG_PLURAL|lower %}add {{ tags }} and a query to focus your search{% endtrans %}</p>
         {% endif %#}
 {% endif %}

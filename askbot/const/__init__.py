@@ -7,6 +7,11 @@ text in this project, all unicode text go here.
 from django.utils.translation import ugettext_lazy as _
 import re
 
+# Trying to access these from conf introduces an absolutely hideous
+# circular import.
+WORDS_TAG_SINGULAR = 'keyword'
+WORDS_TAG_PLURAL = 'keywords'
+
 #todo: customize words
 CLOSE_REASONS = (
     (1, _('duplicate question')),
@@ -218,7 +223,7 @@ TYPE_ACTIVITY = (
     (TYPE_ACTIVITY_DELETE_QUESTION, _('deleted question')),
     (TYPE_ACTIVITY_DELETE_ANSWER, _('deleted answer')),
     (TYPE_ACTIVITY_MARK_OFFENSIVE, _('marked offensive')),
-    (TYPE_ACTIVITY_UPDATE_TAGS, _('updated tags')),
+    (TYPE_ACTIVITY_UPDATE_TAGS, _('updated {}'.format(WORDS_TAG_PLURAL))),
     (TYPE_ACTIVITY_FAVORITE, _('selected favorite')),
     (TYPE_ACTIVITY_USER_FULL_UPDATED, _('completed user profile')),
     (TYPE_ACTIVITY_EMAIL_UPDATE_SENT, _('email update sent to user')),
@@ -234,11 +239,11 @@ TYPE_ACTIVITY = (
     (TYPE_ACTIVITY_MENTION, _('mentioned in the post')),
     (
         TYPE_ACTIVITY_CREATE_TAG_WIKI,
-        _('created tag description'),
+        _('created {} description'.format(WORDS_TAG_SINGULAR)),
     ),
     (
         TYPE_ACTIVITY_UPDATE_TAG_WIKI,
-        _('updated tag description')
+        _('updated {} description'.format(WORDS_TAG_SINGULAR))
     ),
     (TYPE_ACTIVITY_MODERATED_NEW_POST, _('made a new post')),
     (
@@ -312,7 +317,7 @@ POST_STATUS = {
     'closed': _('[closed]'),
     'deleted': _('[deleted]'),
     'default_version': _('initial version'),
-    'retagged': _('retagged'),
+    'retagged': _('{} edited'.format(WORDS_TAG_PLURAL)),
     'private': _('[private]')
 }
 
@@ -322,31 +327,31 @@ EXCLUDE_IGNORED = 1
 INCLUDE_INTERESTING = 2
 INCLUDE_SUBSCRIBED = 3
 TAG_DISPLAY_FILTER_STRATEGY_MINIMAL_CHOICES = (
-    (INCLUDE_ALL, _('show all tags')),
-    (EXCLUDE_IGNORED, _('exclude ignored tags')),
-    (INCLUDE_INTERESTING, _('only interesting tags'))
+    (INCLUDE_ALL, _('show all {}'.format(WORDS_TAG_PLURAL))),
+    (EXCLUDE_IGNORED, _('exclude ignored {}'.format(WORDS_TAG_PLURAL))),
+    (INCLUDE_INTERESTING, _('only interesting {}'.format(WORDS_TAG_PLURAL)))
 )
 TAG_DISPLAY_FILTER_STRATEGY_CHOICES = \
     TAG_DISPLAY_FILTER_STRATEGY_MINIMAL_CHOICES + \
-    ((INCLUDE_SUBSCRIBED, _('only subscribed tags')),)
+    ((INCLUDE_SUBSCRIBED, _('only subscribed {}'.format(WORDS_TAG_PLURAL))),)
 
 TAG_EMAIL_FILTER_SIMPLE_STRATEGY_CHOICES = (
-    (INCLUDE_ALL, _('email for all tags')),
-    (EXCLUDE_IGNORED, _('exclude ignored tags')),
-    (INCLUDE_INTERESTING, _('only interesting tags')),
+    (INCLUDE_ALL, _('email for all {}'.format(WORDS_TAG_PLURAL))),
+    (EXCLUDE_IGNORED, _('exclude ignored {}'.format(WORDS_TAG_PLURAL))),
+    (INCLUDE_INTERESTING, _('only interesting {}'.format(WORDS_TAG_PLURAL))),
 )
 
 TAG_EMAIL_FILTER_ADVANCED_STRATEGY_CHOICES = (
-    (INCLUDE_ALL, _('email for all tags')),
-    (EXCLUDE_IGNORED, _('exclude ignored tags')),
-    (INCLUDE_SUBSCRIBED, _('only subscribed tags')),
+    (INCLUDE_ALL, _('email for all {}'.format(WORDS_TAG_PLURAL))),
+    (EXCLUDE_IGNORED, _('exclude ignored {}'.format(WORDS_TAG_PLURAL))),
+    (INCLUDE_SUBSCRIBED, _('only subscribed {}'.format(WORDS_TAG_PLURAL))),
 )
 
 TAG_EMAIL_FILTER_FULL_STRATEGY_CHOICES = (
-    (INCLUDE_ALL, _('email for all tags')),
-    (EXCLUDE_IGNORED, _('exclude ignored tags')),
-    (INCLUDE_INTERESTING, _('only interesting tags')),
-    (INCLUDE_SUBSCRIBED, _('only subscribed tags')),
+    (INCLUDE_ALL, _('email for all {}'.format(WORDS_TAG_PLURAL))),
+    (EXCLUDE_IGNORED, _('exclude ignored {}'.format(WORDS_TAG_PLURAL))),
+    (INCLUDE_INTERESTING, _('only interesting {}'.format(WORDS_TAG_PLURAL))),
+    (INCLUDE_SUBSCRIBED, _('only subscribed {}'.format(WORDS_TAG_PLURAL))),
 )
 
 NOTIFICATION_DELIVERY_SCHEDULE_CHOICES = (

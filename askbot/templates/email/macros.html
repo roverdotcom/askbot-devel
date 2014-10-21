@@ -50,7 +50,7 @@
                 {% set tag_names = post.get_tag_names() %}
                 {% if tag_names %}
                 <p style="font-size:10px; font-style:italic;">
-                    {% trans %}Tags:{% endtrans %}
+                    {% trans tags=settings.WORDS_TAG_PLURAL %}{{ tags }}:{% endtrans %}
                     {{ tag_names|join(', ') }}.
                 </p>
                 {% endif %}

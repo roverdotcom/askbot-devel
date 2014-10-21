@@ -1494,7 +1494,9 @@ class EditUserForm(forms.Form):
 class TagFilterSelectionForm(forms.ModelForm):
     email_tag_filter_strategy = forms.ChoiceField(
         initial = const.EXCLUDE_IGNORED,
-        label = _('Choose email tag filter'),
+        label = _('Choose email {} filter'.format(
+            askbot_settings.WORDS_TAG_SINGULAR.lower()
+        )),
         widget = forms.RadioSelect
     )
     def __init__(self, *args, **kwargs):
@@ -1551,7 +1553,7 @@ class EditUserEmailFeedsForm(forms.Form):
             ('asked_by_me', EmailFeedSettingField(label=askbot_settings.WORDS_ASKED_BY_ME)),
             ('answered_by_me', EmailFeedSettingField(label=askbot_settings.WORDS_ANSWERED_BY_ME)),
             ('individually_selected', EmailFeedSettingField(label=_('Individually selected'))),
-            ('all_questions', EmailFeedSettingField(label=_('Entire forum (tag filtered)'))),
+            ('all_questions', EmailFeedSettingField(label=_('Entire forum ({} filtered)'.format(askbot_settings.WORDS_TAG_SINGULAR.lower())))),
             ('mentions_and_comments', EmailFeedSettingField(label=_('Comments and posts mentioning me')))
         ))
 

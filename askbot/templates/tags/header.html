@@ -4,9 +4,9 @@
             <h1 class="section-title">{{ page_title }}</h1>
     {% else %}
         {% if stag %}
-            <h1 class="section-title">{% trans %}Tags, matching "{{ tag_query }}"{% endtrans %}</h1>
+            <h1 class="section-title">{% trans tags=settings.WORDS_TAG_PLURAL %}{{ tags }}, matching "{{ tag_query }}"{% endtrans %}</h1>
         {% else %}
-            <h1 class="section-title">{% trans %}Tags{% endtrans %}</h1>
+            <h1 class="section-title">{% trans tags=settings.WORDS_TAG_PLURAL %}{{ tags }}{% endtrans %}</h1>
         {% endif %}
     {% endif %}
     <div class="tabBar tabBar-tags">
@@ -22,7 +22,7 @@
                 id="sort_used"
                 href="{% url tags %}?sort=used{% if tag_query %}&query={{ tag_query }}{% endif %}"
                 {% if tab_id == 'used' %}class="on"{% endif %}
-                title="{% trans %}sorted by frequency of tag use{% endtrans %}"
+                title="{% trans tag=settings.WORDS_TAG_SINGULAR|lower %}sorted by frequency of {{ tag }} use{% endtrans %}"
             ><span>{% trans %}by popularity{% endtrans %}</span></a>
             {% if settings.ENABLE_TAG_MODERATION 
                 and request.user.is_authenticated()
