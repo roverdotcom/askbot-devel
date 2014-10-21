@@ -601,11 +601,11 @@ urlpatterns = patterns('',
     service_url('^messages/', include('group_messaging.urls')),
     service_url('^settings/', include('livesettings.urls')),
 
-    service_url('^api/v1/info/$', views.api_v1.info, name='api_v1_info'),
-    service_url('^api/v1/users/$', views.api_v1.users, name='api_v1_users'),
-    service_url('^api/v1/users/(?P<user_id>\d+)/$', views.api_v1.user, name='api_v1_user'),
-    service_url('^api/v1/questions/$', views.api_v1.questions, name='api_v1_questions'),
-    service_url('^api/v1/questions/(?P<question_id>\d+)/$', views.api_v1.question, name='api_v1_question'),
+    # service_url('^api/v1/info/$', views.api_v1.info, name='api_v1_info'),
+    # service_url('^api/v1/users/$', views.api_v1.users, name='api_v1_users'),
+    # service_url('^api/v1/users/(?P<user_id>\d+)/$', views.api_v1.user, name='api_v1_user'),
+    # service_url('^api/v1/questions/$', views.api_v1.questions, name='api_v1_questions'),
+    # service_url('^api/v1/questions/(?P<question_id>\d+)/$', views.api_v1.question, name='api_v1_question'),
 )
 
 if 'askbot.deps.django_authopenid' in settings.INSTALLED_APPS:
