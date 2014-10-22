@@ -279,6 +279,8 @@ class AskbotUser(models.Model):
 
     class Meta(object):
         app_label = 'askbot'
+        verbose_name = 'Rover Community Q&A Profile'
+        verbose_name_plural = 'Rover Community Q&A Profiles'
 
     def __getattr__(self, name):
         """If the AskbotUser does not have some attribute, look for it on the

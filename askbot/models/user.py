@@ -225,6 +225,8 @@ class Activity(models.Model):
     class Meta:
         app_label = 'askbot'
         db_table = u'askbot_activity'
+        verbose_name = 'Activity'
+        verbose_name_plural = 'Activities'
 
     def add_recipients(self, recipients):
         """have to use a special method, because django does not allow
@@ -738,3 +740,5 @@ class BulkTagSubscription(models.Model):
     class Meta:
         app_label = 'askbot'
         ordering = ['-date_added']
+        verbose_name = 'Bulk Tag Subscription'
+        verbose_name_plural = 'Bulk Tag Subscriptions'

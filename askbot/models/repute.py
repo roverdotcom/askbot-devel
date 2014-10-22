@@ -199,6 +199,8 @@ class Repute(models.Model):
     class Meta:
         app_label = 'askbot'
         db_table = u'askbot_repute'
+        verbose_name = 'Reputation History'
+        verbose_name_plural = 'Reputation Histories'
 
     def get_explanation_snippet(self):
         """returns HTML snippet with a link to related question

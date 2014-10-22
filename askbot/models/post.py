@@ -2196,6 +2196,8 @@ class PostRevision(models.Model):
         unique_together = ('post', 'revision')
         ordering = ('-revision',)
         app_label = 'askbot'
+        verbose_name = 'Post Revision'
+        verbose_name_plural = 'Post Revisions'
 
 
     def place_on_moderation_queue(self):
