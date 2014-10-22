@@ -3,6 +3,7 @@ from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
+from askbot.models import Message
 
 
 class Migration(DataMigration):
@@ -12,6 +13,11 @@ class Migration(DataMigration):
         Message to AskbotUser.
         """
         db.drop_foreign_key('auth_message', 'user_id')
+
+        for message in Message.objects.all():
+            message.user = message.user.askbot_user
+            message.save()
+
         db.alter_column(
             'auth_message',
             'user_id',
@@ -22,6 +28,11 @@ class Migration(DataMigration):
         """Drop ForeignKey from Message to AskbotUser, add ForeignKey from
         Message to AuthUser."""
         db.drop_foreign_key('auth_message', 'user_id')
+
+        for message in Message.objects.all():
+            message.user = message.user.user
+            message.save()
+
         db.alter_column(
             'auth_message',
             'user_id',
