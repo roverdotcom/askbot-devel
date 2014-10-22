@@ -12,7 +12,7 @@ class Migration(DataMigration):
         """Drop ForeignKey from Message to AuthUser, add ForeignKey from
         Message to AskbotUser.
         """
-        db.drop_foreign_key('auth_message', 'user_id')
+        db.delete_foreign_key('auth_message', 'user_id')
 
         for message in Message.objects.all():
             message.user = message.user.askbot_user
@@ -27,7 +27,7 @@ class Migration(DataMigration):
     def backwards(self, orm):
         """Drop ForeignKey from Message to AskbotUser, add ForeignKey from
         Message to AuthUser."""
-        db.drop_foreign_key('auth_message', 'user_id')
+        db.delete_foreign_key('auth_message', 'user_id')
 
         for message in Message.objects.all():
             message.user = message.user.user
