@@ -8,6 +8,7 @@ Names of the classes must be like `SomeModelAdmin`, where `SomeModel` must
 exactly match name of the model used in the project
 """
 from django.contrib import admin
+from django.core.urlresolvers import reverse_lazy
 from askbot import models
 
 class AnonymousQuestionAdmin(admin.ModelAdmin):
@@ -52,25 +53,27 @@ class AskbotUserAdmin(admin.ModelAdmin):
     )
 
     readonly_fields = (
-        'user',
-        'person',
-        'last_seen',
+        'user_link',
+        'person_link',
     )
 
-    def user(self, obj):
+    def user_link(self, obj):
         """Fake admin field displaying a link to this profile's 'User' object.
         """
-        pass
+        return '<a href="{}">View User in admin.</a>'.format(
+            reverse_lazy('admin:auth_user_change', args=[obj.user.id])
+        )
 
-    def person(self, obj):
+    def person_link(self, obj):
         """Fake admin field displaying a link to this profile's 'Person'
         object.
         """
-        pass
+        return '<a href="{}">View Person in admin.</a>'.format(
+            reverse_lazy('admin:people_person_change', args=[obj.person.id])
+        )
 
-    def last_seen(self, obj):
-        """Fake admin field displaying 'last_seen' date."""
-        pass
+    user_link.allow_tags = True
+    person_link.allow_tags = True
 
 admin.site.register(models.Post)
 admin.site.register(models.Tag, TagAdmin)
