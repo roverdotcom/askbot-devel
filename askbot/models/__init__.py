@@ -260,12 +260,12 @@ User.add_to_class(
 
 User.add_to_class(
     'twitter_access_token',
-    models.CharField(max_length=256, default='')
+    models.CharField(max_length=256, default='', blank=True)
 )
 
 User.add_to_class(
     'twitter_handle',
-    models.CharField(max_length=32, default='')
+    models.CharField(max_length=32, default='', blank=True)
 )
 
 User.add_to_class(
