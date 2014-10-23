@@ -50,6 +50,7 @@ class AskbotUserAdmin(admin.ModelAdmin):
         'silver',
         'gold',
         'is_fake',
+        'email_key',
     )
 
     readonly_fields = (
