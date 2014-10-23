@@ -3,8 +3,6 @@ from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
-from askbot.models import Message
-from askbot.models import AskbotUser
 
 
 class Migration(DataMigration):
@@ -15,8 +13,8 @@ class Migration(DataMigration):
         """
         db.delete_foreign_key('auth_message', 'user_id')
 
-        for message in Message.objects.all():
-            message.user = AskbotUser.objects.get_or_create(
+        for message in orm['auth.message'].objects.all():
+            message.user = orm['askbot.AskbotUser'].objects.get_or_create(
                 user_id=message.user_id
             )[0]
             message.save()
@@ -33,8 +31,8 @@ class Migration(DataMigration):
         """
         db.delete_foreign_key('auth_message', 'user_id')
 
-        for message in Message.objects.all():
-            message.user_id = AskbotUser.objects.get(
+        for message in orm['auth.message'].objects.all():
+            message.user_id = orm['askbot.AskbotUser'].objects.get(
                 id=message.user_id
             ).user_id
             message.save()
