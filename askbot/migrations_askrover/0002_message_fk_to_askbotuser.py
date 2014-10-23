@@ -3,6 +3,7 @@ from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
+from django.conf import settings
 
 
 class Migration(DataMigration):
@@ -11,6 +12,11 @@ class Migration(DataMigration):
         """Drop ForeignKey from Message to AuthUser, add ForeignKey from
         Message to AskbotUser.
         """
+        # Abort the migration if we're running sqlite (it doesn't support
+        # the needed features).
+        if 'sqlite' in settings.DATABASES['default']['ENGINE']:
+            return
+
         db.delete_foreign_key('auth_message', 'user_id')
 
         for message in orm['auth.message'].objects.all():
@@ -29,6 +35,11 @@ class Migration(DataMigration):
         """Drop ForeignKey from Message to AskbotUser, add ForeignKey from
         Message to AuthUser.
         """
+        # Abort the migration if we're running sqlite (it doesn't support
+        # the needed features).
+        if 'sqlite' in settings.DATABASES['default']['ENGINE']:
+            return
+
         db.delete_foreign_key('auth_message', 'user_id')
 
         for message in orm['auth.message'].objects.all():
