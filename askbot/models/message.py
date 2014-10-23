@@ -1,6 +1,6 @@
 '''Copied from Django 1.3.1 source code, it will use this model to'''
 from django.db import models
-from django.contrib.auth.models import User
+from askbot.models import AskbotUser
 from django.utils.translation import ugettext_lazy
 
 class Message(models.Model):
@@ -12,7 +12,7 @@ class Message(models.Model):
     actions. For example, "The poll Foo was created successfully." is a
     message.
     """
-    user = models.ForeignKey(User, related_name='_message_set')
+    user = models.ForeignKey(AskbotUser, related_name='message_set')
     message = models.TextField(ugettext_lazy('message'))
 
     class Meta:

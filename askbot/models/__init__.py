@@ -147,8 +147,7 @@ class RelatedObjectSimulator(object):
     somehow django does not creates it automatically in django1.4.1'''
 
     def __init__(self, user, model_class):
-        # self.user = user
-        self.user = user.user
+        self.user = user
         self.model_class = model_class
 
     def all(self):
@@ -179,7 +178,7 @@ def user_get_and_delete_messages(self):
     return messages
 
 if DJANGO_VERSION > (1, 3):
-    User.add_to_class('message_set', user_message_set)
+    # User.add_to_class('message_set', user_message_set)
     User.add_to_class('get_and_delete_messages', user_get_and_delete_messages)
 
 User.add_to_class(
