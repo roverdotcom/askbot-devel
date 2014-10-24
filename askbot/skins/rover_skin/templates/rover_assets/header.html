@@ -1,5 +1,8 @@
 {% load staticfiles %}
-<div class="new-design js-new-design">
+<div class="new-design js-new-design" itemscope itemtype="http://schema.org/Organization">
+    {# Invisible markup for Organization itemtype #}
+    <meta content="Rover.com" itemprop="name" />
+    <link href="http://en.wikipedia.org/wiki/Rover.com" itemprop="sameas">
     <header class="navbar navbar-default header navbar-fixed-top" role="navigation">
         <div class="container navbar-container">
             <div class="navbar-header">
@@ -17,29 +20,31 @@
             </div>
 
             {# Collect the nav links, forms, and other content for toggling #}
-            <ul class="nav navbar-nav">
+            <div class="collapse navbar-collapse" id="collapsible-nav">
+                <ul class="nav navbar-nav">
 
-                <li><a href="{% url 'search' %}?ref=header"><span class="fa fa-search link-icon"></span>Search Sitters</a></li>
+                    <li><a href="{% url 'search' %}?ref=header"><span class="fa fa-search link-icon"></span>Search Sitters</a></li>
 
-                <li class="hide js-become-a-sitter hidden-xs js-anonymous-user"><a href="{% url 'become-a-sitter' %}?ref=header"><span class="fa fa-heart link-icon"></span>Become a Sitter</a></li>
+                    <li class="hide js-become-a-sitter hidden-xs js-anonymous-user"><a href="{% url 'become-a-sitter' %}?ref=header"><span class="fa fa-heart link-icon"></span>Become a Sitter</a></li>
 
-                <li class="hide js-list-more-services hidden-xs"><a href="{% url 'list-service' %}?ref=header"><span class="fa fa-heart link-icon"></span>List More Services</a></li>
+                    <li class="hide js-list-more-services hidden-xs"><a href="{% url 'list-service' %}?ref=header"><span class="fa fa-heart link-icon"></span>List More Services</a></li>
 
-                <li class="js-authenticated-user authenticated-user hide visible-lg visible-md">
-                    <a href="#"><span class="fa fa-comment-o link-icon"></span><span id="extole-header">Give $20, Get $20</span></a>
-                </li>
+                    <li class="js-authenticated-user authenticated-user hide visible-lg visible-md">
+                        <a href="#"><span class="fa fa-comment-o link-icon"></span><span id="extole-header">Give $20, Get $20</span></a>
+                    </li>
 
-                <script type="extole/widget">
-                    {
-                        "zone": "header_feb",
-                        "reference_element": "#extole-header"
-                    }
-                </script>
-            </ul>
+                    <script type="extole/widget">
+                        {
+                            "zone": "header_feb",
+                            "reference_element": "#extole-header"
+                        }
+                    </script>
+                </ul>
 
-            <ul class="nav navbar-nav navbar-right js-anonymous-header">
-                <li><a href="https://support.rover.com/hc/en-us?ref=header"><span class="fa fa-question-circle link-icon"></span>Help</a></li>
-            </ul>
+                <ul class="nav navbar-nav navbar-right js-anonymous-header">
+                    <li><a href="https://support.rover.com/hc/en-us?ref=header"><span class="fa fa-question-circle link-icon"></span>Help</a></li>
+                </ul>
+            </div>
         </div>
     </header>
 </div>
