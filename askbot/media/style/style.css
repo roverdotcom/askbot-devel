@@ -1268,7 +1268,7 @@ ul#searchTags {
 .short-summary .counts .answers div,
 .short-summary .counts .favorites div {
   margin-top: 3px;
-  font-size: 14px;
+  font-size: 80%;
   line-height: 14px;
   color: #646464;
 }
