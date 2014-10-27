@@ -60,3 +60,7 @@ h3 {
 body {
   padding-top: 50px;
 }
+
+.input-tool-tip {
+  white-space: nowrap;
+}
