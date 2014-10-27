@@ -1,5 +1,7 @@
-.new-design .header .navbar-container {
-    width: 960px;
+@media (min-width: 960px) {
+  .new-design .header .navbar-container {
+      width: 960px;
+  }
 }
 
 .new-design .navbar-nav.navbar-right:last-child {
@@ -63,4 +65,8 @@ body {
 
 .input-tool-tip {
   white-space: nowrap;
+}
+
+.navbar .nav li a {
+  font-weight: normal;
 }
