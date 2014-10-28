@@ -9,13 +9,7 @@
 }
 
 .disclaimer {
-  position: absolute;
-  bottom: 0;
-  width: 730px;
-}
-
-.disclaimer-wrapper {
-  padding-bottom: 50px;
+  text-align: center;
 }
 
 .book-button {
