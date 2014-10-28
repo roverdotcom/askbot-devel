@@ -228,6 +228,7 @@ body.user-messages {
   text-align: center;
   background-color: #f5dd69;
   font-family: 'Open Sans', Arial, sans-serif;
+  margin-top: 50px
 }
 .notify .notification {
   color: #424242;
