@@ -4523,6 +4523,12 @@ td.setting-input textarea {
     width: 100%;
     padding-right: 6px;
   }
+  #ContentFull {
+    width: 100%;
+  }
+  .col3.user-about {
+    display: none;
+  }
   .edit-question-page #ContentLeft,
   .edit-answer-page #ContentLeft,
   .openid-signin #ContentLeft,
