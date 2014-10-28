@@ -102,7 +102,7 @@ settings.register(
     livesettings.BooleanValue(
         USER_SETTINGS,
         'ALLOW_ADD_REMOVE_LOGIN_METHODS',
-        default = True,
+        default = False,
         description = _('Allow adding and removing login methods')
     )
 )
