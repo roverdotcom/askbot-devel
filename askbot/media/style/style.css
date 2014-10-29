@@ -340,7 +340,6 @@ body.user-messages {
 #userToolsNav {
   /* Navigation bar containing login link or user information, check widgets/user_navigation.html*/
 
-  height: 20px;
   padding-bottom: 5px;
   padding-top: 5px;
   white-space: nowrap;
