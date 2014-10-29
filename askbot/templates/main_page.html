@@ -11,7 +11,10 @@
 {% block forejs %}
     {% include "main_page/custom_head_javascript.html" ignore missing %}
 {% endblock %}
-{% block title %}{% spaceless %}{% trans %}Questions{% endtrans %}{% endspaceless %}{% endblock %}
+{% block title %}Dog Questions & Answers{% endblock %}
+{% block meta_description %}
+    <meta name="description" content="The Rover Q&A Community is a community of dog lovers where you can ask and answer dog care and puppy care questions with other dog parents just like you.">
+{% endblock %}
 {% block content %}
     <h1 class="rover-forum-title">Rover Q&A Community - A Forum for Dog Lovers</h1>
     {% include "main_page/tab_bar.html" %}
