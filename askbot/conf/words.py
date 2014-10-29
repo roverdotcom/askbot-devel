@@ -223,7 +223,7 @@ settings.register(
     values.LongStringValue(
         WORDS,
         'WORDS_QUESTIONS_COUNTABLE_FORMS',
-        default='question\nquestions',
+        default='Question About Dogs\nQuestions About Dogs',
         description=_('Countable plural forms for "queston"'),
         help_text=_('Enter one form per line, pay attention')
     )
