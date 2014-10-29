@@ -39,3 +39,15 @@
 .rover-benefits-list li {
   margin-bottom: 7px;
 }
+
+.landing-message-header {
+  padding: 0;
+}
+
+.landing-message {
+  font-size: 110%;
+}
+
+.rover-forum-title {
+  padding: 6px 0 14px 0;
+}
