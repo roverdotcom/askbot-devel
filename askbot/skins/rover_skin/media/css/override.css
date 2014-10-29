@@ -70,3 +70,9 @@ body {
   border: 1px solid #ddd !important;
   height: auto;
 }
+
+@media (max-width: 800px) {
+  .mobile-hidden-nav {
+    display: none;
+  }
+}
