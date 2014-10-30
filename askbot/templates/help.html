@@ -1,5 +1,9 @@
 {% extends "two_column_body.html" %}
 {% block title %}{% trans %}Getting Started{% endtrans %}{% endblock %}
+{% block meta_description %}
+    {{ super() }}
+    <meta name="robots" content="noindex">
+{% endblock %}
 {% block content %}
 <h1 class='section-title'>{% trans %}Getting Started{% endtrans %}</h1>
 <h2>Community Guidelines</h2>
