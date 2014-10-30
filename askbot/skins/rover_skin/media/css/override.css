@@ -76,3 +76,12 @@ body {
     display: none;
   }
 }
+
+.question-page .navbar-collapse:not(.collapse) {
+  height: auto !important;
+}
+
+#searchForm {
+  margin-bottom: 400px;
+}
+
