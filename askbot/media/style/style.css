@@ -228,6 +228,7 @@ body.user-messages {
   text-align: center;
   background-color: #f5dd69;
   font-family: 'Open Sans', Arial, sans-serif;
+  margin-top: 50px
 }
 .notify .notification {
   color: #424242;
@@ -339,7 +340,6 @@ body.user-messages {
 #userToolsNav {
   /* Navigation bar containing login link or user information, check widgets/user_navigation.html*/
 
-  height: 20px;
   padding-bottom: 5px;
   padding-top: 5px;
   white-space: nowrap;
@@ -1268,7 +1268,7 @@ ul#searchTags {
 .short-summary .counts .answers div,
 .short-summary .counts .favorites div {
   margin-top: 3px;
-  font-size: 14px;
+  font-size: 80%;
   line-height: 14px;
   color: #646464;
 }
@@ -4523,6 +4523,12 @@ td.setting-input textarea {
     width: 100%;
     padding-right: 6px;
   }
+  #ContentFull {
+    width: 100%;
+  }
+  .col3.user-about {
+    display: none;
+  }
   .edit-question-page #ContentLeft,
   .edit-answer-page #ContentLeft,
   .openid-signin #ContentLeft,
@@ -4618,7 +4624,7 @@ td.setting-input textarea {
   .question-page .post-update-info .badge-count {
     display: none;
   }
-  .user-profile-page td {
+  .user-details td {
     display: block;
   }
   .footer-links,

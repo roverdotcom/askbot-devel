@@ -2746,7 +2746,6 @@ input[type="submit"].btn.btn-mini {
   line-height: 19px;
   color: #999999;
   text-decoration: none;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 .navbar .nav > li > a:hover {
   background-color: transparent;
@@ -3981,10 +3980,6 @@ a.thumbnail:hover {
   }
 }
 @media (max-width: 767px) {
-  .navbar-fixed-top {
-    margin-left: -20px;
-    margin-right: -20px;
-  }
   .container {
     width: auto;
   }

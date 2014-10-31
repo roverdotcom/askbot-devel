@@ -4,7 +4,7 @@
     {{ macros.inbox_link(request.user) }}
     {{ macros.moderation_items_link(request.user, moderation_items) }}
     {%-
-        if settings.KARMA_MODE != 'hidden' or settings.BADGES_MODE != 'hidden' 
+        if settings.KARMA_MODE != 'hidden' or settings.BADGES_MODE != 'hidden'
     -%}
         ({{ macros.user_long_score_and_badge_summary(
                                         user,
@@ -24,6 +24,6 @@
     <a class="settings" href="{% url site_settings %}">{% trans %}Settings{% endtrans %}</a>
     <a class="widgets" href="{% url widgets %}">{% trans %}Widgets{% endtrans %}</a>
 {% endif %}
-<a class="help" href="{% url "help" %}" title="{% trans %}help{% endtrans %}">{% trans %}Getting Started{% endtrans %}</a>
-<a class="faq" href="{% url "faq" %}" title="{% trans %}faq{% endtrans %}">{% trans %}FAQ{% endtrans %}</a>
-<a class="faq" href="{% url "feedback" %}" title="{% trans %}faq{% endtrans %}">{% trans %}Leave Feedback{% endtrans %}</a>
+<a class="help mobile-hidden-nav" href="{% url "help" %}" title="{% trans %}help{% endtrans %}">{% trans %}Getting Started{% endtrans %}</a>
+<a class="faq mobile-hidden-nav" href="{% url "faq" %}" title="{% trans %}faq{% endtrans %}">{% trans %}FAQ{% endtrans %}</a>
+<a class="faq mobile-hidden-nav" href="{% url "feedback" %}" title="{% trans %}faq{% endtrans %}">{% trans %}Leave Feedback{% endtrans %}</a>

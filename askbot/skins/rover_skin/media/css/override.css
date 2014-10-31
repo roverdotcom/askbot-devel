@@ -1,5 +1,7 @@
-.new-design .header .navbar-container {
-    width: 960px;
+@media (min-width: 960px) {
+  .new-design .header .navbar-container {
+      width: 960px;
+  }
 }
 
 .new-design .navbar-nav.navbar-right:last-child {
@@ -7,13 +9,7 @@
 }
 
 .disclaimer {
-  position: absolute;
-  bottom: 0;
-  width: 730px;
-}
-
-.disclaimer-wrapper {
-  padding-bottom: 50px;
+  text-align: center;
 }
 
 .book-button {
@@ -56,3 +52,36 @@ h3 {
   font-size: 14px;
   padding-left: 0px;
 }
+
+body {
+  padding-top: 50px;
+}
+
+.input-tool-tip {
+  white-space: nowrap;
+}
+
+.navbar .nav li a {
+  font-weight: normal;
+}
+
+.navbar-toggle {
+  box-shadow: none;
+  border: 1px solid #ddd !important;
+  height: auto;
+}
+
+@media (max-width: 800px) {
+  .mobile-hidden-nav {
+    display: none;
+  }
+}
+
+.question-page .navbar-collapse:not(.collapse) {
+  height: auto !important;
+}
+
+#searchForm {
+  margin-bottom: 400px;
+}
+
