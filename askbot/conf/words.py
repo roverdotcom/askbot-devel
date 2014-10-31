@@ -223,7 +223,7 @@ settings.register(
     values.LongStringValue(
         WORDS,
         'WORDS_QUESTIONS_COUNTABLE_FORMS',
-        default='question\nquestions',
+        default='Question About Dogs\nQuestions About Dogs',
         description=_('Countable plural forms for "queston"'),
         help_text=_('Enter one form per line, pay attention')
     )
@@ -475,7 +475,7 @@ settings.register(
     values.StringValue(
         WORDS,
         'WORDS_PLEASE_ASK_YOUR_QUESTION_HERE',
-        default=_('Please ask your question here'),
+        default=_('Ask Dog Questions'),
         description=_('Please ask your question here'),
     )
 )

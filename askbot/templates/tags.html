@@ -1,6 +1,9 @@
 {% extends "two_column_body.html" %}
 <!-- tags.html -->
-{% block title %}{% spaceless %}{% trans tags=settings.WORDS_TAG_PLURAL %}{{ tags }}{% endtrans %}{% endspaceless %}{% endblock %}
+{% block title %}{% spaceless %}{% trans tags=settings.WORDS_TAG_PLURAL %}Dog Question {{ tags }}{% endtrans %}{% endspaceless %}{% endblock %}
+{% block meta_description %}
+    <meta name="description" content="Chat about dog care and puppy care with other dog lovers at Rover.com's dog forum. Find the answers to your dog questions here!">
+{% endblock %}
 {% block content %}
 {% include "tags/content.html" %}
 {% endblock %}

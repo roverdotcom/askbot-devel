@@ -6,6 +6,10 @@
 {% import "macros.html" as macros %}
 <!-- users.html -->
 {% block title %}{% spaceless %}{% trans %}Users{% endtrans %}{% endspaceless %}{% endblock %}
+{% block meta_description %}
+    {{ super() }}
+    <meta name="robots" content="noindex">
+{% endblock %}
 {% block forestyle %}
     <link rel="stylesheet" type="text/css" href="{{"/js/wmd/wmd.css"|media}}" />
 {% endblock %}
