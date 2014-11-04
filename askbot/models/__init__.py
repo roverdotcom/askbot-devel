@@ -2432,7 +2432,7 @@ def user_get_primary_language(self):
 
 def get_profile_link(self):
     profile_link = u'<a href="%s">%s</a>' \
-        % (self.get_profile_url(), escape(self.username))
+        % (self.get_profile_url(), escape(self.get_full_name()))
 
     return mark_safe(profile_link)
 
@@ -2508,7 +2508,7 @@ def user_get_karma_summary(self):
     """returns human readable sentence about
     status of user's karma"""
     return _("%(username)s karma is %(reputation)s") % \
-            {'username': self.username, 'reputation': self.reputation}
+            {'username': self.get_full_name(), 'reputation': self.reputation}
 
 def user_get_badge_summary(self):
     """returns human readable sentence about
@@ -2547,7 +2547,7 @@ def user_get_badge_summary(self):
         badge_str = ', '.join(badge_bits)
         badge_str = _('%(item1)s and %(item2)s') % \
                     {'item1': badge_str, 'item2': last_bit}
-    return _("%(user)s has %(badges)s") % {'user': self.username, 'badges':badge_str}
+    return _("%(user)s has %(badges)s") % {'user': self.get_full_name(), 'badges':badge_str}
 
 #series of methods for user vote-type commands
 #same call signature func(self, post, timestamp=None, cancel=None)
@@ -3232,13 +3232,13 @@ def format_instant_notification_email(
         user_link_fmt = '<a href="%(profile_url)s">%(username)s</a> (<a href="mailto:%(email)s">%(email)s</a>)'
         user_link = user_link_fmt % {
             'profile_url': user_url,
-            'username': from_user.username,
+            'username': from_user.get_full_name(),
             'email': from_user.email
         }
     elif post.is_anonymous:
         user_link = from_user.get_name_of_anonymous_user()
     else:
-        user_link = '<a href="%s">%s</a>' % (user_url, from_user.username)
+        user_link = '<a href="%s">%s</a>' % (user_url, from_user.get_full_name())
 
     user_action = user_action % {
         'user': user_link,
@@ -3274,8 +3274,8 @@ def format_instant_notification_email(
     update_data = {
         'admin_email': askbot_settings.ADMIN_EMAIL,
         'recipient_user': to_user,
-        'update_author_name': from_user.username,
-        'receiving_user_name': to_user.username,
+        'update_author_name': from_user.get_full_name(),
+        'receiving_user_name': to_user.get_full_name(),
         'receiving_user_karma': to_user.reputation,
         'reply_by_email_karma_threshold': askbot_settings.MIN_REP_TO_POST_BY_EMAIL,
         'can_reply': can_reply,
