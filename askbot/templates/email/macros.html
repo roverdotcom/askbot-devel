@@ -90,6 +90,7 @@
                 </p>
             {% endif %}
             {{ post.html }}
+            <p>(See it <a href="{{ post.get_absolute_url() }}">here</a> on {{ settings.APP_TITLE }}.)</p>
         {{ end_quote(quote_level) }}
     {% endspaceless %}
 {% endmacro %}
