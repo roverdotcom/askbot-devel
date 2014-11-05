@@ -17,7 +17,7 @@
 <h2>Who moderates this community?</h2>
 <p>Short answer: you! This website is moderated by the users and overseen by Rover.com. Voting allows all our users to prove their expertise and earn moderation rights.</p>
 <h2>How does voting work?</h2>
-<p>When a question or answer is upvoted, the user who posted it will gain points, which are called "karma points." These points serve as a rough measure of the community trust in that user. Various moderation tasks are gradually assigned to users based on those points.</p>
+<p>When a question or answer is upvoted, the user who posted it will gain points, which are called {{ settings.WORDS_KARMA }}. These points serve as a rough measure of the community trust in that user. Various moderation tasks are gradually assigned to users based on those points.</p>
 <p>{% trans MAX_REP_GAIN_PER_USER_PER_DAY=settings.MAX_REP_GAIN_PER_USER_PER_DAY, REP_GAIN_FOR_RECEIVING_UPVOTE=settings.REP_GAIN_FOR_RECEIVING_UPVOTE, REP_LOSS_FOR_RECEIVING_DOWNVOTE=settings.REP_LOSS_FOR_RECEIVING_DOWNVOTE|absolute_value %}Looking for more detail? Here's an example. Say you ask an interesting question or leave a helpful answer — your input will be upvoted. On the other hand, if the answer is misleading, it will be downvoted. Each vote in favor will generate <strong>{{REP_GAIN_FOR_RECEIVING_UPVOTE}}</strong> points, and each vote against will subtract <strong>{{REP_LOSS_FOR_RECEIVING_DOWNVOTE}}</strong> points. There is a limit of <strong>{{MAX_REP_GAIN_PER_USER_PER_DAY}}</strong> points that can be accumulated for a question or answer per day. The table below explains reputation point requirements for each type of moderation task.{% endtrans %}
 </p>
 

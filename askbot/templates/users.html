@@ -42,7 +42,7 @@
                 href="{{ request.path|escape }}?sort=reputation"
                 {% if tab_id == 'reputation' %}class="on"{% endif %}
                 title="{% trans %}see people with the highest reputation{% endtrans %}"
-            ><span>{% trans %}karma{% endtrans %}</span></a>
+            ><span>{% trans karma=settings.WORDS_KARMA %}{{ karma }}{% endtrans %}</span></a>
             {% endif %}
             <a 
                 id="sort_newest"
