@@ -803,8 +803,8 @@ def user_assert_can_post_text(self, text):
         min_rep = askbot_settings.MIN_REP_TO_SUGGEST_LINK
         if self.is_authenticated() and self.reputation < min_rep:
             message = _(
-                'Could not post, because your {} is insufficient to publish'
-                ' links'.format(askbot_settings.WORDS_KARMA)
+                'Could not post: you do not have enough {} to publish'
+                ' links'.format(askbot_settings.WORDS_KARMA_PLURAL)
             )
             raise django_exceptions.PermissionDenied(message)
 
@@ -2508,11 +2508,17 @@ def user_get_groups_membership_info(self, groups):
 def user_get_karma_summary(self):
     """returns human readable sentence about
     status of user's karma"""
-    return _("%(username)s %(karma)s is %(reputation)s") % {
-        'username': self.get_full_name(),
-        'reputation': self.reputation,
-        'karma': askbot_settings.WORDS_KARMA
-    }
+    return _(
+        "{username} has {reputation} {karma}".format(
+            username=self.get_full_name(),
+            reputation=self.reputation,
+            karma=ungettext(
+                askbot_settings.WORDS_KARMA_SINGULAR,
+                askbot_settings.WORDS_KARMA_PLURAL,
+                self.reputation
+            )
+        )
+    )
 
 def user_get_badge_summary(self):
     """returns human readable sentence about
@@ -2698,12 +2704,16 @@ def user_fix_html_links(self, text):
         result = replace_links_with_text(text)
         if result != text:
             message = ungettext(
-                'At least {} {} point is required to post links',
-                'At least {} {} points are required to post links',
+                'At least {} {} is required to post links',
+                'At least {} {} are required to post links',
                 askbot_settings.MIN_REP_TO_INSERT_LINK
             ).format(
                 askbot_settings.MIN_REP_TO_INSERT_LINK,
-                askbot_settings.WORDS_KARMA
+                ungettext(
+                    askbot_settings.WORDS_KARMA_SINGULAR,
+                    askbot_settings.WORDS_KARMA_PLURAL,
+                    askbot_settings.MIN_REP_TO_INSERT_LINK
+                )
             )
             self.message_set.create(message=message)
         return result

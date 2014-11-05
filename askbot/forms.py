@@ -493,9 +493,9 @@ class WikiField(forms.BooleanField):
         self.required = False
         self.initial = False
         self.label = _(
-            'community wiki ({} is not awarded & '
+            'community wiki ({} are not awarded & '
             'many others can edit wiki post)'.format(
-                askbot_settings.WORDS_KARMA
+                askbot_settings.WORDS_KARMA_PLURAL
             )
         )
 
