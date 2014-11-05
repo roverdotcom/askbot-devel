@@ -938,7 +938,7 @@ settings.register(
     values.StringValue(
         WORDS,
         'WORDS_KARMA',
-        default=_('Karma'),
+        default=_('Treats'),
         description=_('Display name for karma points.'),
     )
 )
