@@ -933,3 +933,12 @@ settings.register(
         description=_('Answered'),
     )
 )
+
+settings.register(
+    values.StringValue(
+        WORDS,
+        'WORDS_KARMA',
+        default=_('Karma'),
+        description=_('Display name for karma points.'),
+    )
+)
