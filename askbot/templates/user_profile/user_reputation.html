@@ -2,14 +2,14 @@
 {% from "macros.html" import timeago %}
 <!-- user_reputation.html -->
 {% block profilesection %}
-    {% trans %}{{ settings.WORDS_KARMA }}{% endtrans %}
+    {% trans karma=settings.WORDS_KARMA %}{{ karma }}{% endtrans %}
 {% endblock %}
 {% block usercontent %}
         <div class="karma-summary">
             <div id="diagram" class="karma-diagram"></div>
             <div class="karma-details">
                 {% if view_user.id == user.id %}
-                <h2>{% trans %}Your {{ settings.WORDS_KARMA }} change log.{% endtrans %}</h2>
+                <h2>{% trans karma=settings.WORDS_KARMA %}Your {{ karma }} change log.{% endtrans %}</h2>
                 {% else %}
                 <h2>{% trans user_name=view_user.get_full_name()|escape, karma=settings.WORDS_KARMA %}{{user_name}}'s {{ karma }} change log{% endtrans %}</h2>
                 {% endif %}
