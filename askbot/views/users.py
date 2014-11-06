@@ -919,7 +919,10 @@ def user_reputation(request, user, context):
         'active_tab':'users',
         'page_class': 'user-profile-page',
         'tab_name': 'reputation',
-        'page_title': USER_PROFILE_TITLE % (user.get_full_name(), 'Karma'),
+        'page_title': USER_PROFILE_TITLE % (
+            user.get_full_name(),
+            askbot_settings.WORDS_KARMA_PLURAL
+        ),
         'reputation': reputes,
         'reps': reps
     }

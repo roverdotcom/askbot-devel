@@ -87,8 +87,8 @@ poor design of the data or methods on data objects #}
             alt="{% trans %}this post is marked as community wiki{% endtrans %}"
             style="float:left"
         />
-        <p class="tip">{% trans %}This post is a wiki.
-        Anyone with karma &gt;{{wiki_min_rep}} is welcome to improve it.{% endtrans %}</p>
+        <p class="tip">{% trans karma=settings.WORDS_KARMA_PLURAL %}This post is a wiki.
+        Anyone with &gt;{{wiki_min_rep}} {{ karma }} is welcome to improve it.{% endtrans %}</p>
     {% else %}
         <p style="line-height:12px;">
             {# todo: access to class names needs to be removed here #}

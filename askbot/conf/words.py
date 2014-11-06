@@ -933,3 +933,21 @@ settings.register(
         description=_('Answered'),
     )
 )
+
+settings.register(
+    values.StringValue(
+        WORDS,
+        'WORDS_KARMA_SINGULAR',
+        default=_('Treat'),
+        description=_('Singular display name for karma points.'),
+    )
+)
+
+settings.register(
+    values.StringValue(
+        WORDS,
+        'WORDS_KARMA_PLURAL',
+        default=_('Treats'),
+        description=_('Plural display name for karma points.'),
+    )
+)

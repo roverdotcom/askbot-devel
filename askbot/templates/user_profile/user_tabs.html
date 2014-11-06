@@ -17,7 +17,7 @@
         {% if can_show_karma %}
         <a id="reputation" {% if tab_name=="reputation" %}class="on"{% endif %} 
             href="{% url user_profile view_user.id %}?sort=reputation"
-        ><span>{% trans %}karma{% endtrans %}</span></a>
+        ><span>{% trans karma=settings.WORDS_KARMA_PLURAL|lower %}{{ karma }}{% endtrans %}</span></a>
         {% endif %}
         <a id="favorites" {% if tab_name=="favorites" %}class="on"{% endif %} 
             href="{% url user_profile view_user.id %}?sort=favorites"
