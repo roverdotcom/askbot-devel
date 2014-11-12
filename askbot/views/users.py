@@ -51,7 +51,7 @@ from askbot.search.state_manager import SearchState
 from askbot.utils import url_utils
 from askbot.utils.loading import load_module
 
-USER_PROFILE_TITLE = "%s's Ask Rover Profile - %s"
+USER_PROFILE_TITLE = "%s's Rover Q&A Community Profile - %s"
 
 def owner_or_moderator_required(f):
     @functools.wraps(f)
