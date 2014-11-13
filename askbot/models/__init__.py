@@ -3197,6 +3197,9 @@ def format_instant_notification_email(
         assert(isinstance(post, Post) and post.is_question())
     elif update_type == 'post_shared':
         pass
+    elif update_type == 'content_upvoted':
+        # Following this convention makes me feel impure.
+        assert(isinstance(post, Post))
     else:
         raise ValueError('unexpected update_type %s' % update_type)
 
@@ -3227,16 +3230,22 @@ def format_instant_notification_email(
     elif post.is_comment():
         if update_type.endswith('update'):
             user_action = _('%(user)s edited a %(post_link)s.')
+        elif update_type == 'content_upvoted':
+            user_action = _('%(user)s voted up a %(post_link)s.')
         else:
             user_action = _('%(user)s posted a %(post_link)s')
     elif post.is_answer():
         if update_type.endswith('update'):
             user_action = _('%(user)s edited an %(post_link)s.')
+        elif update_type == 'content_upvoted':
+            user_action = _('%(user)s voted up an %(post_link)s.')
         else:
             user_action = _('%(user)s posted an %(post_link)s.')
     elif post.is_question():
         if update_type.endswith('update'):
             user_action = _('%(user)s edited a %(post_link)s.')
+        elif update_type == 'content_upvoted':
+            user_action = _('%(user)s voted up a %(post_link)s.')
         else:
             user_action = _('%(user)s posted a %(post_link)s.')
     else:
