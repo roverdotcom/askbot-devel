@@ -192,6 +192,18 @@ def process_vote(user = None, vote_direction = None, post = None):
 
         if vote_direction == 'up':
             vote = user.upvote(post = post)
+
+            # Start the notification-sending process about halfway through
+            # its convoluted half-transitioned-half-legacy code path.
+            post.issue_update_notifications(
+                updated_by=user,
+                notify_sets=post.get_notify_sets(
+                    mentioned_users=(),
+                    exclude_list=(user,)
+                ),
+                activity_type=const.TYPE_ACTIVITY_VOTE_UP,
+                timestamp=timezone.now(),
+            )
         else:
             vote = user.downvote(post = post)
 
