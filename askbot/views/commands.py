@@ -308,6 +308,43 @@ def vote(request):
                 answer.thread.update_summary_html() # regenerate question/thread summary html
                 ####################################################################
 
+                # Check to see if there's an activity already recorded for
+                # accepting this answer, so we don't spam notifications
+                # (and create redundant activities) if a user is for some
+                # reason changing their accepted answer over and over.
+                if not Activity.objects.filter(
+                    content_type=ContentType.objects.get_for_model(
+                        answer
+                    ),
+                    object_id=answer_id,
+                    activity_type=const.TYPE_ACTIVITY_ACCEPT_ANSWER,
+                ).exists():
+                    # Allow existing machinery to determine whether the
+                    # author should receive a notification.
+                    pre_notify_sets = answer.get_notify_sets(
+                        mentioned_users=(),
+                        exclude_list=(request.user,)
+                    )
+                    # Only notify the answer author that their answer was
+                    # accepted.
+                    notify_sets = {
+                        'for_mentions': set(),
+                        'for_inbox': (
+                            set([answer.author]) if answer.author in
+                            pre_notify_sets['for_inbox'] else set()
+                        ),
+                        'for_email': (
+                            set([answer.author]) if answer.author in
+                            pre_notify_sets['for_email'] else set()
+                        ),
+                    }
+                    answer.issue_update_notifications(
+                        updated_by=request.user,
+                        notify_sets=notify_sets,
+                        activity_type=const.TYPE_ACTIVITY_ACCEPT_ANSWER,
+                        timestamp=timezone.now(),
+                    )
+
             else:
                 raise exceptions.PermissionDenied(
                     _('Sorry, but anonymous users cannot %(perform_action)s') % {
