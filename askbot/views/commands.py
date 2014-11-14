@@ -30,6 +30,7 @@ from django.utils.html import escape
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from django.utils.translation import string_concat
+from django.contrib.contenttypes.models import ContentType
 from askbot.utils.slug import slugify
 from askbot import models
 from askbot import forms
@@ -45,6 +46,7 @@ from django.template import RequestContext
 from askbot.skins.loaders import render_into_skin_as_string
 from askbot.skins.loaders import render_text_into_skin
 from askbot.models.tag import get_tags_by_names
+from askbot.models import Activity
 
 
 @csrf.csrf_exempt
@@ -193,17 +195,29 @@ def process_vote(user = None, vote_direction = None, post = None):
         if vote_direction == 'up':
             vote = user.upvote(post = post)
 
-            # Start the notification-sending process about halfway through
-            # its convoluted half-transitioned-half-legacy code path.
-            post.issue_update_notifications(
-                updated_by=user,
-                notify_sets=post.get_notify_sets(
-                    mentioned_users=(),
-                    exclude_list=(user,)
+            # Check to see if there's an activity already recorded for an
+            # upvote on this post by this user, so we don't spam notifications
+            # (and create redundant activities) if a user is for some reason
+            # changing their vote over and over.
+            if not Activity.objects.filter(
+                user=user,
+                content_type=ContentType.objects.get_for_model(
+                    vote.voted_post
                 ),
+                object_id=vote.voted_post_id,
                 activity_type=const.TYPE_ACTIVITY_VOTE_UP,
-                timestamp=timezone.now(),
-            )
+            ).exists():
+                # Start the notification-sending process about halfway through
+                # its convoluted half-transitioned-half-legacy code path.
+                post.issue_update_notifications(
+                    updated_by=user,
+                    notify_sets=post.get_notify_sets(
+                        mentioned_users=(),
+                        exclude_list=(user,)
+                    ),
+                    activity_type=const.TYPE_ACTIVITY_VOTE_UP,
+                    timestamp=timezone.now(),
+                )
         else:
             vote = user.downvote(post = post)
 
