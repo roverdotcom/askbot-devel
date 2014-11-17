@@ -105,7 +105,7 @@ settings.register(
     livesettings.StringValue(
         EMAIL,
         'DEFAULT_NOTIFICATION_DELIVERY_SCHEDULE_Q_ANS',
-        default='d',
+        default='i',
         choices=const.NOTIFICATION_DELIVERY_SCHEDULE_CHOICES,
         description=_('Default notification frequency questions answered by the user'),
         help_text=_(
