@@ -21,6 +21,8 @@ from django.core import cache
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 import askbot
 
@@ -43,6 +45,11 @@ from askbot.search import mysql
 
 from model_utils.managers import PassThroughManager
 from askbot.models import AskbotUserQuerySet
+from django.template.loader import get_template
+from django.template import Context
+from askbot.exceptions import EmailNotSent
+from askbot import mail
+import uuid
 
 class PostToGroup(models.Model):
     post = models.ForeignKey('Post')
@@ -2389,3 +2396,29 @@ class AnonymousAnswer(DraftContent):
         )
         self.question.thread.invalidate_cached_data()
         self.delete()
+
+
+@receiver(post_save, sender=Post)
+def welcome_user_on_first_post(sender, instance, created, **kwargs):
+    if created:
+        # If this is this user's first post.
+        if Post.objects.filter(author=instance.author).count() == 1:
+            logger = logging.getLogger()
+
+            template = get_template('email/welcome_email.html')
+
+            context = {}
+
+            try:
+                mail.send_mail(
+                    subject_line="copy goes here",
+                    body_text=template.render(Context(context)),
+                    recipient_list=[instance.author.email],
+                    raise_on_failure=True
+                )
+            except EmailNotSent, error:
+                logger.debug(
+                    '{}, error={}'.format(instance.author.email, error)
+                )
+            else:
+                logger.debug('success {}'.format(instance.author.email))
