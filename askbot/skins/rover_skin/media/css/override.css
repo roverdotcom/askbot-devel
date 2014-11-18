@@ -93,6 +93,12 @@ body {
   display: table-row;
 }
 
+.leaderboard-position {
+  float: left;
+  width: 64px;
+  height: 64px;
+}
+
 .leaderboard-card {
   display: inline-block;
   height: 70px;
