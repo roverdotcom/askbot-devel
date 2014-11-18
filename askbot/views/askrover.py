@@ -2,10 +2,15 @@ from django.views.generic.base import View
 from django.views.generic.list import ListView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage
+from django.core.paginator import InvalidPage
 from django.http import HttpResponse
 from django.utils import simplejson
 from django.db.models import Q
 from askbot.models import User
+from askbot.const import USERS_PAGE_SIZE
+from askbot.utils.functions import setup_paginator
 
 
 class FollowUser(View):
@@ -77,3 +82,38 @@ class Leaderboard(ListView):
         return User.objects.exclude(
             Q(status__in=['d', 'm', 'b']) | Q(is_staff=True, is_superuser=True)
         ).order_by('-reputation')
+
+    def get_context_data(self, **kwargs):
+        """Support Askbot's hideous half-python-spaghetti-half-jinja2-macro-
+        spaghetti-also-somehow-incorporating-the-canonical-Django-pager
+        paging abomination.
+        """
+        context_data = super(Leaderboard, self).get_context_data(**kwargs)
+
+        objects_list = context_data['paginator']
+
+        try:
+            page = int(self.request.GET.get('page', 1))
+        except ValueError:
+            page = 1
+
+        try:
+            users_page = objects_list.page(page)
+        except (EmptyPage, InvalidPage):
+            users_page = objects_list.page(objects_list.num_pages)
+
+        paginator_data = {
+            'is_paginated': True,
+            'pages': objects_list.num_pages,
+            'current_page_number': page,
+            'page_object': users_page,
+            'base_url': self.request.path
+        }
+        paginator_context = setup_paginator(paginator_data)
+
+        context_data.update({
+            'paginator_context': paginator_context,
+            'sortby': 'reputation',
+        })
+
+        return context_data
