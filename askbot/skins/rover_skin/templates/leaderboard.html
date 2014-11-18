@@ -72,7 +72,46 @@
 {% if users %}
     <ul class="user-list">
         {% for user in users %}
-        <li>{{ macros.user_card(user, karma_mode=karma_mode, badges_mode=badges_mode) }}</li>
+        <li>
+            {# Pull in entirety of user_card macro/widget & rework. #}
+            <div class="user-card">
+                {{ macros.gravatar(user, 64) }}
+                <div class="user-info">
+                    <a href="{{ user.get_profile_url() }}">{{ user.get_full_name()|escape }}</a>
+                    {{ macros.user_country_flag(user) }}
+
+                    <br/>
+
+                    {% if karma_mode == 'public' %}
+                    <span class="reputation-score">{{ user.reputation }} {{ settings.WORDS_KARMA_PLURAL }}</span>
+                    {% endif %}
+
+                    {% if badges_mode == 'public' %}
+                    <span class="badges" title="{{ user.get_badge_summary() }}">
+                        {% if user.gold %}
+                            <span class='badge1'>&#9679;</span><span class="badgecount">{{ user.gold }}</span>
+                        {% endif %}
+                        {% if user.silver %}
+                            <span class='badge2'>&#9679;</span><span class="badgecount">{{ user.silver }}</span>
+                        {% endif %}
+                        {% if user.bronze %}
+                            <span class='badge3'>&#9679;</span><span class="badgecount">{{ user.bronze }}</span>
+                        {% endif %}
+                    </span>
+                    {% endif %}
+
+                    <br/>
+
+                    {# Add link to user's sitter profile. #}
+                    {#
+                    {% set active_services = user.person.get_active_services() %}
+                    {% if active_services %}
+                        <a href="{{ active_services[0].get_absolute_url() }}">Book a Stay With Me</a>
+                    {% endif %}
+                    #}
+                </div>
+            </div>
+        </li>
         {% endfor %}
     </ul>
 {% else %}
