@@ -97,6 +97,15 @@ body {
   float: left;
   width: 64px;
   height: 64px;
+  position: relative;
+}
+
+.leaderboard-position p {
+  text-align: center;
+  font-size: 20px;
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
 }
 
 .leaderboard-card {
