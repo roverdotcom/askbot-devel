@@ -70,11 +70,11 @@
     <p>{% trans search_query=search_query|escape %}users matching query {{search_query}}:{% endtrans %}</p>
 {% endif %}
 {% if users %}
-    <ul class="user-list">
+    <ul class="leaderboard-list">
         {% for user in users %}
         <li>
             {# Pull in entirety of user_card macro/widget & rework. #}
-            <div class="user-card">
+            <div class="leaderboard-card">
                 {{ macros.gravatar(user, 64) }}
                 <div class="user-info">
                     <a href="{{ user.get_profile_url() }}">{{ user.get_full_name()|escape }}</a>

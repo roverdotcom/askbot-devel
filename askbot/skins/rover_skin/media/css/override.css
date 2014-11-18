@@ -85,3 +85,29 @@ body {
   margin-bottom: 400px;
 }
 
+.leaderboard-list {
+  display: table;
+}
+
+.leaderboard-list li {
+  display: table-row;
+}
+
+.leaderboard-card {
+  display: inline-block;
+  height: 70px;
+  width: 166px;
+  overflow: hidden;
+}
+
+.leaderboard-card .avatar-box {
+  float: left;
+  margin: 0px 6px 0 2px;
+  width: 64px;
+  height: 64px;
+}
+
+.leaderboard-card .info {
+  height: 32px;
+  width: 134px;
+}
