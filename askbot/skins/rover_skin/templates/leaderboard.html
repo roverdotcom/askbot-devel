@@ -82,11 +82,11 @@
 
                     <br/>
 
-                    {% if karma_mode == 'public' %}
+                    {% if settings.KARMA_MODE == 'public' %}
                     <span class="reputation-score">{{ user.reputation }} {{ settings.WORDS_KARMA_PLURAL }}</span>
                     {% endif %}
 
-                    {% if badges_mode == 'public' %}
+                    {% if settings.BADGES_MODE == 'public' %}
                     <span class="badges" title="{{ user.get_badge_summary() }}">
                         {% if user.gold %}
                             <span class='badge1'>&#9679;</span><span class="badgecount">{{ user.gold }}</span>
@@ -103,12 +103,10 @@
                     <br/>
 
                     {# Add link to user's sitter profile. #}
-                    {#
                     {% set active_services = user.person.get_active_services() %}
                     {% if active_services %}
                         <a href="{{ active_services[0].get_absolute_url() }}">Book a Stay With Me</a>
                     {% endif %}
-                    #}
                 </div>
             </div>
         </li>
