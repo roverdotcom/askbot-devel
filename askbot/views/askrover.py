@@ -107,7 +107,7 @@ class Leaderboard(ListView):
             'pages': objects_list.num_pages,
             'current_page_number': page,
             'page_object': users_page,
-            'base_url': self.request.path
+            'base_url': '{}?'.format(self.request.path)
         }
         paginator_context = setup_paginator(paginator_data)
 
