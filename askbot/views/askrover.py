@@ -81,7 +81,7 @@ class Leaderboard(ListView):
         # leaderboard.
         return User.objects.exclude(
             Q(status__in=['d', 'm', 'b']) | Q(is_staff=True, is_superuser=True)
-        ).order_by('-reputation')
+        ).order_by('-reputation', '-last_seen')
 
     def get_context_data(self, **kwargs):
         """Support Askbot's hideous half-python-spaghetti-half-jinja2-macro-
