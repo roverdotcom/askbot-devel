@@ -86,6 +86,11 @@ urlpatterns = patterns('',
         name='users'
     ),
     url(
+        r'^%s$' % _('leaderboard/'),
+        views.askrover.Leaderboard.as_view(),
+        name='leaderboard'
+    ),
+    url(
         r'^%s%s(?P<group_id>\d+)/(?P<group_slug>.*)/$' % (_('users/'), _('by-group/')),
         views.users.show_users,
         kwargs = {'by_group': True},
