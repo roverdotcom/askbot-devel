@@ -62,7 +62,7 @@ class UnfollowUser(View):
 class Leaderboard(ListView):
     """Display users ordered by reputation."""
     model = User
-    template_name = "askbot/leaderboard.html"
+    template_name = "leaderboard.html"
     context_object_name = "users"
     paginate_by = 10
 
