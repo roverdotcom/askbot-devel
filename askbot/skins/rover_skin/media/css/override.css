@@ -96,18 +96,20 @@ body {
 .leaderboard-card {
   display: inline-block;
   height: 70px;
-  width: 166px;
+  width: 600px;
   overflow: hidden;
 }
 
 .leaderboard-card .avatar-box {
+  display: table-cell;
   float: left;
   margin: 0px 6px 0 2px;
   width: 64px;
   height: 64px;
 }
 
-.leaderboard-card .info {
+.leaderboard-card .user-info {
+  display: table-cell;
   height: 32px;
-  width: 134px;
+  width: 600px;
 }
