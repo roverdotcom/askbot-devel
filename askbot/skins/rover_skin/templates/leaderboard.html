@@ -69,15 +69,14 @@
 {% if search_query %}
     <p>{% trans search_query=search_query|escape %}users matching query {{search_query}}:{% endtrans %}</p>
 {% endif %}
-{% if not users.object_list %}
-    <p><span>{% trans %}Nothing found.{% endtrans %}</span></p>
-{% endif %}
 {% if users %}
     <ul class="user-list">
         {% for user in users %}
         <li>{{ macros.user_card(user, karma_mode=karma_mode, badges_mode=badges_mode) }}</li>
         {% endfor %}
     </ul>
+{% else %}
+    <p><span>{% trans %}Nothing found.{% endtrans %}</span></p>
 {% endif %}
 <div class="pager">
     {{ macros.paginator(paginator_context) }}
