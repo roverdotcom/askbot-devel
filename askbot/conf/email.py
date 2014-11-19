@@ -198,7 +198,7 @@ settings.register(
     livesettings.BooleanValue(
         EMAIL,
         'ENABLE_ACCEPT_ANSWER_REMINDERS',
-        default = False,
+        default=True,
         description = _('Send periodic reminders to accept the best answer'),
         help_text = _(
             'NOTE: in order to use this feature, it is necessary to '
@@ -212,7 +212,7 @@ settings.register(
     livesettings.IntegerValue(
         EMAIL,
         'DAYS_BEFORE_SENDING_ACCEPT_ANSWER_REMINDER',
-        default = 3,
+        default=7,
         description = _(
             'Days before starting to send reminders to accept an answer'
         ),
@@ -235,7 +235,7 @@ settings.register(
     livesettings.IntegerValue(
         EMAIL,
         'MAX_ACCEPT_ANSWER_REMINDERS',
-        default = 5,
+        default=1,
         description = _(
             'Max. number of reminders to send '
             'to accept the best answer'
