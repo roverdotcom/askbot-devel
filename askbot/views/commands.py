@@ -207,14 +207,29 @@ def process_vote(user = None, vote_direction = None, post = None):
                 object_id=vote.voted_post_id,
                 activity_type=const.TYPE_ACTIVITY_VOTE_UP,
             ).exists():
+                # Allow existing machinery to determine whether the
+                # author should receive a notification.
+                pre_notify_sets = vote.voted_post.get_notify_sets(
+                    mentioned_users=(),
+                    exclude_list=(user,)
+                )
+                # Only notify the author that their post was upvoted.
+                notify_sets = {
+                    'for_mentions': set(),
+                    'for_inbox': (
+                        set([vote.voted_post.author]) if vote.voted_post.author
+                        in pre_notify_sets['for_inbox'] else set()
+                    ),
+                    'for_email': (
+                        set([vote.voted_post.author]) if vote.voted_post.author
+                        in pre_notify_sets['for_email'] else set()
+                    ),
+                }
                 # Start the notification-sending process about halfway through
                 # its convoluted half-transitioned-half-legacy code path.
                 post.issue_update_notifications(
                     updated_by=user,
-                    notify_sets=post.get_notify_sets(
-                        mentioned_users=(),
-                        exclude_list=(user,)
-                    ),
+                    notify_sets=notify_sets,
                     activity_type=const.TYPE_ACTIVITY_VOTE_UP,
                     timestamp=timezone.now(),
                 )
