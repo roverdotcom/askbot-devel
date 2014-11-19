@@ -1,4 +1,11 @@
 {% extends "email/base_mail.html" %}
+{% block headline %}We're happy to have you! Now, let's go over the basics together.{% endblock %}
 {% block content %}
-    <p>Copy goes here.</p>
+    <p>Hi {{ user.first_name }},</p>
+    <p>Thanks for joining the Rover Q&A Community! We’re excited to welcome a fellow dog lover.</p>
+    <p>Wondering where to go from here? Take a moment to read over our <a href="{% url 'help' %}">Community Guidelines</a>. Keep in mind: the Rover Q&A Community is a supportive space to ask and answer dog-related queries. If you have a question about Rover.com, please reach out to our <a href="support.rover.com">Customer Support</a> team.</p>
+    <p>We’re looking forward to hearing from you on the message board!</p>
+{% endblock %}
+{% block footer %}
+    {% include "email/footer.html" %}
 {% endblock %}

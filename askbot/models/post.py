@@ -2407,11 +2407,11 @@ def welcome_user_on_first_post(sender, instance, created, **kwargs):
 
             template = get_template('email/welcome_email.html')
 
-            context = {}
+            context = {'user': instance.author}
 
             try:
                 mail.send_mail(
-                    subject_line="copy goes here",
+                    subject_line="Welcome to the Rover Q&A Community",
                     body_text=template.render(Context(context)),
                     recipient_list=[instance.author.email],
                     raise_on_failure=True
