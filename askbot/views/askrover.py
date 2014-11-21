@@ -2,14 +2,12 @@ from django.views.generic.base import View
 from django.views.generic.list import ListView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import InvalidPage
 from django.http import HttpResponse
 from django.utils import simplejson
 from django.db.models import Q
 from askbot.models import User
-from askbot.const import USERS_PAGE_SIZE
 from askbot.utils.functions import setup_paginator
 
 
