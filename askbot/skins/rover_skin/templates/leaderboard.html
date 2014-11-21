@@ -18,6 +18,42 @@
     <h1 class="section-title">Treats Leaderboard</h1>
     <div class="clearfix"></div>
 </div>
+{% if request.user.is_authenticated() %}
+    <ul class="leaderboard-list">
+        <li>
+            <div class="leaderboard-card">
+                <div class="leaderboard-position">
+                    <p>{{ request.user.get_leaderboard_position(paginator.object_list) }}</p>
+                </div>
+                {{ macros.gravatar(user, 64) }}
+                <div class="user-info">
+                    <a href="{{ request.user.get_profile_url() }}">{{ request.user.get_full_name()|escape }}</a>
+                    {{ macros.user_country_flag(request.user) }}
+
+                    <br/>
+
+                    {% if settings.KARMA_MODE == 'public' %}
+                    <span class="reputation-score">{{ request.user.reputation }} {{ settings.WORDS_KARMA_PLURAL }}</span>
+                    {% endif %}
+
+                    {% if settings.BADGES_MODE == 'public' %}
+                    <span class="badges" title="{{ user.get_badge_summary() }}">
+                        {% if request.user.gold %}
+                            <span class='badge1'>&#9679;</span><span class="badgecount">{{ request.user.gold }}</span>
+                        {% endif %}
+                        {% if request.user.silver %}
+                            <span class='badge2'>&#9679;</span><span class="badgecount">{{ request.user.silver }}</span>
+                        {% endif %}
+                        {% if request.user.bronze %}
+                            <span class='badge3'>&#9679;</span><span class="badgecount">{{ request.user.bronze }}</span>
+                        {% endif %}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </li>
+    </ul>
+{% endif %}
 {% if users %}
     <ul class="leaderboard-list">
         {% for user in users %}
