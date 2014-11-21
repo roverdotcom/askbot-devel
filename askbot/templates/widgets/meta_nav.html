@@ -3,7 +3,7 @@
   id="navTags"
   href="{% url tags %}"
   {% if active_tab == 'tags' %}class="on"{% endif %}
->{% trans tags=settings.WORDS_TAG_PLURAL|lower %}{{ tags }}{% endtrans %}</a>
+>{% trans tags=settings.WORDS_TAG_PLURAL %}{{ tags }}{% endtrans %}</a>
 {% if settings.GROUPS_ENABLED %}
 <span class="dropdown">
 <a
@@ -16,9 +16,9 @@
 {%else%}
 <a 
   id="navUsers"
-  href="{% url users %}"
+  href="{% url 'leaderboard' %}"
   {% if active_tab == 'users' %}class="on"{% endif %}
->{% trans %}users{% endtrans %}</a>
+>{% trans %}Leaderboard{% endtrans %}</a>
 {% endif %}
 {% if settings.BADGES_MODE == 'public' %}
 <a 
