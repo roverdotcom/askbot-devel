@@ -87,6 +87,7 @@ body {
 
 .leaderboard-list {
   display: table;
+  padding-top: 10px;
 }
 
 .leaderboard-list li {
