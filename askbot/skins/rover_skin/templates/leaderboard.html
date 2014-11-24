@@ -23,7 +23,7 @@
         <li>
             <div class="leaderboard-card">
                 <div class="leaderboard-position">
-                    <p>{{ request.user.get_leaderboard_position(paginator.object_list) }}</p>
+                    <p>{{ request.user.get_leaderboard_position() }}</p>
                 </div>
                 {{ macros.gravatar(user, 64) }}
                 <div class="user-info">

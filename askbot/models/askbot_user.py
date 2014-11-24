@@ -381,19 +381,21 @@ class AskbotUser(models.Model):
         else:
             return self.user.person.get_large_uncropped_image_url()
 
-    def get_leaderboard_position(self, queryset=None):
+    def get_leaderboard_position(self):
         """Get this user's position on the leaderboard."""
 
-        # Try to make this a little bit less painful by using an existing
-        # queryset, if one is available.
-        if queryset is None:
-            queryset = AskbotUser.objects.exclude(
-                Q(status__in=['d', 'm', 'b']) |
-                Q(is_staff=True, is_superuser=True)
-            ).order_by('-reputation', '-last_seen')
+        if any([
+            self.status in ['d', 'm', 'b'],
+            self.is_staff,
+            self.is_superuser
+        ]):
+            return 'N/A'
 
-        for position, user in enumerate(queryset):
-            if user == self:
-                return position + 1
-        else:
-            return '?'
+        return AskbotUser.objects.exclude(
+            Q(status__in=['d', 'm', 'b']) |
+            Q(is_staff=True) |
+            Q(is_superuser=True)
+        ).filter(
+            Q(reputation__gt=self.reputation) |
+            Q(reputation=self.reputation, last_seen__lt=self.last_seen)
+        ).count() + 1
