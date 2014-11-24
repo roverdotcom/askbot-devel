@@ -12,7 +12,7 @@
         <br/>
 
         {% if karma_mode == 'public' %}
-        <span class="reputation-score">{{ user.reputation }}</span>
+            <a href="{% url 'leaderboard' %}" class="reputation-score">{{ user.reputation }} ({{ user.get_leaderboard_position() }} of {{ user.__class__.objects.count() }})</a>
         {% endif %}
 
         {% if badges_mode == 'public' %}
