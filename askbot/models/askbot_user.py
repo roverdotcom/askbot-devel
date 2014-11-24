@@ -380,3 +380,22 @@ class AskbotUser(models.Model):
             return self.user.person.get_medium_image_url()
         else:
             return self.user.person.get_large_uncropped_image_url()
+
+    def get_leaderboard_position(self):
+        """Get this user's position on the leaderboard."""
+
+        if any([
+            self.status in ['d', 'm', 'b'],
+            self.is_staff,
+            self.is_superuser
+        ]):
+            return 'N/A'
+
+        return AskbotUser.objects.exclude(
+            Q(status__in=['d', 'm', 'b']) |
+            Q(is_staff=True) |
+            Q(is_superuser=True)
+        ).filter(
+            Q(reputation__gt=self.reputation) |
+            Q(reputation=self.reputation, last_seen__lt=self.last_seen)
+        ).count() + 1
