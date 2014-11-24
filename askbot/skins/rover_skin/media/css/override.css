@@ -85,6 +85,15 @@ body {
   margin-bottom: 400px;
 }
 
+.avatar-box {
+  width: 46px;
+  height: 46px;
+}
+
+.user-card {
+  height: inherit;
+}
+
 .leaderboard-list {
   display: table;
   padding-top: 10px;

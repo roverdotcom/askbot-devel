@@ -4,7 +4,7 @@
     and elsewhere
 #}
 <div class="user-card">
-    {{ macros.gravatar(user, 32) }}
+    {{ macros.gravatar(user, 46) }}
     <div class="user-info">
         <a href="{{ user.get_profile_url() }}">{{ user.get_full_name()|escape }}</a>
         {{ macros.user_country_flag(user) }}
@@ -40,7 +40,7 @@
         {# Add link to user's sitter profile. #}
         {% with user.person.get_active_services() as active_services %}
             {% if active_services %}
-                <a href="{{ active_services[0].get_absolute_url() }}">Book a Stay With Me in {{ user.person.get_short_location() }}</a>
+                <a href="{{ active_services[0].get_absolute_url() }}">Book a Stay With Me<br/>in {{ user.person.get_short_location() }}</a>
             {% endif %}
         {% endwith %}
     </div>
