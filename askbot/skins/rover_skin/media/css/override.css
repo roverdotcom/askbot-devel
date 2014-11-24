@@ -94,6 +94,15 @@ body {
   height: inherit;
 }
 
+/* Style the user card so it fits on the user's 'network' page. */
+.user-list .service-link {
+  display: none;
+}
+
+.user-list .user-card {
+  width: 200px;
+}
+
 .leaderboard-list {
   display: table;
   padding-top: 10px;
