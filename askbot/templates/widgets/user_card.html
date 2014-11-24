@@ -14,9 +14,9 @@
         {% if karma_mode == 'public' %}
             {% with user.get_leaderboard_position() as user_position %}
                 {% if user_position != 'N/A' %}
-                    <a href="{% url 'leaderboard' %}" class="reputation-score">{{ user.reputation }} ({{ user.get_leaderboard_position() }} of {{ user.__class__.objects.count() }})</a>
+                    <a href="{% url 'leaderboard' %}" class="reputation-score">{{ user.reputation }} {{ ngettext(settings.WORDS_KARMA_SINGULAR, settings.WORDS_KARMA_PLURAL, user.reputation) }} ({{ user.get_leaderboard_position() }} of {{ user.__class__.objects.count() }})</a>
                 {% else %}
-                    <span class="reputation-score">{{ user.reputation }}</span>
+                    <span class="reputation-score">{{ user.reputation }} {{ ngettext(settings.WORDS_KARMA_SINGULAR, settings.WORDS_KARMA_PLURAL, user.reputation) }}</span>
                 {% endif %}
             {% endwith %}
         {% endif %}
