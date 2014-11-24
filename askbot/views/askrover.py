@@ -78,7 +78,9 @@ class Leaderboard(ListView):
         # 'b' is a blocked user - these should also not display on the
         # leaderboard.
         return User.objects.exclude(
-            Q(status__in=['d', 'm', 'b']) | Q(is_staff=True, is_superuser=True)
+            Q(status__in=['d', 'm', 'b']) |
+            Q(is_staff=True) |
+            Q(is_superuser=True)
         ).order_by('-reputation', '-last_seen')
 
     def get_context_data(self, **kwargs):
