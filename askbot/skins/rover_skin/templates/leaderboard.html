@@ -91,10 +91,11 @@
                     <br/>
 
                     {# Add link to user's sitter profile. #}
-                    {% set active_services = user.person.get_active_services() %}
-                    {% if active_services %}
-                        <a href="{{ active_services[0].get_absolute_url() }}">Book a Stay With Me</a>
-                    {% endif %}
+                    {% with user.person.get_active_services() as active_services %}
+                        {% if active_services %}
+                            <a class="service-link" href="{{ active_services[0].get_absolute_url() }}">Book a Stay With Me in {{ user.person.get_short_location() }}</a>
+                        {% endif %}
+                    {% endwith %}
                 </div>
             </div>
         </li>
