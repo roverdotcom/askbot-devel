@@ -33,7 +33,7 @@
                     <br/>
 
                     {% if settings.KARMA_MODE == 'public' %}
-                    <span class="reputation-score">{{ request.user.reputation }} {{ settings.WORDS_KARMA_PLURAL }}</span>
+                    <span class="reputation-score">{{ request.user.reputation }} {{ ngettext(settings.WORDS_KARMA_SINGULAR, settings.WORDS_KARMA_PLURAL, request.user.reputation) }}</span>
                     {% endif %}
 
                     {% if settings.BADGES_MODE == 'public' %}
@@ -71,7 +71,7 @@
                     <br/>
 
                     {% if settings.KARMA_MODE == 'public' %}
-                    <span class="reputation-score">{{ user.reputation }} {{ settings.WORDS_KARMA_PLURAL }}</span>
+                    <span class="reputation-score">{{ user.reputation }} {{ ngettext(settings.WORDS_KARMA_SINGULAR, settings.WORDS_KARMA_PLURAL, user.reputation) }}</span>
                     {% endif %}
 
                     {% if settings.BADGES_MODE == 'public' %}

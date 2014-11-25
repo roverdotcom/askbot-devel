@@ -4,7 +4,7 @@
     and elsewhere
 #}
 <div class="user-card">
-    {{ macros.gravatar(user, 32) }}
+    {{ macros.gravatar(user, 46) }}
     <div class="user-info">
         <a href="{{ user.get_profile_url() }}">{{ user.get_full_name()|escape }}</a>
         {{ macros.user_country_flag(user) }}
@@ -12,7 +12,13 @@
         <br/>
 
         {% if karma_mode == 'public' %}
-        <span class="reputation-score">{{ user.reputation }}</span>
+            {% with user.get_leaderboard_position() as user_position %}
+                {% if user_position != 'N/A' %}
+                    <a href="{% url 'leaderboard' %}" class="reputation-score">{{ user.reputation }} {{ ngettext(settings.WORDS_KARMA_SINGULAR, settings.WORDS_KARMA_PLURAL, user.reputation) }} ({{ user.get_leaderboard_position() }} of {{ user.__class__.objects.count() }})</a>
+                {% else %}
+                    <span class="reputation-score">{{ user.reputation }} {{ ngettext(settings.WORDS_KARMA_SINGULAR, settings.WORDS_KARMA_PLURAL, user.reputation) }}</span>
+                {% endif %}
+            {% endwith %}
         {% endif %}
 
         {% if badges_mode == 'public' %}
@@ -32,9 +38,10 @@
         <br/>
 
         {# Add link to user's sitter profile. #}
-        {% set active_services = user.person.get_active_services() %}
-        {% if active_services %}
-            <a href="{{ active_services[0].get_absolute_url() }}">Book a Stay With Me</a>
-        {% endif %}
+        {% with user.person.get_active_services() as active_services %}
+            {% if active_services %}
+                <a class="service-link" href="{{ active_services[0].get_absolute_url() }}">Book a Stay With Me<br/>in {{ user.person.get_short_location() }}</a>
+            {% endif %}
+        {% endwith %}
     </div>
 </div>
