@@ -2228,20 +2228,6 @@ def user_set_status(self, new_status):
     if new_status == self.status:
         return
 
-    #clear admin status if user was an administrator
-    #because this function is not dealing with the site admins
-
-    if new_status == 'd':
-        #create a new admin
-        self.set_admin_status()
-    else:
-        #This was the old method, kept in the else clause when changing
-        #to admin, so if you change the status to another thing that
-        #is not Administrator it will simply remove admin if the user have
-        #that permission, it will mostly be false.
-        if self.is_administrator():
-            self.remove_admin_status()
-
     #when toggling between blocked and non-blocked status
     #we need to invalidate question page caches, b/c they contain
     #user's url, which must be hidden in the blocked state
