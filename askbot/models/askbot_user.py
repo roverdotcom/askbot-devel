@@ -275,6 +275,8 @@ class AskbotUser(models.Model):
         related_name='followed_by'
     )
 
+    date_joined = models.DateTimeField(auto_now_add=True)
+
     objects = AskbotUserManager.for_queryset_class(AskbotUserQuerySet)()
 
     class Meta(object):
