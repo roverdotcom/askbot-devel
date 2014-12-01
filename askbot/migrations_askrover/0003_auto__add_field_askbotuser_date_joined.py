@@ -25,21 +25,20 @@ class Migration(SchemaMigration):
         for askbot_user in orm['askbot.askbotuser'].objects.filter(
             id__in=askbot_user_ids
         ):
-            dates = list(orm['askbot.post'].objects.filter(
-                author=askbot_user
-            ).values_list('added_at'))
+            dates = orm['askbot.activity'].objects.filter(
+                user=askbot_user
+            ).order_by(
+                'active_at'
+            ).values_list(
+                'active_at',
+                flat=True
+            )
 
-            dates.extend(list(
-                orm['askbot.vote'].objects.filter(
-                    user=askbot_user
-                ).values_list('voted_at')
-            ))
-
-            # Approximate date joined as the date of their vote or posted
-            # question, or now if neither is available.
-            if dates:
-                date_joined = sorted(dates)[0]
-            else:
+            # Approximate date joined as the date of the first activity
+            # associated with them, or now, if they have no activities.
+            try:
+                date_joined = dates[0]
+            except IndexError:
                 date_joined = timezone.now()
 
             # All datetimes were either taken from the database or created
