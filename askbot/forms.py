@@ -1528,25 +1528,19 @@ class EmailFeedSettingField(forms.ChoiceField):
 
 class EditUserEmailFeedsForm(forms.Form):
     FORM_TO_MODEL_MAP = {
-        'all_questions': 'q_all',
         'asked_by_me': 'q_ask',
         'answered_by_me': 'q_ans',
         'individually_selected': 'q_sel',
-        'mentions_and_comments': 'm_and_c',
     }
     NO_EMAIL_INITIAL = {
-        'all_questions': 'n',
         'asked_by_me': 'n',
         'answered_by_me': 'n',
         'individually_selected': 'n',
-        'mentions_and_comments': 'n',
     }
     INSTANT_EMAIL_INITIAL = {
-        'all_questions': 'i',
         'asked_by_me': 'i',
         'answered_by_me': 'i',
         'individually_selected': 'i',
-        'mentions_and_comments': 'i',
     }
 
     def __init__(self, *args, **kwargs):
@@ -1554,16 +1548,19 @@ class EditUserEmailFeedsForm(forms.Form):
         self.fields = SortedDict((
             ('asked_by_me', EmailFeedSettingField(label=askbot_settings.WORDS_ASKED_BY_ME)),
             ('answered_by_me', EmailFeedSettingField(label=askbot_settings.WORDS_ANSWERED_BY_ME)),
-            ('individually_selected', EmailFeedSettingField(label=_('Individually selected'))),
-            ('all_questions', EmailFeedSettingField(label=_('Entire forum ({} filtered)'.format(askbot_settings.WORDS_TAG_SINGULAR.lower())))),
-            ('mentions_and_comments', EmailFeedSettingField(label=_('Comments and posts mentioning me')))
+            ('individually_selected', EmailFeedSettingField(label=_('Individually selected')))
         ))
 
     def set_initial_values(self, user=None):
         from askbot import models
         KEY_MAP = dict([(v, k) for k, v in self.FORM_TO_MODEL_MAP.iteritems()])
         if user is not None:
-            settings = models.EmailFeedSetting.objects.filter(subscriber=user)
+            settings = models.EmailFeedSetting.objects.filter(
+                subscriber=user
+            ).exclude(
+                # Don't touch "entire forum" and "mentions."
+                feed_type__in=['q_all', 'm_and_c']
+            )
             initial_values = {}
             for setting in settings:
                 feed_type = setting.feed_type
@@ -1594,11 +1591,9 @@ class EditUserEmailFeedsForm(forms.Form):
 
     def set_frequency(self, frequency='n'):
         data = {
-            'all_questions': frequency,
             'asked_by_me': frequency,
             'answered_by_me': frequency,
             'individually_selected': frequency,
-            'mentions_and_comments': frequency
         }
         if self.is_bound:
             self.cleaned_data = data
