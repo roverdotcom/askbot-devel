@@ -5,14 +5,15 @@
     {% trans %}subscriptions{% endtrans %}
 {% endblock %}
 {% block usercontent %}
-    <h2>{% trans %}Email subscription settings{% endtrans %}</h2>
+    <h2>{% trans %}Instant notification settings{% endtrans %}</h2>
     <p class="message">
-{% trans %}<span class='big strong'>Adjust frequency of email updates.</span> Receive updates on interesting content by email. If you do not wish to receive emails - select 'no email' on all items below.<br/>Updates are only sent when there is any new activity on selected items.{% endtrans %}</p>
+{% trans %}<span class='big strong'>Adjust frequency of email updates.</span> Receive updates on interesting content by email. If you do not wish to receive emails, uncheck all items below.<br/>Updates are only sent when there is any new activity on selected items.{% endtrans %}</p>
     <div>
     {% if action_status %}
         <p class="action-status"><span>{{action_status}}</span></p>
     {% endif %}
-    <form method="post" action="">{% csrf_token %}
+    <form method="post" action="">
+        {% csrf_token %}
         <table class='form-as-table ab-subscr-form'>
         {{email_feeds_form.as_table()}}
         </table>
