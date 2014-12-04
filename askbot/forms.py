@@ -1521,7 +1521,10 @@ class TagFilterSelectionForm(forms.ModelForm):
 
 class EmailFeedSettingField(forms.ChoiceField):
     def __init__(self, *arg, **kwarg):
-        kwarg['choices'] = const.NOTIFICATION_DELIVERY_SCHEDULE_CHOICES
+        kwarg['choices'] = (
+            ('i', _('On')),
+            ('n', _('Off')),
+        )
         kwarg['widget'] = forms.RadioSelect
         super(EmailFeedSettingField, self).__init__(*arg, **kwarg)
 
@@ -1565,7 +1568,7 @@ class EditUserEmailFeedsForm(forms.Form):
             for setting in settings:
                 feed_type = setting.feed_type
                 form_field = KEY_MAP[feed_type]
-                frequency = setting.frequency
+                frequency = 'i' if setting.frequency == 'i' else 'n'
                 initial_values[form_field] = frequency
             self.initial = initial_values
         return self
