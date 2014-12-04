@@ -85,3 +85,7 @@ body {
   margin-bottom: 400px;
 }
 
+table.ab-subscr-form td {
+  text-align: left;
+}
+
