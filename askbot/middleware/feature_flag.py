@@ -11,7 +11,10 @@ from django.core.urlresolvers import reverse
 
 class AskbotFeatureFlagMiddleware(object):
     """Redirect Askbot urls to root if the flag is disabled."""
+
     def process_request(self, request):
-        if not gargoyle.is_active('askrover', request) and \
-                not request.user.is_staff:
+        if (
+            not gargoyle.is_active('askrover', request) and
+            not request.user.is_staff
+        ):
             return HttpResponseRedirect(reverse('index'))
