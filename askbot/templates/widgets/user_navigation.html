@@ -15,10 +15,10 @@
     {%- endif -%}
     </span>
     {% if settings.USE_ASKBOT_LOGIN_SYSTEM %}
-         <a href="{{ settings.LOGOUT_URL }}?next={{request.path|clean_login_url|escape}}">{% trans %}Sign Out{% endtrans %}</a>
+         <a href="{{ settings.LOGOUT_URL }}?next={{ request.get_full_path()|urlencode }}">{% trans %}Sign Out{% endtrans %}</a>
     {% endif %}
 {% elif settings.USE_ASKBOT_LOGIN_SYSTEM %}
-    <a href="{{ settings.LOGIN_URL }}?next={{request.path|clean_login_url|escape}}">{% trans %}Hi there! Please sign in.{% endtrans %}</a>
+    <a href="{% url 'account-continue' %}?action=sign_in&amp;next={{ request.get_full_path()|urlencode }}">{% trans %}Hi there! Please sign in.{% endtrans %}</a>
 {% endif %}
 {% if request.user.is_authenticated() and request.user.is_administrator() %}
     <a class="settings" href="{% url site_settings %}">{% trans %}Settings{% endtrans %}</a>
