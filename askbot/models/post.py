@@ -735,6 +735,11 @@ class Post(models.Model):
         for user in (notify_sets['for_inbox'] | notify_sets['for_mentions']):
             user.update_response_counts()
 
+        # For the Rover Q&A Community, email notifications differ enough from
+        # Askbot inbox notifications that they've been given an entirely
+        # separate flow. See askbot.tasks.record_post_update_celery_task.
+        return
+
         #shortcircuit if the email alerts are disabled
         if suppress_email == True or askbot_settings.ENABLE_EMAIL_ALERTS == False:
             return
@@ -1434,6 +1439,12 @@ class Post(models.Model):
         #are included, for comments only authors of comments and parent
         #post are included
         result['for_inbox'] = self.get_response_receivers(exclude_list=exclude_list)
+
+        # Short-circuit before we bother with email recipients. Emails for the
+        # Rover Q&A Community differ enough from Askbot inbox notifications
+        # that they've been given their own flow. See
+        # askbot.tasks.record_post_update_celery_task.
+        return result
 
         if askbot_settings.ENABLE_EMAIL_ALERTS == False:
             result['for_email'] = set()

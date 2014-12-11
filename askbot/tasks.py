@@ -163,12 +163,19 @@ def record_post_update_celery_task(
             diff=diff
         )
 
+        # Now, send email notifications. This is a completely new workflow
+        # for the Rover Q&A Community, because we send targeted email
+        # notifications rather than generic ones, which the existing
+        # workflow does not lend itself to. The email-sending aspects of
+        # the old workflow have been short-circuited.
+
     except Exception:
         # HACK: exceptions from Celery job don't propagate upwards
         # to the Django test runner
         # so at least let's print tracebacks
         print >>sys.stderr, unicode(traceback.format_exc()).encode('utf-8')
         raise
+
 
 @task(ignore_result = True)
 def record_question_visit(
