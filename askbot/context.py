@@ -18,6 +18,7 @@ from askbot.utils.slug import slugify
 from askbot.utils.html import site_url
 from askbot.utils.translation import get_language
 from askbot.templatetags.extra_tags import render_new_design_footer_cities
+from askbot.templatetags.extra_tags import get_current_datetime
 
 def application_settings(request):
     """The context processor function
@@ -87,6 +88,7 @@ def application_settings(request):
         'moderation_items': api.get_info_on_moderation_items(request.user),
         'noscript_url': const.DEPENDENCY_URLS['noscript'],
         'render_new_design_footer_cities': render_new_design_footer_cities,
+        'get_current_datetime': get_current_datetime,
     }
 
     if askbot_settings.GROUPS_ENABLED:
