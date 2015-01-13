@@ -9,9 +9,9 @@ from askbot.utils import functions
 from askbot.conf import settings as askbot_settings
 
 # Rover imports.
-import datetime
 from seo.models import City
 from django.template.loader import render_to_string
+from django.utils import timezone
 
 register = template.Library()
 
@@ -119,7 +119,7 @@ def include_jinja(parser, token):
 # Rover tags registered here.
 @register.simple_tag
 def get_current_datetime(format="%d/%m/%Y %H:%M"):
-    return datetime.datetime.now().strftime(format)
+    return timezone.now().strftime(format)
 
 @register.tag
 def render_new_design_footer_cities():
