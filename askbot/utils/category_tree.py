@@ -26,7 +26,10 @@ example of desired structure, when input is parsed
     ]
 """
 from askbot.conf import settings as askbot_settings
-from django.utils import simplejson
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 
 def get_leaf_index(tree, leaf_name):
     children = tree[1]
@@ -62,7 +65,7 @@ def get_data():
     or None, if category_tree is disabled
     """
     if askbot_settings.TAG_SOURCE == 'category-tree':
-        return simplejson.loads(askbot_settings.CATEGORY_TREE)
+        return json.loads(askbot_settings.CATEGORY_TREE)
     else:
         return None
 
@@ -145,5 +148,5 @@ def delete_category(tree, name, path):
 
 def save_data(tree):
     assert(askbot_settings.TAG_SOURCE == 'category-tree')
-    tree_json = simplejson.dumps(tree)
+    tree_json = json.dumps(tree)
     askbot_settings.update('CATEGORY_TREE', tree_json)

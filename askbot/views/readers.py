@@ -19,7 +19,10 @@ from django.http import HttpResponseBadRequest
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.template.loader import get_template
 from django.template import RequestContext
-from django.utils import simplejson
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 from django.utils import timezone
 from django.utils.html import escape
 from django.utils.translation import ugettext as _
@@ -220,7 +223,7 @@ def questions(request, **kwargs):
 
         ajax_data.update(extra_context)
 
-        return HttpResponse(simplejson.dumps(ajax_data), mimetype = 'application/json')
+        return HttpResponse(json.dumps(ajax_data), mimetype = 'application/json')
 
     else: # non-AJAX branch
 
@@ -294,7 +297,7 @@ def get_top_answers(request):
         answers = paginator.page(form.cleaned_data['page_number']).object_list
         template = get_template('user_profile/user_answers_list.html')
         answers_html = template.render({'top_answers': answers})
-        json_string = simplejson.dumps({
+        json_string = json.dumps({
                             'html': answers_html,
                             'num_answers': paginator.count}
                         )
@@ -373,7 +376,7 @@ def tags(request):#view showing a listing of available tags - plain list
         template = get_template('tags/content.html')
         template_context = RequestContext(request, data)
         json_data = {'success': True, 'html': template.render(template_context)}
-        json_string = simplejson.dumps(json_data)
+        json_string = json.dumps(json_data)
         return HttpResponse(json_string, content_type='application/json')
     else:
         return render(request, 'tags.html', data)

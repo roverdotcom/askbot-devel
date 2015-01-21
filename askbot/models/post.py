@@ -10,7 +10,6 @@ from askbot.models.askbot_user import AskbotUser as User
 from django.core import urlresolvers
 from django.db import models
 from django.utils import html as html_utils
-from django.utils.text import truncate_html_words
 from django.utils.translation import activate as activate_language
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
@@ -43,6 +42,14 @@ from askbot.search import mysql
 
 from model_utils.managers import PassThroughManager
 from askbot.models import AskbotUserQuerySet
+
+try:
+    from django.utils.text import Truncator
+except ImportError:
+    from django.utils.text import truncate_html_words # Django < 1.6
+else:
+    truncate_html_words = lambda value, length: Truncator(value).words(length, html=True)
+
 
 class PostToGroup(models.Model):
     post = models.ForeignKey('Post')
@@ -629,7 +636,7 @@ class Post(models.Model):
 
     def get_text_converter(self):
         have_simple_comment = (
-            self.is_comment() and 
+            self.is_comment() and
             askbot_settings.COMMENTS_EDITOR_TYPE == 'plain-text'
         )
         if have_simple_comment:
@@ -1838,13 +1845,13 @@ class Post(models.Model):
         self.thread.set_last_activity(last_activity_at=edited_at, last_activity_by=edited_by)
 
     def _question__apply_edit(
-                            self, 
+                            self,
                             edited_at=None,
                             edited_by=None,
                             title=None,
-                            text=None, 
-                            comment=None, 
-                            tags=None, 
+                            text=None,
+                            comment=None,
+                            tags=None,
                             wiki=False,
                             edit_anonymously=False,
                             is_private=False,
@@ -2201,11 +2208,11 @@ class PostRevision(models.Model):
 
 
     def place_on_moderation_queue(self):
-        """Revision has number 0, which is 
+        """Revision has number 0, which is
         reserved for the moderated revisions.
 
         Flag Post.is_approved = False is used only
-        for posts that have only one revision - the 
+        for posts that have only one revision - the
         moderated one - i.e. for the new posts
 
         The same applies to the brand new Threads

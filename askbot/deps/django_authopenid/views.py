@@ -50,7 +50,10 @@ from askbot.utils.functions import generate_random_key
 from django.utils.html import escape
 from django.utils.translation import ugettext as _
 from django.utils.safestring import mark_safe
-from django.utils import simplejson
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 from django.utils import timezone
 from askbot.mail import send_mail
 from askbot.utils import decorators as askbot_decorators
@@ -838,7 +841,7 @@ def change_password(request):
         data['message'] = _('Your new password is saved')
     else:
         data['errors'] = form.errors
-    return HttpResponse(simplejson.dumps(data), content_type='application/json')
+    return HttpResponse(json.dumps(data), content_type='application/json')
 
 @login_required
 def delete_login_method(request):

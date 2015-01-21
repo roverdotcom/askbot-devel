@@ -5,7 +5,10 @@ from django.utils.decorators import method_decorator
 from django.core.paginator import EmptyPage
 from django.core.paginator import InvalidPage
 from django.http import HttpResponse
-from django.utils import simplejson
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 from django.db.models import Q
 from askbot.models import User
 from askbot.utils.functions import setup_paginator
@@ -29,7 +32,7 @@ class FollowUser(View):
             }
 
         return HttpResponse(
-            simplejson.dumps(response_content),
+            json.dumps(response_content),
             content_type='application/json'
         )
 
@@ -53,7 +56,7 @@ class UnfollowUser(View):
             }
 
         return HttpResponse(
-            simplejson.dumps(response_content),
+            json.dumps(response_content),
             content_type='application/json'
         )
 
