@@ -27,7 +27,10 @@ from django.template import Context
 from django.template.loader import get_template
 from django.utils.translation import ugettext as _
 from django.utils.translation import activate as activate_language
-from django.utils import simplejson
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 from celery.decorators import task
 from askbot.conf import settings as askbot_settings
 from askbot import const
@@ -62,11 +65,11 @@ def tweet_new_post_task(post_id):
     tweet_text = post.as_tweet()
 
     for raw_token in access_tokens:
-        token = simplejson.loads(raw_token)
+        token = json.loads(raw_token)
         twitter.tweet(tweet_text, access_token=token)
 
     if post.author.social_sharing_mode != const.SHARE_NOTHING:
-        token = simplejson.loads(post.author.twitter_access_token)
+        token = json.loads(post.author.twitter_access_token)
         twitter.tweet(tweet_text, access_token=token)
 
 

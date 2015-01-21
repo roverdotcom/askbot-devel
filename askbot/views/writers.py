@@ -21,7 +21,10 @@ from django.http import HttpResponseBadRequest
 from django.http import HttpResponseForbidden
 from django.http import HttpResponseRedirect
 from django.http import Http404
-from django.utils import simplejson
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 from django.utils.html import strip_tags, escape
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
@@ -121,7 +124,7 @@ def upload(request):#ajax upload file to a question or answer
         result = ''
         file_url = ''
 
-    #data = simplejson.dumps({
+    #data = json.dumps({
     #    'result': result,
     #    'error': error,
     #    'file_url': file_url
@@ -356,7 +359,7 @@ def retag_question(request, id):
                         message = request.user.get_and_delete_messages()[-1]
                         response_data['message'] = message
 
-                    data = simplejson.dumps(response_data)
+                    data = json.dumps(response_data)
                     return HttpResponse(data, content_type="application/json")
                 else:
                     return HttpResponseRedirect(question.get_absolute_url())
@@ -365,7 +368,7 @@ def retag_question(request, id):
                     'message': format_errors(form.errors['tags']),
                     'success': False
                 }
-                data = simplejson.dumps(response_data)
+                data = json.dumps(response_data)
                 return HttpResponse(data, content_type="application/json")
         else:
             form = forms.RetagQuestionForm(question)
@@ -382,7 +385,7 @@ def retag_question(request, id):
                 'message': unicode(e),
                 'success': False
             }
-            data = simplejson.dumps(response_data)
+            data = json.dumps(response_data)
             return HttpResponse(data, content_type="application/json")
         else:
             request.user.message_set.create(message = unicode(e))
@@ -708,7 +711,7 @@ def __generate_comments_json(obj, user):#non-view generates json data for the po
         }
         json_comments.append(comment_data)
 
-    data = simplejson.dumps(json_comments)
+    data = json.dumps(json_comments)
     return HttpResponse(data, content_type="application/json")
 
 @csrf.csrf_exempt

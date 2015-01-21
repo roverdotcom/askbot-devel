@@ -3,7 +3,10 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, Http404
 # from django.contrib.auth.models import User
 from askbot.models import User
-from django.utils import simplejson
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from askbot import models
@@ -64,7 +67,7 @@ def info(request):
     else:
         data['groups'] = 0
 
-    json_string = simplejson.dumps(data)
+    json_string = json.dumps(data)
     return HttpResponse(json_string, content_type='application/json')
 
 def user(request, user_id):
@@ -76,7 +79,7 @@ def user(request, user_id):
     data['questions'] = models.Post.objects.get_questions(user).count()
     data['answers'] = models.Post.objects.get_answers(user).count()
     data['comments'] = models.Post.objects.filter(post_type='comment').count()
-    json_string = simplejson.dumps(data)
+    json_string = json.dumps(data)
     return HttpResponse(json_string, content_type='application/json')
 
 
@@ -125,7 +128,7 @@ def users(request):
                     'count': paginator.count,
                     'users': user_list
                 }
-        json_string = simplejson.dumps(response_dict)
+        json_string = json.dumps(response_dict)
 
         return HttpResponse(json_string, content_type='application/json')
 
@@ -141,7 +144,7 @@ def question(request, question_id):
         post_type='question', deleted=False
     )
     datum = get_question_data(post.thread)
-    json_string = simplejson.dumps(datum)
+    json_string = json.dumps(datum)
     return HttpResponse(json_string, content_type='application/json')
 
 
@@ -196,5 +199,5 @@ def questions(request):
         'pages' : paginator.num_pages,
         'questions': question_list
     }
-    response_data = simplejson.dumps(ajax_data)
+    response_data = json.dumps(ajax_data)
     return HttpResponse(response_data, content_type='application/json')

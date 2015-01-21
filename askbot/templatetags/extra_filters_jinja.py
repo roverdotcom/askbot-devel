@@ -11,9 +11,11 @@ from django.contrib.humanize.templatetags import humanize
 from django.template import defaultfilters
 from django.core.urlresolvers import reverse, resolve
 from django.http import Http404
-from django.utils import simplejson
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 from django.utils import timezone
-from django.utils.text import truncate_html_words
 from askbot import exceptions as askbot_exceptions
 from askbot.conf import settings as askbot_settings
 from django.conf import settings as django_settings
@@ -29,6 +31,14 @@ from askbot.shims.django_shims import ResolverMatch
 
 from django_countries import countries
 from django_countries import settings as countries_settings
+
+try:
+    from django.utils.text import Truncator
+except ImportError:
+    from django.utils.text import truncate_html_words # Django < 1.6
+else:
+    truncate_html_words = lambda value, length: Truncator(value).words(length, html=True)
+
 
 register = coffin_template.Library()
 
@@ -58,7 +68,7 @@ def as_js_bool(some_object):
 
 @register.filter
 def as_json(data):
-    return simplejson.dumps(data)
+    return json.dumps(data)
 
 @register.filter
 def is_current_language(lang):
@@ -105,7 +115,7 @@ def strip_path(url):
 def can_see_private_user_data(viewer, target):
     if viewer.is_authenticated() and viewer.is_administrator_or_moderator():
         #todo: take into account intersection of viewer and target user groups
-        return askbot_settings.SHOW_ADMINS_PRIVATE_USER_DATA 
+        return askbot_settings.SHOW_ADMINS_PRIVATE_USER_DATA
     return False
 
 @register.filter

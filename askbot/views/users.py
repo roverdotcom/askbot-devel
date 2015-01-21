@@ -29,7 +29,6 @@ from django.utils.translation import get_language
 from django.utils.translation import string_concat
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
-from django.utils import simplejson
 from django.utils import timezone
 from django.utils.html import strip_tags as strip_all_tags
 from django.views.decorators import csrf
@@ -632,7 +631,7 @@ def user_recent(request, user, context):
     # the return value is dictionary where activity id's are keys
     content_objects_by_activity = activity_objects.fetch_content_objects_dict()
 
-        
+
     #a list of digest objects, suitable for display
     #the number of activities to show is not guaranteed to be
     #const.USER_VIEW_DATA_TYPE, because we don't show activity
