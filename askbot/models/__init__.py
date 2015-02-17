@@ -3808,8 +3808,9 @@ def post_anonymous_askbot_content(sender, request, user, **kwargs):
             request.session['anon_post'] = anon_post.id
 
         finally:
-            del request.session['anon_question']
-            del request.session['anon_answer']
+            for field in ['anon_question', 'anon_answer']:
+                if field in request.session:
+                    del request.session[field]
             request.session.modified = True
 
 
