@@ -8,21 +8,39 @@ from django.utils import timezone
 
 class Migration(SchemaMigration):
     def forwards(self, orm):
-        # Get a list of existing AskbotUser ids.
+        # Iterate over previously existing AskbotUsers and approximate
+        # their date_joined.
         askbot_user_ids = orm['askbot.askbotuser'].objects.values_list(
             'id',
             flat=True
         )
+        users = orm['askbot.askbotuser'].objects.filter(
+            id__in=askbot_user_ids
+        )
+        for askbot_user in users:
+            dates = orm['askbot.activity'].objects.filter(
+                user=askbot_user
+            ).order_by(
+                'active_at'
+            ).values_list(
+                'active_at',
+                flat=True
+            )
 
-        # Adding field 'AskbotUser.date_joined'
-        db.add_column(u'askbot_askbotuser', 'date_joined',
-                      self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, default=datetime.datetime(2014, 11, 26, 0, 0), blank=True),
-                      keep_default=False)
+            # Approximate date joined as the date of the first activity
+            # associated with them, or now, if they have no activities.
+            try:
+                date_joined = dates[0]
+            except IndexError:
+                date_joined = timezone.now()
+
+            # All datetimes were either taken from the database or created
+            # with timezone.now and so are in UTC.
+            askbot_user.date_joined = date_joined
+            askbot_user.save()
 
     def backwards(self, orm):
-        # Deleting field 'AskbotUser.date_joined'
-        db.delete_column(u'askbot_askbotuser', 'date_joined')
-
+        pass
 
     models = {
         'askbot.activity': {
