@@ -16,7 +16,10 @@ from django.forms import IntegerField
 from django.http import HttpResponse
 from django.http import HttpResponseNotAllowed
 from django.http import HttpResponseForbidden
-from django.utils import simplejson
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 from django.utils import timezone
 from group_messaging.models import Message
 from group_messaging.models import MessageMemo
@@ -44,9 +47,9 @@ class InboxView(object):
             template_name = self.template_name
         template = get_template(template_name)
         html = template.render(context)
-        json = simplejson.dumps({'html': html, 'success': True})
-        return HttpResponse(json, content_type='application/json')
-            
+        response_json = json.dumps({'html': html, 'success': True})
+        return HttpResponse(response_json, content_type='application/json')
+
 
     def get(self, request, *args, **kwargs):
         """view function for the "GET" method"""
@@ -120,7 +123,7 @@ class NewThread(InboxView):
                         )
             result['success'] = True
             result['message_id'] = message.id
-        return HttpResponse(simplejson.dumps(result), content_type='application/json')
+        return HttpResponse(json.dumps(result), content_type='application/json')
 
 
 class PostReply(InboxView):

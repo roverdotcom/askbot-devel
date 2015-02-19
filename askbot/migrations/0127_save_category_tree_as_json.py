@@ -2,7 +2,10 @@
 from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import DataMigration
-from django.utils import simplejson
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 from django.db import models
 from askbot.conf import settings as askbot_settings
 
@@ -78,7 +81,7 @@ class Migration(DataMigration):
             old_data = ''
 
         json_data = parse_tree(old_data)
-        json_string = simplejson.dumps(json_data).replace(' ', '')
+        json_string = json.dumps(json_data).replace(' ', '')
         if json_string.replace(' ', '') != askbot_settings.CATEGORY_TREE:
             askbot_settings.update('CATEGORY_TREE',  json_string)
 

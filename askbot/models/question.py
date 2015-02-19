@@ -10,7 +10,6 @@ from django.core import cache  # import cache, not from cache import cache, to b
 from django.core import exceptions as django_exceptions
 from django.core.urlresolvers import reverse
 from django.template.loader import get_template
-from django.utils.hashcompat import md5_constructor
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from django.utils.translation import string_concat
@@ -892,7 +891,7 @@ class Thread(models.Model):
 
         #make sure that tags have correct language code
         self.set_tags_language_code(language_code)
-            
+
 
     def set_accepted_answer(self, answer, timestamp):
         if answer and answer.thread != self:

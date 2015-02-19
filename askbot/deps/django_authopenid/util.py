@@ -15,7 +15,10 @@ import oauth2 as oauth # OAuth1 protocol
 from django.db.models.query import Q
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.utils import simplejson
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ImproperlyConfigured
@@ -450,8 +453,9 @@ def get_enabled_major_login_providers():
         client = oauth.Client(consumer, token=token)
         url = 'https://identi.ca/api/account/verify_credentials.json'
         response, content = client.request(url, 'GET')
-        json = simplejson.loads(content)
-        return json['id']
+        response_json = json.loads(content)
+        return response_json['id']
+
     if askbot_settings.IDENTICA_KEY and askbot_settings.IDENTICA_SECRET:
         data['identi.ca'] = {
             'name': 'identi.ca',
@@ -882,7 +886,7 @@ def mozilla_persona_get_email_from_assertion(assertion):
     conn.request('POST', '/verify', params, headers)
     response = conn.getresponse()
     if response.status == 200:
-        data = simplejson.loads(response.read())
+        data = json.loads(response.read())
         email = data.get('email')
         if email:
             return email

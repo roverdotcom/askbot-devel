@@ -8,7 +8,10 @@ from django import forms
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.cache import cache
-from django.utils import simplejson
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 from django.utils.datastructures import SortedDict
 from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext as _
@@ -695,7 +698,7 @@ class MultipleStringValue(Value):
     def get_db_prep_save(self, value):
         if is_string_like(value):
             value = [value]
-        return simplejson.dumps(value)
+        return json.dumps(value)
 
     def to_python(self, value):
         if not value or value == NOTSET:
@@ -704,7 +707,7 @@ class MultipleStringValue(Value):
             return value
         else:
             try:
-                return simplejson.loads(value)
+                return json.loads(value)
             except:
                 if is_string_like(value):
                     return [value]

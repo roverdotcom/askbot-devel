@@ -22,7 +22,10 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.template.loader import get_template
 from django.views.decorators import csrf
-from django.utils import simplejson
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 from django.utils import translation
 from django.utils import timezone
 from django.utils.encoding import force_text
@@ -58,7 +61,7 @@ def manage_inbox(request):
     try:
         if request.is_ajax():
             if request.method == 'POST':
-                post_data = simplejson.loads(request.raw_post_data)
+                post_data = json.loads(request.raw_post_data)
                 if request.user.is_authenticated():
                     activity_types = const.RESPONSE_ACTIVITY_TYPES_FOR_DISPLAY
                     activity_types += (
@@ -130,7 +133,7 @@ def manage_inbox(request):
                     user.update_response_counts()
 
                     response_data['success'] = True
-                    data = simplejson.dumps(response_data)
+                    data = json.dumps(response_data)
                     return HttpResponse(data, content_type="application/json")
                 else:
                     raise exceptions.PermissionDenied(
@@ -147,7 +150,7 @@ def manage_inbox(request):
             message = _('Oops, apologies - there was some error')
         response_data['message'] = message
         response_data['success'] = False
-        data = simplejson.dumps(response_data)
+        data = json.dumps(response_data)
         return HttpResponse(data, content_type="application/json")
 
 
@@ -429,12 +432,12 @@ def vote(request):
             post = models.Post.objects.get(id = id)
             post.thread.invalidate_cached_data()
 
-        data = simplejson.dumps(response_data)
+        data = json.dumps(response_data)
 
     except Exception, e:
         response_data['message'] = unicode(e)
         response_data['success'] = 0
-        data = simplejson.dumps(response_data)
+        data = json.dumps(response_data)
     return HttpResponse(data, content_type="application/json")
 
 #internally grouped views - used by the tagging system
@@ -443,7 +446,7 @@ def vote(request):
 @decorators.ajax_login_required
 def mark_tag(request, **kwargs):#tagging system
     action = kwargs['action']
-    post_data = simplejson.loads(request.raw_post_data)
+    post_data = json.loads(request.raw_post_data)
     raw_tagnames = post_data['tagnames']
     reason = post_data['reason']
     assert reason in ('good', 'bad', 'subscribed')
@@ -479,7 +482,7 @@ def mark_tag(request, **kwargs):#tagging system
         else:
             tag_usage_counts[name] = 0
 
-    return HttpResponse(simplejson.dumps(tag_usage_counts), content_type="application/json")
+    return HttpResponse(json.dumps(tag_usage_counts), content_type="application/json")
 
 #@decorators.ajax_only
 @decorators.get_only
@@ -494,7 +497,7 @@ def get_tags_by_wildcard(request):
     matching_tags = models.Tag.objects.get_by_wildcards( [wildcard,] )
     count = matching_tags.count()
     names = matching_tags.values_list('name', flat = True)[:20]
-    re_data = simplejson.dumps({'tag_count': count, 'tag_names': list(names)})
+    re_data = json.dumps({'tag_count': count, 'tag_names': list(names)})
     return HttpResponse(re_data, mimetype = 'application/json')
 
 @decorators.get_only
@@ -508,7 +511,7 @@ def get_thread_shared_users(request):
         'users': users,
     }
     html = render_into_skin_as_string('widgets/user_list.html', data, request)
-    re_data = simplejson.dumps({
+    re_data = json.dumps({
         'html': html,
         'users_count': users.count(),
         'success': True
@@ -524,7 +527,7 @@ def get_thread_shared_groups(request):
     groups = thread.get_groups_shared_with()
     data = {'groups': groups}
     html = render_into_skin_as_string('widgets/groups_list.html', data, request)
-    re_data = simplejson.dumps({
+    re_data = json.dumps({
         'html': html,
         'groups_count': groups.count(),
         'success': True
@@ -593,7 +596,7 @@ def rename_tag(request):
     if request.user.is_anonymous() \
         or not request.user.is_administrator_or_moderator():
         raise exceptions.PermissionDenied()
-    post_data = simplejson.loads(request.raw_post_data)
+    post_data = json.loads(request.raw_post_data)
     to_name = forms.clean_tag(post_data['to_name'])
     from_name = forms.clean_tag(post_data['from_name'])
     path = post_data['path']
@@ -621,7 +624,7 @@ def delete_tag(request):
         raise exceptions.PermissionDenied()
 
     try:
-        post_data = simplejson.loads(request.raw_post_data)
+        post_data = json.loads(request.raw_post_data)
         tag_name = post_data['tag_name']
         path = post_data['path']
         tree = category_tree.get_data()
@@ -654,7 +657,7 @@ def add_tag_category(request):
         or not request.user.is_administrator_or_moderator():
         raise exceptions.PermissionDenied()
 
-    post_data = simplejson.loads(request.raw_post_data)
+    post_data = json.loads(request.raw_post_data)
     category_name = forms.clean_tag(post_data['new_category_name'])
     path = post_data['path']
 
@@ -862,7 +865,7 @@ def api_get_questions(request):
         except:
             continue
 
-    json_data = simplejson.dumps(thread_list)
+    json_data = json.dumps(thread_list)
     return HttpResponse(json_data, mimetype = "application/json")
 
 
@@ -1506,7 +1509,7 @@ def get_editor(request):
     """
     if 'config' not in request.GET:
         return HttpResponseForbidden()
-    config = simplejson.loads(request.GET['config'])
+    config = json.loads(request.GET['config'])
     element_id = request.GET.get('id', 'editor')
     form = forms.EditorForm(
                 attrs={'id': element_id},
@@ -1534,7 +1537,7 @@ def get_editor(request):
         'scripts': parsed_scripts,
         'success': True
     }
-    return HttpResponse(simplejson.dumps(data), content_type='application/json')
+    return HttpResponse(json.dumps(data), content_type='application/json')
 
 @csrf.csrf_exempt
 @decorators.ajax_only

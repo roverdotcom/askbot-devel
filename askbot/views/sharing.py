@@ -5,7 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.views.decorators import csrf
-from django.utils import simplejson
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 
 @login_required
 def start_sharing_twitter(request):
@@ -29,7 +32,7 @@ def save_twitter_access_token(request):
                                 oauth_verifier = request.GET['oauth_verifier']
                             )
     #save the access token
-    request.user.twitter_access_token = simplejson.dumps(access_token_data)
+    request.user.twitter_access_token = json.dumps(access_token_data)
     request.user.twitter_handle = access_token_data['screen_name']
     if request.user.social_sharing_mode == const.SHARE_NOTHING:
         request.user.social_sharing_mode = const.SHARE_MY_POSTS
