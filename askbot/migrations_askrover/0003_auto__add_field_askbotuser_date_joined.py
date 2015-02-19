@@ -8,12 +8,6 @@ from django.utils import timezone
 
 class Migration(SchemaMigration):
     def forwards(self, orm):
-        # Get a list of existing AskbotUser ids.
-        askbot_user_ids = orm['askbot.askbotuser'].objects.values_list(
-            'id',
-            flat=True
-        )
-
         # Adding field 'AskbotUser.date_joined'
         db.add_column(u'askbot_askbotuser', 'date_joined',
                       self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, default=datetime.datetime(2014, 11, 26, 0, 0), blank=True),
