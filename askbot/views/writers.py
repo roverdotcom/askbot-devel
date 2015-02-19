@@ -287,8 +287,7 @@ def ask(request):#view used to ask a new question
                 )
                 request.session['anon_question'] = anon_question.id
                 return HttpResponseRedirect(url_utils.get_login_url())
-
-    if request.method == 'GET':
+    else:
         form = forms.AskForm(user=request.user)
 
     draft_title = ''
@@ -760,7 +759,7 @@ def post_comments(request):#generic ajax handler to load comments to an object
                 raise exceptions.PermissionDenied(askbot_settings.READ_ONLY_MESSAGE)
 
             comment = user.post_comment(
-                parent_post=post, 
+                parent_post=post,
                 body_text=form.cleaned_data['comment'],
                 ip_addr=request.META.get('REMOTE_ADDR')
             )
