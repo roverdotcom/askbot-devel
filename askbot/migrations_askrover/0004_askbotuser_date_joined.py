@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import datetime
 from south.db import db
-from south.v2 import SchemaMigration
+from south.v2 import DataMigration
 from django.db import models
 from django.utils import timezone
 
 
-class Migration(SchemaMigration):
+class Migration(DataMigration):
     def forwards(self, orm):
         # Iterate over previously existing AskbotUsers and approximate
         # their date_joined.
