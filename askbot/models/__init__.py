@@ -3801,7 +3801,12 @@ def post_anonymous_askbot_content(sender, request, user, **kwargs):
             pass
 
         else:
-            askbot_user = User.objects.get_or_create(user=user)[0]
+            askbot_user, created = User.objects.get_or_create(
+                user=user,
+                defaults={
+                    'date_joined': timezone.now()
+                }
+            )
             anon_post = \
                 askbot_user.post_anonymous_askbot_content(anon_content)
             anon_content.delete()
