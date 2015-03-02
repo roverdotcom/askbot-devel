@@ -2349,7 +2349,7 @@ class PostRevision(models.Model):
                 'title': self.title,
                 'html': sanitized_html
             }
-        elif self.post.is_answer():
+        else:
             return sanitized_html
 
     def get_snippet(self, max_length = 120):
