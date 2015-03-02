@@ -14,6 +14,7 @@ Rover users.
 from django.contrib.auth import get_user
 from django.contrib.auth.models import User
 from django.utils.functional import SimpleLazyObject
+from django.utils import timezone
 from askbot.models import AskbotUser
 
 
@@ -26,7 +27,12 @@ def get_askbot_user(request):
             isinstance(request._cached_user, User):
         user = get_user(request)
         if isinstance(user, User):
-            user = AskbotUser.objects.get_or_create(user=user)[0]
+            user, created = AskbotUser.objects.get_or_create(
+                user=user,
+                defaults={
+                    'date_joined': timezone.now()
+                }
+            )
         request._cached_user = user
     return request._cached_user
 
