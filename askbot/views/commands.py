@@ -61,7 +61,7 @@ def manage_inbox(request):
     try:
         if request.is_ajax():
             if request.method == 'POST':
-                post_data = json.loads(request.raw_post_data)
+                post_data = json.loads(request.body)
                 if request.user.is_authenticated():
                     activity_types = const.RESPONSE_ACTIVITY_TYPES_FOR_DISPLAY
                     activity_types += (
@@ -446,7 +446,7 @@ def vote(request):
 @decorators.ajax_login_required
 def mark_tag(request, **kwargs):#tagging system
     action = kwargs['action']
-    post_data = json.loads(request.raw_post_data)
+    post_data = json.loads(request.body)
     raw_tagnames = post_data['tagnames']
     reason = post_data['reason']
     assert reason in ('good', 'bad', 'subscribed')
@@ -596,7 +596,7 @@ def rename_tag(request):
     if request.user.is_anonymous() \
         or not request.user.is_administrator_or_moderator():
         raise exceptions.PermissionDenied()
-    post_data = json.loads(request.raw_post_data)
+    post_data = json.loads(request.body)
     to_name = forms.clean_tag(post_data['to_name'])
     from_name = forms.clean_tag(post_data['from_name'])
     path = post_data['path']
@@ -624,7 +624,7 @@ def delete_tag(request):
         raise exceptions.PermissionDenied()
 
     try:
-        post_data = json.loads(request.raw_post_data)
+        post_data = json.loads(request.body)
         tag_name = post_data['tag_name']
         path = post_data['path']
         tree = category_tree.get_data()
@@ -634,7 +634,7 @@ def delete_tag(request):
         if 'tag_name' in locals():
             logging.critical('could not delete tag %s' % tag_name)
         else:
-            logging.critical('failed to parse post data %s' % request.raw_post_data)
+            logging.critical('failed to parse post data %s' % request.body)
         raise exceptions.PermissionDenied(_('Sorry, could not delete tag'))
     return {'tree_data': tree}
 
@@ -657,7 +657,7 @@ def add_tag_category(request):
         or not request.user.is_administrator_or_moderator():
         raise exceptions.PermissionDenied()
 
-    post_data = json.loads(request.raw_post_data)
+    post_data = json.loads(request.body)
     category_name = forms.clean_tag(post_data['new_category_name'])
     path = post_data['path']
 
