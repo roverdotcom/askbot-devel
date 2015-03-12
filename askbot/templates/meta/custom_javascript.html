@@ -1,0 +1,59 @@
+<script>
+    var Rover = Rover || {};
+    Rover.api = Rover.api || {
+        getSourceHeader: function (val) {
+            val = val || 'web';
+            return { 'X-Rover-Source': val };
+        }
+    };
+    Rover.state = Rover.state || {};
+    Rover.context = Rover.context || {};
+
+    Rover.collections = Rover.collections || {};
+    Rover.models = Rover.models || {};
+    Rover.views = Rover.views || {};
+    var dataLayer = [];
+</script>
+<script>
+    Rover.urls = {
+        currentPerson: '{% url "current-person" %}',
+        currentPersonExtraData: '{% url "current-person-extra-data" %}',
+        dashboard: '{% url "account" %}',
+        accountEdit: '{% url "account-edit" %}',
+        profile: '{% url "account-scorecard" %}',
+        inbox: '{% url "inbox:pending" %}',
+        calendar: '{% url "account-calendar" %}',
+        {% if request.user.is_authenticated %}
+            dogPhotos: '{% url "pets-dogs-view" request.user.person.slug %}',
+        {% endif %}
+        logout: '/logout/?next={{ request.get_full_path|urlencode }}',
+        signin: '{% url "account-continue" %}?action=sign_in&amp;next={{ request.get_full_path|urlencode }}',
+        signup: '{% url "account-continue" %}?next={{ request.get_full_path|urlencode }}',
+        signinRaw: '{% url "account-continue" %}?action=sign_in',
+        signupRaw: '{% url "account-continue" %}',
+        homepageGeoPopupUrl: '{% url "homepage-geo-popup" %}',
+        analyticsTrackShare: '{% url "analytics-track-share" %}',
+        trackTestimonialRequest: '{% url "account-track-testimonial-requests" %}',
+        validateEmail: '{% url "ajax:auth:validate-email" %}',
+        validateZipcode: '{% url "ajax:auth:validate-zipcode" %}',
+        hidePhotoUrl: '{% url "toggle-stay-image-public" %}',
+        bookingAddOnsAPI: '{% url "api:v2:booking-add-ons" %}',
+        rebook: '{% url "account" %}?rebook=1#rebook',
+        search: '{% url "search" %}',
+        hasDogs: '{% url "update-has-dogs" %}'
+    };
+</script>
+<script id="logged_in_user_template" type="x-tmpl-mustache">
+<li><a href="https://support.rover.com/hc/en-us?ref=header"><span class="fa fa-question-circle link-icon"></span>Help</a></li>
+</script>
+<script src="{% static "new_design/vendor/js/underscore.js" %}"></script>
+<script src="{% static "new_design/vendor/js/backbone.js" %}"></script>
+<script src="{% static "new_design/vendor/js/mustache.js" %}"></script>
+<script src="{% static "new_design/js/mustache_config.js" %}"></script>
+<script src="{% static "new_design/vendor/js/django.mustache.js" %}"></script>
+<script>
+    Mustache.TEMPLATES['new_design/header/logged_in_user'] = $("#logged_in_user_template").html();
+</script>
+<script src="{% static "new_design/vendor/bower_components/jsurl/url.js" %}"></script>
+<script src="{% static "new_design/js/models/person.js" %}"></script>
+<script src="{% static "new_design/js/authenticated.js" %}"></script>
