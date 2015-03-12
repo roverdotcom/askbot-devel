@@ -23,7 +23,7 @@
         profile: '{% url "account-scorecard" %}',
         inbox: '{% url "inbox:pending" %}',
         calendar: '{% url "account-calendar" %}',
-        {% if request.user.is_authenticated %}
+        {% if request.user.is_authenticated() %}
             dogPhotos: '{% url "pets-dogs-view" request.user.person.slug %}',
         {% endif %}
         logout: '/logout/?next={{ request.get_full_path|urlencode }}',
