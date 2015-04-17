@@ -1,8 +1,9 @@
 akismet
 django>=1.3.1,<1.6
 Jinja2
-Coffin>=0.3,<2.0
+Coffin>=0.3
 South>=0.7.1
+#-e git+https://github.com/matthiask/south.git#egg=south
 oauth2
 Lamson
 markdown2
