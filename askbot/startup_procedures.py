@@ -11,7 +11,6 @@ import askbot
 import django
 import os
 import re
-import south
 import sys
 import urllib
 from django.db import connection

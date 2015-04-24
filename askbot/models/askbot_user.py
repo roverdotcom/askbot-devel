@@ -8,6 +8,7 @@ from django.db.models.signals import post_save
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.query import QuerySet
 from django.db.models import Q
+from django.utils.functional import cached_property
 from model_utils.managers import PassThroughManager
 
 
@@ -27,12 +28,6 @@ class AskbotUserQuerySet(QuerySet):
     Will be translated to:
     Post.objects.filter(author__user__username='something')
     """
-
-    # List of attributes on User objects that need 'user__' prefixed to
-    # their ORM query keyword arguments.
-    user_attributes = tuple(
-        attr for attr in AuthUser._meta.get_all_field_names() if attr != 'id'
-    )
 
     def __getattribute__(self, name):
         """Intercept calls to queryset methods that take field names or field
@@ -186,6 +181,15 @@ class AskbotUserQuerySet(QuerySet):
                 pass
 
         return ''.join([descending, '__'.join(fields)])
+
+    @cached_property
+    def user_attributes(self):
+        """
+        Return a tuple of attributes on User objects that need 'user__'
+        prefixed to their ORM query keyword arguments.
+        """
+        return tuple(
+            attr for attr in AuthUser._meta.get_all_field_names() if attr != 'id')
 
 
 class AskbotUserManager(PassThroughManager):

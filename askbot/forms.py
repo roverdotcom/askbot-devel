@@ -145,8 +145,7 @@ def tag_strings_match(tag_string, mandatory_tag):
         return tag_string == mandatory_tag
 
 
-
-COUNTRY_CHOICES = (('unknown', _('select country')),) + countries.COUNTRIES
+COUNTRY_CHOICES = (('unknown', _('select country')),) + tuple(countries)
 
 
 class CountryField(forms.ChoiceField):
@@ -1169,7 +1168,7 @@ class AnswerForm(PostAsSomeoneForm, PostPrivatelyForm):
     def save(self, question, user, ip_addr=None):
         wiki = self.cleaned_data['wiki']
         text = self.cleaned_data['text']
-        is_private = self.cleaned_data['post_privately']        
+        is_private = self.cleaned_data['post_privately']
 
         return user.post_answer(
             question = question,

@@ -9,11 +9,11 @@ import platform
 
 VERSION = (0, 7, 49)
 
-#keys are module names used by python imports,
-#values - the package qualifier to use for pip
+# keys are module names used by python imports,
+# values - the package qualifier to use for pip
 REQUIREMENTS = {
     'akismet': 'akismet==0.2.0',
-    'django': 'django>=1.3.1,<1.7',
+    'django': 'django>=1.3.1,<1.8',
     'jinja2': 'Jinja2==2.7.3',
     'coffin': 'Coffin>=0.3,<2.0',
     'south': 'South>=0.7.1',
@@ -23,7 +23,7 @@ REQUIREMENTS = {
     'threaded_multihost': 'django-threaded-multihost',
     'robots': 'django-robots==1.0',
     'sanction': 'sanction==0.3.1',
-    'django_countries': 'django-countries==1.0.5',
+    'django_countries': 'django-countries==3.3',
     'djcelery': 'django-celery>=3.0.11',
     'djkombu': 'django-kombu==0.9.4',
     'recaptcha_works': 'django-recaptcha-works',
@@ -33,7 +33,6 @@ REQUIREMENTS = {
     'bs4': 'beautifulsoup4==4.3.2',
     'picklefield': 'django-picklefield==0.3.1',
     'longerusername': 'longerusername==0.4',
-    #'stopforumspam': 'stopforumspam'
 }
 
 # These are satisfied by Rover's requirements
