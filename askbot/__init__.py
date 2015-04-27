@@ -7,6 +7,8 @@ basic actions on behalf of the forum application
 import os
 import platform
 
+default_app_config = 'askbot.apps.AskbotAppConfig'
+
 VERSION = (0, 7, 49)
 
 # keys are module names used by python imports,

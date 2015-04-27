@@ -26,7 +26,7 @@ import logging
 import signals
 import os
 
-__all__ = ['BASE_GROUP', 'BASE_SUPER_GROUP', 'ConfigurationGroup', 'Value', 'BooleanValue', 
+__all__ = ['BASE_GROUP', 'BASE_SUPER_GROUP', 'ConfigurationGroup', 'Value', 'BooleanValue',
       'DecimalValue', 'DurationValue',
       'FloatValue', 'IntegerValue', 'ModuleValue', 'PercentValue', 'PositiveIntegerValue', 'SortedDotDict',
       'StringValue', 'SuperGroup', 'ImageValue', 'LongStringValue', 'MultipleStringValue', 'URLValue']
@@ -244,17 +244,17 @@ class Value(object):
             note = ""
         else:
             if self.default == "":
-                note = _('Default value: ""')
+                note = ugettext_lazy('Default value: ""')
 
             elif self.choices:
                 work = []
                 for x in self.choices:
                     if x[0] in self.default:
                         work.append(force_unicode(x[1]))
-                note = _('Default value: ') + unicode(u", ".join(work))
+                note = ugettext_lazy('Default value: ') + unicode(u", ".join(work))
 
             else:
-                note = _("Default value: %s") % force_unicode(self.default)
+                note = ugettext_lazy("Default value: %s") % force_unicode(self.default)
 
         return note
 
@@ -378,7 +378,7 @@ class Value(object):
                     s.save()
 
                 signals.configuration_value_changed.send(self, old_value=current_value, new_value=new_value, setting=self)
-                
+
                 if self.clear_cache:
                     cache.clear()
 
@@ -746,4 +746,3 @@ class ModuleValue(Value):
         if value == NOTSET:
             value = ""
         return value
-

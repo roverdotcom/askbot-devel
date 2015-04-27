@@ -283,7 +283,7 @@ class AskbotUser(models.Model):
 
     objects = AskbotUserManager.for_queryset_class(AskbotUserQuerySet)()
 
-    class Meta(object):
+    class Meta:
         app_label = 'askbot'
         verbose_name = 'Rover Q&A Community Profile'
         verbose_name_plural = 'Rover Q&A Community Profiles'

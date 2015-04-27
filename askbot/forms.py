@@ -145,16 +145,12 @@ def tag_strings_match(tag_string, mandatory_tag):
         return tag_string == mandatory_tag
 
 
-COUNTRY_CHOICES = (('unknown', _('select country')),) + tuple(countries)
-
-
 class CountryField(forms.ChoiceField):
     """this is better placed into the django_coutries app"""
 
     def __init__(self, *args, **kwargs):
         """sets label and the country choices
         """
-        kwargs['choices'] = kwargs.pop('choices', COUNTRY_CHOICES)
         kwargs['label'] = kwargs.pop('label', _('Country'))
         super(CountryField, self).__init__(*args, **kwargs)
 
@@ -423,8 +419,7 @@ class TagNamesField(forms.CharField):
 
     def __init__(self, *args, **kwargs):
         super(TagNamesField, self).__init__(*args, **kwargs)
-        self.required = kwargs.get('required',
-                askbot_settings.TAGS_ARE_REQUIRED)
+        self.required = kwargs.get('required', False)
         self.widget = forms.TextInput(
             attrs={'size': 50, 'autocomplete': 'off'}
         )
@@ -433,14 +428,10 @@ class TagNamesField(forms.CharField):
                             'We ran out of space for recording the tags. '
                             'Please shorten or delete some of them.'
                         )
-        self.label = kwargs.get('label') or _('tags')
-        self.help_text = kwargs.get('help_text') or ungettext_lazy(
+        self.label = _('tags')
+        self.help_text = kwargs.get('help_text') or _(
             'Tags are short keywords, with no spaces within. '
-            'Up to %(max_tags)d tag can be used.',
-            'Tags are short keywords, with no spaces within. '
-            'Up to %(max_tags)d tags can be used.',
-            askbot_settings.MAX_TAGS_PER_POST
-        ) % {'max_tags': askbot_settings.MAX_TAGS_PER_POST}
+            'Up to 5 tags can be used.')
         self.initial = ''
 
     def clean(self, value):
@@ -498,11 +489,8 @@ class WikiField(forms.BooleanField):
         self.required = False
         self.initial = False
         self.label = _(
-            'community wiki ({} are not awarded & '
-            'many others can edit wiki post)'.format(
-                askbot_settings.WORDS_KARMA_PLURAL
-            )
-        )
+            'community wiki (Treats are not awarded & '
+            'many others can edit wiki post)')
 
     def clean(self, value):
         return value and askbot_settings.WIKI_ON
@@ -1501,9 +1489,7 @@ class EditUserForm(forms.Form):
 class TagFilterSelectionForm(forms.ModelForm):
     email_tag_filter_strategy = forms.ChoiceField(
         initial = const.EXCLUDE_IGNORED,
-        label = _('Choose email {} filter'.format(
-            askbot_settings.WORDS_TAG_SINGULAR.lower()
-        )),
+        label = _('Choose email keyword filter'),
         widget = forms.RadioSelect
     )
     def __init__(self, *args, **kwargs):
@@ -1651,8 +1637,7 @@ class SubscribeForEmailUpdatesField(forms.ChoiceField):
             ('y', _('okay, let\'s try!')),
             (
                 'n',
-                _('no %(sitename)s email please, thanks')
-                    % {'sitename': askbot_settings.APP_SHORT_NAME}
+                _('no Askbot email please, thanks')
             )
         )
         super(SubscribeForEmailUpdatesField, self).__init__(**kwargs)
