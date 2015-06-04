@@ -8,15 +8,8 @@
         </h1>
         <div class="clearfix"></div>
         <div id="listSearchTags" {% if not search_tags %}style="display: none;"{% endif %}>
-            <span class="left">{% trans tags=settings.WORDS_TAG_PLURAL|lower %}With {{ tags }}{% endtrans %}</span>
-            {{ macros.tag_list_widget(
-                    search_tags,
-                    id = 'searchTags',
-                    deletable = True,
-                    make_links = False,
-                    search_state = search_state
-                )
-            }}
+            <span class="left">{% trans tag=settings.WORDS_TAG_SINGULAR|lower %}With {{ tag }}{% endtrans %}:</span>
+            <h1 class="left tag-page-header">{{ search_tags[0] }}</h1>
         </div>
         {#% if author_name or search_tags or query %}
             <p class="search-tips"><b>{% trans %}Search tips:{% endtrans %}</b> 

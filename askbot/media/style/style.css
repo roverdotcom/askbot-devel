@@ -1186,6 +1186,12 @@ body.anon.ask-page .search-drop-menu {
   font-size: 16px;
   font-family: 'Open Sans', Arial, sans-serif;
 }
+.tag-page-header {
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 130%;
+    margin-left: 5px;
+}
 ul#searchTags {
   margin-left: 10px;
   float: right;
