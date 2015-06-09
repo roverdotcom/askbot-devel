@@ -680,6 +680,11 @@ def question(request, id):#refactor - long subroutine. display question body, an
 def revisions(request, id, post_type = None):
     assert post_type in ('question', 'answer')
     post = get_object_or_404(models.Post, post_type=post_type, id=id)
+
+    user = request.user
+    if not user.is_authenticated() or not user.is_administrator_or_moderator():
+        return HttpResponseRedirect(post.get_absolute_url())
+
     revisions = list(models.PostRevision.objects.filter(post=post))
     revisions.reverse()
     for i, revision in enumerate(revisions):
