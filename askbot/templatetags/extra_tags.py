@@ -128,7 +128,7 @@ def render_new_design_footer_cities():
     supported by Coffin.
     """
     return render_to_string(
-        'seo/new_design/footer_cities.html',
+        'new_design/seo/footer_cities.html',
         {
             'footer_cities': City.objects.filter(
                 is_in_footer=True
