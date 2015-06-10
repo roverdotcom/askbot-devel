@@ -4024,3 +4024,11 @@ AutoCompleter.prototype.setCaret = function(pos) {
   document.createElement("abbr");
   document.createElement("time");
 }(jQuery));
+
+$(function() {
+    $('.js-keyword-dropdown').on('change', function() {
+        if (this.value !== 'none') {
+            window.location.href = this.value;
+        }
+    });
+});

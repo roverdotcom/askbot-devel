@@ -109,10 +109,8 @@ def questions(request, **kwargs):
     #       down the pipeline, we have to precache them in thread objects
     models.Thread.objects.precache_view_data_hack(threads=page.object_list)
 
-    related_tags = Tag.objects.get_related_to_search(
-                        threads=page.object_list,
-                        ignored_tag_names=meta_data.get('ignored_tag_names',[])
-                    )
+    related_tags = Tag.objects.filter(used_count__gte=3)
+
     tag_list_type = askbot_settings.TAG_LIST_FORMAT
     if tag_list_type == 'cloud': #force cloud to sort by name
         related_tags = sorted(related_tags, key = operator.attrgetter('name'))
