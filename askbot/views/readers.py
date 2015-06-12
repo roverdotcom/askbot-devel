@@ -97,8 +97,15 @@ def questions(request, **kwargs):
                         request_user=request.user, search_state=search_state
                     )
 
+    is_specific_search = any([
+        kwargs['author'],
+        kwargs['tags'],
+        kwargs['query']
+    ])
+
     # remove support tagged questions from non-specific searches
-    if not any([kwargs['author'], kwargs['tags'], kwargs['query']]):
+    # or for anonymous users
+    if not is_specific_search or not request.user.is_authenticated():
         qs = qs.exclude(tags__name='support')
 
     if meta_data['non_existing_tags']:
