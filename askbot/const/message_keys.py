@@ -30,12 +30,12 @@ _('click to see most voted questions')
 _('interesting')
 _('ignored')
 _('subscribed')
-TAGS_ARE_REQUIRED_MESSAGE = _('tags are required')
+TAGS_ARE_REQUIRED_MESSAGE = _('keywords are required')
 TAG_WRONG_CHARS_MESSAGE = _(
     'please use letters, numbers and characters "-+.#"'
 )
 TAG_WRONG_FIRST_CHAR_MESSAGE = _(
-    '# is not a valid character at the beginning of tags, use only letters and numbers'
+    '# is not a valid character at the beginning of keywords, use only letters and numbers'
 )
 ACCOUNT_CANNOT_PERFORM_ACTION = _(
     'Sorry, you cannot %(perform_action)s because %(your_account_is)s'

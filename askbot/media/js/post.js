@@ -122,7 +122,7 @@ var CPValidator = function() {
         getQuestionFormMessages: function(){
             return {
                 tags: {
-                    required: " " + gettext('tags cannot be empty'),
+                    required: " " + gettext('keywords cannot be empty'),
                     maxlength: askbot['messages']['tagLimits'],
                     limit_tag_count: askbot['messages']['maxTagsPerPost'],
                     limit_tag_length: askbot['messages']['maxTagLength']
@@ -1247,7 +1247,7 @@ var questionRetagger = function(){
             },
             messages: {
                 tags: {
-                    required: gettext('tags cannot be empty'),
+                    required: gettext('keywords cannot be empty'),
                     maxlength: askbot['messages']['tagLimits'],
                     limit_tag_count: askbot['messages']['maxTagsPerPost'],
                     limit_tag_length: askbot['messages']['maxTagLength']
