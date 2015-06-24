@@ -295,6 +295,12 @@ class TitleField(forms.CharField):
                 ) % {'question': question_term, 'length': self.max_length}
             )
 
+        # a question title must end with a question mark
+        if value[-1] != '?':
+            raise forms.ValidationError(
+                "Must be in question format and end with a question mark"
+            )
+
         return value.strip()  # TODO: test me
 
 
