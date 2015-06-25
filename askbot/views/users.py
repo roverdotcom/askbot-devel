@@ -23,6 +23,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.http import HttpResponse, HttpResponseForbidden
 from django.http import HttpResponseRedirect, Http404
 from django.utils.translation import get_language
@@ -329,70 +330,13 @@ def need_to_invalidate_post_caches(user, form):
 @login_required
 @csrf.csrf_protect
 def edit_user(request, id):
-    """View that allows to edit user profile.
-    This view is accessible to profile owners or site administrators
     """
-    user = get_object_or_404(models.User, id=id)
-    if not(request.user == user or request.user.is_superuser):
-        raise Http404
-    if request.method == "POST":
-        form = forms.EditUserForm(user, request.POST)
-        if form.is_valid():
-            if 'email' in form.cleaned_data and askbot_settings.EDITABLE_EMAIL:
-                new_email = sanitize_html(form.cleaned_data['email'])
-                set_new_email(user, new_email)
+    View that allows to edit user profile.
+    """
+    # Rover.com has it's own version of the user edit form and we
+    # want users to use that form
+    return redirect('account-edit')
 
-            prev_username = user.username
-            if askbot_settings.EDITABLE_SCREEN_NAME:
-                new_username = strip_all_tags(form.cleaned_data['username'])
-                if user.username != new_username:
-                    group = user.get_personal_group()
-                    user.username = new_username
-                    group.name = format_personal_group_name(user)
-                    group.save()
-
-            #Maybe we need to clear post caches, b/c
-            #author info may need to be updated on posts and thread summaries
-            if need_to_invalidate_post_caches(user, form):
-                #get threads where users participated
-                thread_ids = models.Post.objects.filter(
-                                    Q(author=user) | Q(last_edited_by=user)
-                                ).values_list(
-                                    'thread__id', flat=True
-                                ).distinct()
-                threads = models.Thread.objects.filter(id__in=thread_ids)
-                for thread in threads:
-                    #for each thread invalidate cache keys for posts, etc
-                    thread.invalidate_cached_data(lazy=True)
-
-            user.real_name = strip_all_tags(form.cleaned_data['realname'])
-            user.website = sanitize_html(form.cleaned_data['website'])
-            user.location = sanitize_html(form.cleaned_data['city'])
-            user.date_of_birth = form.cleaned_data.get('birthday', None)
-            user.about = sanitize_html(form.cleaned_data['about'])
-            user.country = form.cleaned_data['country']
-            user.show_country = form.cleaned_data['show_country']
-            user.show_marked_tags = form.cleaned_data['show_marked_tags']
-            user.save()
-            # send user updated signal if full fields have been updated
-            award_badges_signal.send(None,
-                            event = 'update_user_profile',
-                            actor = user,
-                            context_object = user
-                        )
-            return HttpResponseRedirect(user.get_profile_url())
-    else:
-        form = forms.EditUserForm(user)
-
-    data = {
-        'active_tab': 'users',
-        'page_class': 'user-profile-edit-page',
-        'form' : form,
-        'marked_tags_setting': askbot_settings.MARKED_TAGS_ARE_PUBLIC_WHEN,
-        'support_custom_avatars': ('avatar' in django_settings.INSTALLED_APPS),
-        'view_user': user,
-    }
-    return render(request, 'user_profile/user_edit.html', data)
 
 def user_stats(request, user, context):
     question_filter = {}
