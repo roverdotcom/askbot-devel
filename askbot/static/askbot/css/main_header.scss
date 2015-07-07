@@ -5,6 +5,12 @@
         margin: 0;
         padding: 0;
 
+        @include xs-only {
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, 0);
+        }
+
         a {
             @extend .rover-btn;
             @extend .rover-btn-transparent-dark;
