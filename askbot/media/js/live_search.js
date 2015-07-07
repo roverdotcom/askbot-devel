@@ -216,7 +216,7 @@ SearchDropMenu.prototype.createDom = function() {
     if (this._askButtonEnabled) {
         footer.addClass('askbot-footer');
         var button = this.makeElement('button');
-        button.addClass('submit');
+        button.addClass('rover-btn rover-btn-secondary');
         button.html(gettext('Ask Your Question'))
         footer.append(button);
         var handler = this._askHandler;
@@ -312,7 +312,7 @@ TagWarningBox.prototype.showWarning = function(){
  */
 var InputToolTip = function() {
     WrappedElement.call(this);
-    this._promptText = gettext('search or ask your question');
+    this._promptText = gettext('Search or ask your question');
 };
 inherits(InputToolTip, WrappedElement);
 

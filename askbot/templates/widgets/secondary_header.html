@@ -1,4 +1,5 @@
 <!-- template secondary_header.html -->
+<div class="secondary-header-container">
 <div id="secondaryHeader">
     <div class="content-wrapper">
         {# form is wrapping search buttons and the search bar inputs #}
@@ -29,7 +30,11 @@
             <table width="100%">
                 <tr>
                     {# width 1 means that cell will expand just enough to fit the contents #}
-                    <td width="1"><a id="homeButton" href="{% url questions %}"></a></td>
+                    <td width="1">
+                        <a id="homeButton" href="{% url questions %}">
+                            <i class="rover-icon rover-icon-house"></i>
+                        </a>
+                    </td>
                     <td width="1">{% include "widgets/scope_nav.html" %}</td>
                     {# width * means that the cell takes the remaining table width #}
                     <td width="*" class="search-bar">{% include "widgets/search_bar.html" %}</td> 
@@ -42,4 +47,5 @@
             </table>
         </form>
     </div>
+</div>
 </div>
