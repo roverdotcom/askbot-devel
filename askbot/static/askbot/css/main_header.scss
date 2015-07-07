@@ -1,0 +1,36 @@
+#header.without-logo {
+    background-color: $aqua;
+
+    #userToolsNav {
+        margin: 0;
+        padding: 0;
+
+        a {
+            @extend .rover-btn;
+            @extend .rover-btn-transparent-dark;
+
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+    }
+
+    #metaNav {
+        #navTags, #navUsers {
+            background: transparent;
+
+        }
+
+        a {
+            padding: 0;
+            margin: 0 0 0 10px;
+
+            .rover-icon {
+                font-size: 25px;
+                position: relative;
+                top: 5px;
+            }
+        }
+
+    }
+}
