@@ -5,14 +5,20 @@
     class="{% if settings.SHOW_LOGO %}with-logo{% else %}without-logo{% endif %} header-custom"
 >
     <div class="content-wrapper">
-        <div id="userToolsNav">
-            {% include "widgets/user_navigation.html" %}
+        <div class="text-contrast text-center margin-v-x5">
+            <h2> Q&amp;A Community</h1>
+            <h5>Connect with fellow dog lovers and learn from one another</h5>
         </div>
-        {% if settings.SHOW_LOGO %}
-            {% include "widgets/logo.html" %}
-        {% endif %}
-        <div class="mobile-hidden-nav" id="metaNav">
-            {% include "widgets/meta_nav.html" %}
+        <div class="margin-v-x5 padding-bottom-x5">
+            <div id="userToolsNav">
+                {% include "widgets/user_navigation.html" %}
+            </div>
+            {% if settings.SHOW_LOGO %}
+                {% include "widgets/logo.html" %}
+            {% endif %}
+            <div class="mobile-hidden-nav" id="metaNav">
+                {% include "widgets/meta_nav.html" %}
+            </div>
         </div>
         <div class="clean"></div>
     </div>
