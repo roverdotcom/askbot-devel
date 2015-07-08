@@ -721,10 +721,10 @@ input[type="button"].cancelSearchBtn {
 .cancelSearchBtn:hover {
   color: #d84040;
 }
-button,
-input[type="submit"],
-input[type="button"],
-input[type="reset"],
+button:not(.rover-btn),
+input[type="submit"]:not(.rover-btn),
+input[type="button"]:not(.rover-btn),
+input[type="reset"]:not(.rover-btn),
 .button {
   border: 0 !important;
   border-top: #eaf2f3 1px solid;
@@ -767,8 +767,8 @@ input[type="reset"].large,
   line-height: 35px;
   padding: 0 10px;
 }
-button:hover,
-input[type="submit"]:hover,
+button:hover:not(.rover-btn),
+input[type="submit"]:hover:not(.rover-btn),
 .button:hover {
   background-color: #cde5e9;
   background-repeat: no-repeat;
@@ -832,11 +832,6 @@ form.ajax-file-upload img.spinner {
   /* check blocks/secondary_header.html and widgets/ask_button.html*/
 
   float: right;
-  font-size: 16px;
-  height: 42px;
-  line-height: 44px;
-  margin: -1px 0 0 0;
-  text-transform: uppercase;
   width: 200px;
   /* to match width of sidebar */
 
