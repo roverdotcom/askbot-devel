@@ -12,9 +12,9 @@
     <a class="settings" href="{% url site_settings %}">{% trans %}Settings{% endtrans %}</a>
     <a class="widgets" href="{% url widgets %}">{% trans %}Widgets{% endtrans %}</a>
 {% endif %}
-<a class="help mobile-hidden-nav" href="{% url "help" %}" title="{% trans %}help{% endtrans %}">{% trans %}Get Started{% endtrans %}</a>
-<a class="faq mobile-hidden-nav" href="{% url "faq" %}" title="{% trans %}faq{% endtrans %}">{% trans %}FAQ{% endtrans %}</a>
-<a class="faq mobile-hidden-nav" href="{% url "feedback" %}" title="{% trans %}faq{% endtrans %}">{% trans %}Leave Feedback{% endtrans %}</a>
+<a class="help mobile-hidden-nav hidden-xs" href="{% url "help" %}" title="{% trans %}help{% endtrans %}">{% trans %}Get Started{% endtrans %}</a>
+<a class="faq mobile-hidden-nav hidden-xs" href="{% url "faq" %}" title="{% trans %}faq{% endtrans %}">{% trans %}FAQ{% endtrans %}</a>
+<a class="faq mobile-hidden-nav hidden-xs" href="{% url "feedback" %}" title="{% trans %}faq{% endtrans %}">{% trans %}Leave Feedback{% endtrans %}</a>
 
 {%- if request.user.is_authenticated() -%}
     {% if settings.USE_ASKBOT_LOGIN_SYSTEM %}
