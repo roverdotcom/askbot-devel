@@ -10,6 +10,7 @@ from askbot.models.askbot_user import AskbotUser as User
 from django.core import urlresolvers
 from django.db import models
 from django.utils import html as html_utils
+from django.utils.html import escape
 from django.utils.translation import activate as activate_language
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
@@ -2063,7 +2064,7 @@ class Post(models.Model):
             else:
                 attr = None
             if attr is not None:
-                return u'%s %s' % (self.thread.title, unicode(attr))
+                return u'%s %s' % (escape(self.thread.title), unicode(attr))
             else:
                 return self.thread.title
         raise NotImplementedError
@@ -2346,7 +2347,7 @@ class PostRevision(models.Model):
 
         if self.post.is_question():
             return self.QUESTION_REVISION_TEMPLATE_NO_TAGS % {
-                'title': self.title,
+                'title': escape(self.title),
                 'html': sanitized_html
             }
         else:
@@ -2354,7 +2355,7 @@ class PostRevision(models.Model):
 
     def get_snippet(self, max_length = 120):
         """a little simpler than as Post.get_snippet"""
-        return html_utils.strip_tags(self.html)[:max_length] + '...'
+        return escape(html_utils.strip_tags(self.html)[:max_length] + '...')
 
 
 class PostFlagReason(models.Model):
