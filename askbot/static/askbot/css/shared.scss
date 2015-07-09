@@ -25,3 +25,7 @@ abbr[title].timeago {
         margin: 2px;
     }
 }
+
+.avatar-box .gravatar {
+    @extend .img-circle;
+}
