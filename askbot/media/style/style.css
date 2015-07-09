@@ -2382,34 +2382,11 @@ ul#related-tags li {
 .question-page .comments .edit-comment-buttons .checkbox {
   margin: 3px;
 }
-.question-page .comments .controls a {
-  border: none;
-  color: #988e4c;
-  padding: 0 3px 5px 22px;
-  font-family: 'Open Sans', Arial;
-  font-size: 13px;
-  font-weight: normal;
-  background: url(../images/comment.png) no-repeat center left;
-  -webkit-box-shadow: 0 0 0 #929292;
-  -moz-box-shadow: 0 0 0 #929292;
-  box-shadow: 0 0 0 #929292;
-  text-shadow: 0 0 0 #929292;
-  -moz-text-shadow: 0 0 0 #929292;
-  -webkit-text-shadow: 0 0 0 #929292;
-}
-.question-page .comments .controls a:hover {
-  text-decoration: none;
-}
 .question-page .comments .button {
   color: #988e4c;
   font-size: 11px;
   padding: 3px;
   cursor: pointer;
-}
-.question-page .comments a {
-  background-color: inherit;
-  color: #1b79bd;
-  padding: 0;
 }
 .question-page .comments form.post-comments {
   padding: 1px 6px 7px 31px;
@@ -2489,14 +2466,6 @@ ul#related-tags li {
 .question-page .comments div.comment:hover {
   background-color: #efefef;
 }
-.question-page .comments a.author {
-  background-color: inherit;
-  color: #1b79bd;
-  padding: 0;
-}
-.question-page .comments a.author:hover {
-  text-decoration: underline;
-}
 .question-page .comments span.delete-icon {
   background: url(../images/close-small.png) no-repeat;
   border: 0;
@@ -2544,7 +2513,6 @@ ul#related-tags li {
   font-family: 'Open Sans', Arial;
   font-size: 13px;
   font-weight: normal;
-  line-height: 13px;
   margin: 0 0 3px 8px;
   vertical-align: middle;
   -webkit-box-shadow: 0 0 0 #929292;
