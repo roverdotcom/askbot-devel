@@ -16,3 +16,12 @@ abbr[title].timeago {
     font-weight: normal;
     cursor: auto;
 }
+
+.wmd-container {
+    border: 2px solid $aqua;
+    border-radius: $border-radius-base;
+
+    textarea {
+        margin: 2px;
+    }
+}

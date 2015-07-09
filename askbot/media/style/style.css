@@ -2640,12 +2640,6 @@ ul#related-tags li {
   line-height: 1.2;
   margin-top: 10px;
 }
-.question-page #fmanswer h2 {
-  font-family: 'Raleway', Arial, sans-serif;
-  color: #7ea9b3;
-  font-size: 24px;
-  font-weight: 400;
-}
 .question-page #fmanswer label {
   font-size: 13px;
 }
