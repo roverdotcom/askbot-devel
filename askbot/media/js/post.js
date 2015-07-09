@@ -1643,13 +1643,13 @@ EditCommentForm.prototype.attachTo = function(comment, mode){
     this._commentsWidget.hideButton();//hide add comment button
     //fix up the comment submit button, depending on the mode
     if (this._type == 'add'){
-        this._submit_btn.html(gettext('add comment'));
+        this._submit_btn.html(gettext('Add Comment'));
         if (this._minorEditBox) {
             this._minorEditBox.hide();
         }
     }
     else {
-        this._submit_btn.html(gettext('save comment'));
+        this._submit_btn.html(gettext('Save Comment'));
         if (this._minorEditBox) {
             this._minorEditBox.show();
         }
@@ -1784,15 +1784,15 @@ EditCommentForm.prototype.createDom = function(){
     this._text_counter = $('<span></span>').attr('class', 'counter');
     this._controlsBox.append(this._text_counter);
 
-    this._submit_btn = $('<button class="submit"></button>');
+    this._submit_btn = $('<button class="rover-btn rover-btn-secondary btn-sm margin-right-x2"></button>');
     this._controlsBox.append(this._submit_btn);
-    this._cancel_btn = $('<button class="submit cancel"></button>');
-    this._cancel_btn.html(gettext('cancel'));
+    this._cancel_btn = $('<button class="rover-btn rover-btn-default btn-sm"></button>');
+    this._cancel_btn.html(gettext('Cancel'));
     this._controlsBox.append(this._cancel_btn);
 
     //if email alerts are enabled, add a checkbox "suppress_email"
     if (askbot['settings']['enableEmailAlerts'] === true) {
-        this._minorEditBox = this.makeElement('div');
+        this._minorEditBox = this.makeElement('span');
         this._minorEditBox.addClass('checkbox');
         this._controlsBox.append(this._minorEditBox);
         var checkBox = this.makeElement('input');
@@ -2289,7 +2289,7 @@ PostCommentsWidget.prototype.decorate = function(element){
 
     //see if user can comment here
     var controls = element.find('.controls');
-    this._activate_button = controls.find('.button');
+    this._activate_button = controls.find('.add-comment-button');
 
     if (this._user_can_post == false){
         setupButtonEventHandlers(

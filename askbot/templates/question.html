@@ -262,10 +262,11 @@
             }
             function render_add_comment_button(post_id, extra_comment_count){
                 if (extra_comment_count > 0){
-                    var text = "{% trans %}see more comments{% endtrans%}";
+                    var text = "{% trans %}<span>See more Comments</span{% endtrans%}";
                 } else {
-                    var text = "{% trans %}add a comment{% endtrans %}";
+                    var text = "{% trans %}<span>Add a Comment</span>{% endtrans %}";
                 }
+                text = '<i class="rover-icon rover-icon-add-comment"></i>' + text;
                 var add_comment_btn = document.getElementById('add-comment-to-post-' + post_id);
                 add_comment_btn.innerHTML = text;
             }
@@ -367,7 +368,7 @@
         askbot['data']['answersSortTab'] = '{{ tab_id }}';
         askbot['data']['questionId'] = {{ question.id }};
         askbot['data']['threadSlug'] = '{{ thread.title|slugify }}';
-        askbot['messages']['addComment'] = "{% trans %}add a comment{% endtrans %}";
+        askbot['messages']['addComment'] = "<i class=\"rover-icon rover-icon-add-comment\"></i><span>{% trans %}Add a Comment{% endtrans %}</span>";
         askbot['messages']['userNamePrompt'] = "{% trans %}User name:{% endtrans %}";
         askbot['messages']['userEmailPrompt'] = "{% trans %}Email address:{% endtrans %}";
         {% if settings.READ_ONLY_MODE_ENABLED %}
