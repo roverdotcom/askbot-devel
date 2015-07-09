@@ -128,10 +128,10 @@ def questions(request, **kwargs):
         related_tags = sorted(related_tags, key = operator.attrgetter('name'))
 
     contributors = list(
-        models.Thread.objects.get_thread_contributors(
-                                        thread_list=page.object_list
-                                    ).only('id', 'username', 'gravatar')
-                        )
+            models.Thread.objects.get_thread_contributors(
+                thread_list=page.object_list
+            ).only('id', 'username', 'gravatar')[:6]
+        )
 
     paginator_context = {
         'is_paginated' : (paginator.count > search_state.page_size),

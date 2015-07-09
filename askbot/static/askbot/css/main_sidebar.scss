@@ -1,0 +1,27 @@
+#ContentRight {
+    .sidebar-content-block {
+        @extend .rover-content-block;
+        background-color: #ebedee;
+        padding: 10px;
+
+        h6 {
+            text-transform: none;
+            font-weight: bold;
+        }
+
+        .landing-message {
+            @extend .body-text;
+        }
+
+        #contrib-users {
+            .contributorback {
+                margin-bottom: 3px;
+            }
+
+            .avatar-box {
+                display: inline-block;
+                margin: 7px;
+            }
+        }
+    }
+}

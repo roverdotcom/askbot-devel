@@ -1,6 +1,6 @@
 {% cache 0 "tags" tags search_tags scope sort query context.page language_code %}
-  <div class="box">
-    <h2>{% trans tags=settings.WORDS_TAG_PLURAL %}{{ tags }}{% endtrans %}</h2>
+  <div>
+    <h6>{% trans tags=settings.WORDS_TAG_PLURAL %}{{ tags }}{% endtrans %}</h6>
     {% if tag_list_type == 'list' %}
       <select class="js-keyword-dropdown">
           <option value="none">Select a Keyword</option>

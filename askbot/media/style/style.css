@@ -79,10 +79,6 @@ textarea:focus,
 input:focus {
   outline: none;
 }
-input[type="text"],
-input[type="password"],
-select,
-textarea,
 #askFormBar .questionTitleInput,
 .wmd-container,
 .folded-editor {
