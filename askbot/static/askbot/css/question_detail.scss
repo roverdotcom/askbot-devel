@@ -116,15 +116,6 @@
         }
 
         .content .post-comments {
-            .wmd-container {
-                border: 2px solid $aqua;
-                border-radius: $border-radius-base;
-
-                textarea {
-                    margin: 2px;
-                }
-            }
-
             .edit-comment-buttons .checkbox {
                 display: inline;
                 top: 10px;
