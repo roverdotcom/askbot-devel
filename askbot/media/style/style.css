@@ -721,7 +721,7 @@ button:not(.rover-btn),
 input[type="submit"]:not(.rover-btn),
 input[type="button"]:not(.rover-btn),
 input[type="reset"]:not(.rover-btn),
-.button {
+.button:not(.rover-btn) {
   border: 0 !important;
   border-top: #eaf2f3 1px solid;
   cursor: pointer;

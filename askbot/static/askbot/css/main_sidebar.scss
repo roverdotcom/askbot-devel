@@ -2,7 +2,65 @@
     .sidebar-content-block {
         @extend .rover-content-block;
         background-color: #ebedee;
-        padding: 10px;
+        padding: 15px;
+
+        &.vote-buttons {
+            display: block;
+            text-align: left;
+            width: auto;
+            margin: 0 0 20px 0;
+
+            .button.follow, .button.followed {
+                background-color: #ebedee;
+                border-color: #aaa;
+
+                &:hover {
+                    text-shadow: none;
+                    background-color: #fff;
+                }
+
+                div:not(.unfollow) {
+                    display: none;
+                }
+            }
+
+            .favorite-number {
+                text-align: center;
+                margin-top: 8px;
+            }
+
+            .statsWidget {
+                border-top: 1px solid #ccc;
+                margin-top: 15px;
+                padding-top: 15px;
+
+                .stat {
+                    font-size: 14px;
+                    margin-bottom: 7px;
+
+                    .rover-icon {
+                        margin-right: 10px;
+                        font-size: 20px;
+                    }
+
+                    .stat-data {
+                        position: relative;
+                        top: -2px;
+                    }
+                }
+            }
+        }
+
+        .questions-related p {
+            a {
+                color: $gray;
+                text-decoration: underline;
+
+                &:hover {
+                    text-decoration: none;
+                }
+            }
+        }
 
         h6 {
             text-transform: none;
@@ -20,7 +78,10 @@
 
             .avatar-box {
                 display: inline-block;
-                margin: 7px;
+            }
+
+            .avatar-box:nth-of-type(3n-1) {
+                margin: 7px 14px 7px 14px;
             }
         }
     }
