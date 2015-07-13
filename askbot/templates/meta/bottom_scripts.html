@@ -113,6 +113,20 @@
             var showPermsTrigger = new ShowPermsTrigger();
             showPermsTrigger.decorate(userRep);
         }
+
+        // set tooltips
+        $('.counts .votes').tooltip({
+            title: 'Votes',
+            placement: 'bottom'
+        });
+        $('.counts .answers').tooltip({
+            title: 'Answers',
+            placement: 'bottom'
+        });
+        $('.counts .views').tooltip({
+            title: 'Views',
+            placement: 'bottom'
+        });
     });
     if (askbot['data']['haveFlashNotifications']) {
         $('#validate_email_alert').click(function(){notify.close(true)})

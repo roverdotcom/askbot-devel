@@ -6,6 +6,8 @@
 
 #question-list {
     .short-summary {
+        min-height: 95px;
+
         h2 a {
             font-size: 18px;
             color: $gray;
