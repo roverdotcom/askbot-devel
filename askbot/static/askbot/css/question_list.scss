@@ -7,10 +7,15 @@
 #question-list {
     .short-summary {
         min-height: 95px;
+        padding-top: 15px;
 
-        h2 a {
-            font-size: 18px;
-            color: $gray;
+        h2 {
+            margin-top: 0;
+
+            a {
+                font-size: 18px;
+                color: $gray;
+            }
         }
 
         .counts {
