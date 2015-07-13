@@ -565,8 +565,7 @@ var Vote = function(){
     };
 
     var getFavoriteButton = function(){
-        var favoriteButton = 'div.'+ voteContainerId +' a[class="'+ classPrefixFollow +'"]';
-        favoriteButton += ', div.'+ voteContainerId +' a[class="'+ classPrefixFollowed +'"]';
+        var favoriteButton = '.' + voteContainerId + ' .button.followed, ' + '.' + voteContainerId + ' .button.follow';
         return $(favoriteButton);
     };
     var getFavoriteNumber = function(){
@@ -816,7 +815,7 @@ var Vote = function(){
         }
         else if(data.status == "1"){
             var follow_html = gettext('Follow');
-            object.attr("class", 'button follow');
+            object.attr("class", 'button follow rover-btn rover-btn-default btn-block');
             object.html(follow_html);
             var fav = getFavoriteNumber();
             fav.removeClass("my-favorite-number");
@@ -831,7 +830,7 @@ var Vote = function(){
         else if(data.success == "1"){
             var followed_html = gettext('<div>Following</div><div class="unfollow">Unfollow</div>');
             object.html(followed_html);
-            object.attr("class", 'button followed');
+            object.attr("class", 'button followed rover-btn rover-btn-default btn-block');
             var fav = getFavoriteNumber();
             var fmts = ngettext('%s follower', '%s followers', data.count);
             fav.text(interpolate(fmts, [data.count]));
