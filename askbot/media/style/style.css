@@ -1255,11 +1255,6 @@ ul#searchTags {
   margin: 4px 0 0 5px;
   font-family: 'Open Sans', Arial, sans-serif;
 }
-.short-summary .counts .item-count {
-  padding: 0px 5px 0px 5px;
-  font-size: 25px;
-  font-family: 'Open Sans', Arial, sans-serif;
-}
 .short-summary .counts .votes div,
 .short-summary .counts .views div,
 .short-summary .counts .answers div,
@@ -1292,39 +1287,6 @@ ul#searchTags {
 }
 .short-summary .views {
   background: url(../images/view-background.png) repeat-x;
-}
-.short-summary .no-votes .item-count {
-  color: #b1b5b6;
-}
-.short-summary .some-votes .item-count {
-  color: #4a757f;
-}
-.short-summary .no-answers .item-count {
-  color: #b1b5b6;
-}
-.short-summary .some-answers .item-count {
-  color: #eab243;
-}
-.short-summary .no-views .item-count {
-  color: #b1b5b6;
-}
-.short-summary .some-views .item-count {
-  color: #d33f00;
-}
-.short-summary .accepted .item-count {
-  background: url(../images/accept.png) no-repeat top right;
-  display: block;
-  text-align: center;
-  width: 40px;
-  color: #eab243;
-}
-.short-summary .some-favorites .item-count {
-  background: #338333;
-  color: #d0f5a9;
-}
-.short-summary .no-favorites .item-count {
-  background: #eab243;
-  color: yellow;
 }
 /* ----- Question list Paginator , check main_content/pager.html and macros/utils_macros.html----- */
 .evenMore {

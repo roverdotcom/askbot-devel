@@ -33,3 +33,13 @@ abbr[title].timeago {
 .avatar-box .gravatar {
     @extend .img-circle;
 }
+
+.tooltip.bottom {
+    .tooltip-arrow {
+        border-bottom-color: $gray-light;
+    }
+
+    .tooltip-inner {
+        background-color: $gray-light;
+    }
+}

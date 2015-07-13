@@ -6,9 +6,84 @@
 
 #question-list {
     .short-summary {
-        h2 a {
-            font-size: 18px;
-            color: $gray;
+        min-height: 95px;
+        padding-top: 15px;
+
+        h2 {
+            margin-top: 0;
+            padding-top: 0;
+
+            a {
+                font-size: 18px;
+                color: $gray;
+            }
+        }
+
+        .counts {
+            margin: 0 0 0 30px;
+
+            .votes, .answers, .views {
+                min-width: 71px;
+                width: auto;
+                height: 45px;
+                line-height: 43px;
+                margin: 0 0 0 10px;
+                padding: 0 5px 0 0;
+                font-size: 18px;
+                font-weight: bold;
+                color: $gray-light;
+                background: transparent;
+                border: 1px solid #ccc;
+                border-radius: $border-radius-base;
+                text-align: left;
+
+                &:before {
+                    font-family: 'rover-icons';
+                    font-weight: normal;
+                    margin-left: 7px;
+                    position: relative;
+                    top: 1px;
+                }
+
+                div {
+                    display: none;
+                }
+
+                .item-count {
+                    display: inline-block;
+                    width: calc(100% - 35px);
+                    text-align: center;
+                }
+            }
+
+            .votes.no-votes, .answers.no-answers, .views.no-views {
+                &:after {
+                    content: "0";
+                    display: inline-block;
+                    width: calc(100% - 35px);
+                    text-align: center;
+                }
+
+                .item-count {
+                    display: none;
+                }
+            }
+
+            .votes:before {
+                content: "\e647";
+            }
+
+            .answers:before {
+                content: "\e644";
+            }
+
+            .views:before {
+                content: "\e648";
+            }
+
+            .userinfo {
+                display: none;
+            }
         }
     }
 }
