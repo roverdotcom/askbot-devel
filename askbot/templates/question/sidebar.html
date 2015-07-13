@@ -39,15 +39,15 @@
     {% if settings.SIDEBAR_QUESTION_SHOW_META %}
         <div class="statsWidget">
             <div class="clearfix"></div>
-            <div class="stat">
+            <div class="stat" title="Asked">
                 <i class="rover-icon rover-icon-edit"></i>
                 <span class="stat-data">{{ macros.timeago(question.added_at) }}</span>
             </div>
-            <div class="stat">
+            <div class="stat" title="Views">
                 <i class="rover-icon rover-icon-viewed"></i>
                 <span class="stat-data">{{ thread.view_count|intcomma }} times</span>
             </div>
-            <div class="stat">
+            <div class="stat" title="Last Updated">
                 <i class="rover-icon rover-icon-repeat"></i>
                 <span class="stat-data">{{thread.last_activity_at|diff_date}}</span>
             </div>
