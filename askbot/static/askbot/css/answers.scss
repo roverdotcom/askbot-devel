@@ -11,6 +11,12 @@
 }
 
 .answer {
+    &.accepted-answer {
+        border: 1px solid $green-light;
+        border-radius: $border-radius-base * 2;
+        background: transparent;
+    }
+
     .vote-buttons {
         padding-top: 40px;
     }
