@@ -39,6 +39,8 @@
 
                 &:before {
                     font-family: 'rover-icons';
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
                     font-weight: normal;
                     margin-left: 7px;
                     position: relative;

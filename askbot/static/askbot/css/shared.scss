@@ -43,3 +43,60 @@ abbr[title].timeago {
         background-color: $gray-light;
     }
 }
+
+.vote-buttons {
+    .post-vote {
+        background: transparent;
+        width: auto;
+        height: auto;
+        font-family: 'rover-icons';
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-size: 25px;
+        margin: 5px 0;
+
+        &:hover {
+            background: transparent;
+        }
+
+        &.upvote {
+            &:before {
+                content: "\e640";
+            }
+
+            &:hover, &.on {
+                color: $green-light;
+            }
+        }
+
+        &.downvote {
+            &:before {
+                content: "\e64a";
+            }
+
+            &:hover, &.on {
+                color: $brand-danger;
+            }
+        }
+    }
+
+    .vote-number {
+        padding: 0;
+        font-size: 18px;
+    }
+
+    .answer-img-accept {
+        background: transparent;
+        font-family: 'rover-icons';
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-size: 25px;
+        color: #666;
+        color: $green-light;
+        margin-top: 10px;
+
+        &:before {
+            content: "\e625";
+        }
+    }
+}
