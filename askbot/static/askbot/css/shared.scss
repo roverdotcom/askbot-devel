@@ -1,5 +1,5 @@
 .tags {
-    max-width: 520px;
+    max-width: 455px;
 
     .tag-left {
         box-shadow: none;
@@ -84,19 +84,55 @@ abbr[title].timeago {
         padding: 0;
         font-size: 18px;
     }
+}
 
-    .answer-img-accept {
+.tabBar {
+    background: transparent;
+    height: auto;
+
+    .tabsA {
         background: transparent;
-        font-family: 'rover-icons';
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        font-size: 25px;
-        color: #666;
-        color: $green-light;
-        margin-top: 10px;
+        border: 1px solid #ccc;
+        border-radius: $border-radius-base;
+        font-size: 12px;
+        height: auto;
 
-        &:before {
-            content: "\e625";
+        .label {
+            color: $gray-light;
+            line-height: 20px;
+            font-size: 12px;
+            margin: 4px 10px;
+            padding: 0;
         }
+
+        a {
+            border-left: 1px solid #ccc;
+            height: auto;
+            color: $gray-light;
+            padding: 4px 10px;
+            margin: 0;
+
+            &.on, &[classname="on"] {
+                background-color: #ebedee;
+
+                &:last-child {
+                    // we subtract one to account for the border width
+                    border-top-right-radius: $border-radius-base - 1;
+                    border-bottom-right-radius: $border-radius-base - 1;
+                }
+            }
+        }
+    }
+}
+
+.vote-notification {
+    @extend .alert;
+    @extend .alert-danger;
+    box-shadow: none;
+
+    h3 {
+        @extend .h5;
+        border: none;
+        background: transparent;
     }
 }

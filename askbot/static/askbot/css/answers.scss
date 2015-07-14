@@ -1,17 +1,12 @@
 .tabBar-answer {
-    height: auto;
-    background-color: transparent;
     padding-left: 20px;
 
     #questionCount {
         font-size: 22px;
-        float: none;
+        float: left;
+        margin-top: 0;
         margin-left: 14px;
         padding: 0;
-    }
-
-    .tabsA {
-        display: none;
     }
 }
 
