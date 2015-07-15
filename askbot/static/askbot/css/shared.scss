@@ -44,6 +44,48 @@ abbr[title].timeago {
     }
 }
 
+.vote-buttons {
+    .post-vote {
+        background: transparent;
+        width: auto;
+        height: auto;
+        font-family: 'rover-icons';
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-size: 25px;
+        margin: 5px 0;
+
+        &:hover {
+            background: transparent;
+        }
+
+        &.upvote {
+            &:before {
+                content: "\e640";
+            }
+
+            &:hover, &.on {
+                color: $green-light;
+            }
+        }
+
+        &.downvote {
+            &:before {
+                content: "\e64a";
+            }
+
+            &:hover, &.on {
+                color: $brand-danger;
+            }
+        }
+    }
+
+    .vote-number {
+        padding: 0;
+        font-size: 18px;
+    }
+}
+
 .tabBar {
     background: transparent;
     height: auto;
@@ -80,5 +122,17 @@ abbr[title].timeago {
                 }
             }
         }
+    }
+}
+
+.vote-notification {
+    @extend .alert;
+    @extend .alert-danger;
+    box-shadow: none;
+
+    h3 {
+        @extend .h5;
+        border: none;
+        background: transparent;
     }
 }
