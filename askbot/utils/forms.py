@@ -11,7 +11,6 @@ from askbot.conf import settings as askbot_settings
 from askbot.utils.slug import slugify
 from askbot.utils.functions import split_list
 from askbot import const
-from longerusername import MAX_USERNAME_LENGTH
 import logging
 import urllib
 
@@ -119,7 +118,7 @@ class UserNameField(StrippedNonEmptyCharField):
         else:
             widget_attrs = login_form_widget_attrs
 
-        max_length = MAX_USERNAME_LENGTH()
+        max_length = User._meta.get_field('username').max_length
         super(UserNameField,self).__init__(
                 max_length=max_length,
                 widget=forms.TextInput(attrs=widget_attrs),

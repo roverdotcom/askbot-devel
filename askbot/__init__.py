@@ -34,7 +34,6 @@ REQUIREMENTS = {
     'tinymce': 'django-tinymce==1.5.3',
     'bs4': 'beautifulsoup4==4.3.2',
     'picklefield': 'django-picklefield==0.3.1',
-    'longerusername': 'longerusername==0.4',
 }
 
 # These are satisfied by Rover's requirements
