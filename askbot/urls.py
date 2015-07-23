@@ -154,7 +154,7 @@ urlpatterns = patterns('',
         views.meta.config_variable,
         kwargs = {
             'variable_name': 'CUSTOM_CSS',
-            'mimetype': 'text/css'
+            'content_type': 'text/css'
         },
         name = 'custom_css'
     ),
@@ -163,7 +163,7 @@ urlpatterns = patterns('',
         views.meta.config_variable,
         kwargs = {
             'variable_name': 'CUSTOM_JS',
-            'mimetype': 'text/javascript'
+            'content_type': 'text/javascript'
         },
         name = 'custom_js'
     ),

@@ -129,7 +129,7 @@ def upload(request):#ajax upload file to a question or answer
     #    'error': error,
     #    'file_url': file_url
     #})
-    #return HttpResponse(data, mimetype = 'application/json')
+    #return HttpResponse(data, content_type='application/json')
     xml_template = "<result><msg><![CDATA[%s]]></msg><error><![CDATA[%s]]></error><file_url>%s</file_url><orig_file_name><![CDATA[%s]]></orig_file_name></result>"
     xml = xml_template % (result, error, file_url, orig_file_name)
 
@@ -736,7 +736,7 @@ def post_comments(request):#generic ajax handler to load comments to an object
     if form.is_valid() == False:
         return HttpResponseBadRequest(
             _('This content is forbidden'),
-            mimetype='application/json'
+            content_type='application/json'
         )
 
     post_id = form.cleaned_data['post_id']
@@ -744,7 +744,7 @@ def post_comments(request):#generic ajax handler to load comments to an object
         post = models.Post.objects.get(id=post_id)
     except models.Post.DoesNotExist:
         return HttpResponseBadRequest(
-            _('Post not found'), mimetype='application/json'
+            _('Post not found'), content_type='application/json'
         )
 
     if request.method == "GET":
@@ -869,7 +869,7 @@ def delete_comment(request):
     except exceptions.PermissionDenied, e:
         return HttpResponseForbidden(
                     unicode(e),
-                    mimetype = 'application/json'
+                    content_type='application/json'
                 )
 
 @login_required

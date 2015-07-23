@@ -233,7 +233,7 @@ def questions(request, **kwargs):
 
         ajax_data.update(extra_context)
 
-        return HttpResponse(json.dumps(ajax_data), mimetype = 'application/json')
+        return HttpResponse(json.dumps(ajax_data), content_type='application/json')
 
     else: # non-AJAX branch
 
