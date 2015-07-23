@@ -11,7 +11,6 @@ import askbot
 import django
 import os
 import re
-import south
 import sys
 import urllib
 from django.db import connection
@@ -766,23 +765,6 @@ def test_tinymce():
                 'as template:\n\n' + get_tinymce_sample_config()
         print_errors(errors, header=header, footer=footer)
 
-def test_longerusername():
-    """tests proper installation of the "longerusername" app
-    """
-    errors = list()
-    if 'longerusername' not in django_settings.INSTALLED_APPS:
-        errors.append(
-            "add 'longerusername', as the first item in the INSTALLED_APPS"
-        )
-    else:
-        index = django_settings.INSTALLED_APPS.index('longerusername')
-        if index != 0:
-            message = "move 'longerusername', to the beginning of INSTALLED_APPS"
-            raise AskbotConfigError(message)
-
-    if errors:
-        errors.append('run "python manage.py migrate longerusername"')
-        print_errors(errors)
 
 def test_template_context_processors():
     """makes sure that all necessary template context processors
@@ -1004,7 +986,6 @@ def run_startup_tests():
     test_group_messaging()
     test_haystack()
     test_jinja2()
-    test_longerusername()
     test_new_skins()
     test_media_url()
     #test_postgres()

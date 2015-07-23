@@ -320,8 +320,8 @@ class Tag(models.Model):
         db_table = u'askbot_tag'
         ordering = ('-used_count', 'name')
         unique_together = ('name', 'language_code')
-        verbose_name = askbot_settings.WORDS_TAG_SINGULAR
-        verbose_name_plural = askbot_settings.WORDS_TAG_PLURAL
+        verbose_name = ugettext_lazy('Keyword')
+        verbose_name_plural = ugettext_lazy('Keywords')
 
     def __unicode__(self):
         return self.name
@@ -353,10 +353,9 @@ class TagSynonym(models.Model):
                                 default=django_settings.LANGUAGE_CODE,
                                 max_length=16,
                             )
-    
+
     class Meta:
         app_label = 'askbot'
 
     def __unicode__(self):
         return u'%s -> %s' % (self.source_tag_name, self.target_tag_name)
-        

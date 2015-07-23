@@ -382,3 +382,10 @@ def wrap_escape(func):
     def wrapped(*args, **kwargs):
         return mark_safe(func(*args, **kwargs))
     return wrapped
+
+
+def inject_simplejson():
+    """
+    """
+    import json
+    django.utils.simplejson = json

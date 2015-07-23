@@ -18,8 +18,9 @@ class Message(models.Model):
     class Meta:
         '''Added for backwards compatibility with databases
            migrated from django 1.3'''
-        app_label = 'auth'
+        app_label = 'askbot'
         db_table = 'auth_message'
+        managed = False
 
     def __unicode__(self):
         return self.message

@@ -11,7 +11,6 @@ from askbot.conf import settings as askbot_settings
 from askbot.utils.slug import slugify
 from askbot.utils.functions import split_list
 from askbot import const
-from longerusername import MAX_USERNAME_LENGTH
 import logging
 import urllib
 
@@ -97,7 +96,7 @@ class UserNameField(StrippedNonEmptyCharField):
     ):
         self.must_exist = must_exist
         self.skip_clean = skip_clean
-        self.db_model = db_model 
+        self.db_model = db_model
         self.db_field = db_field
         self.user_instance = None
         error_messages={
@@ -119,7 +118,7 @@ class UserNameField(StrippedNonEmptyCharField):
         else:
             widget_attrs = login_form_widget_attrs
 
-        max_length = MAX_USERNAME_LENGTH()
+        max_length = User._meta.get_field('username').max_length
         super(UserNameField,self).__init__(
                 max_length=max_length,
                 widget=forms.TextInput(attrs=widget_attrs),
@@ -237,7 +236,7 @@ class UserEmailField(forms.EmailField):
         email = super(UserEmailField,self).clean(email.strip())
         if self.skip_clean:
             return email
-        
+
         allowed_domains = askbot_settings.ALLOWED_EMAIL_DOMAINS.strip()
         allowed_emails = askbot_settings.ALLOWED_EMAILS.strip()
 
@@ -266,7 +265,7 @@ class SetPasswordForm(forms.Form):
                                 error_messages={'required':_('password is required')},
                                 )
     password2 = forms.CharField(widget=forms.PasswordInput(attrs=login_form_widget_attrs),
-                                label=mark_safe(_('Password <i>(please retype)</i>')),
+                                label=_('Re-type Password'),
                                 error_messages={'required':_('please, retype your password'),
                                                 'nomatch':_('entered passwords did not match, please try again')},
                                 )
@@ -277,7 +276,7 @@ class SetPasswordForm(forms.Form):
     def clean_password2(self):
         """
         Validates that the two password inputs match.
-        
+
         """
         if 'password1' in self.cleaned_data:
             if self.cleaned_data['password1'] == self.cleaned_data['password2']:
@@ -289,4 +288,3 @@ class SetPasswordForm(forms.Form):
                 raise forms.ValidationError(self.fields['password2'].error_messages['nomatch'])
         else:
             return self.cleaned_data['password2']
-
