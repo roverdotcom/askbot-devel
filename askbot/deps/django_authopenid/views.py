@@ -855,17 +855,17 @@ def delete_login_method(request):
                                                 provider_name = provider_name
                                             )
             login_method.delete()
-            return HttpResponse('', mimetype = 'application/json')
+            return HttpResponse('', content_type='application/json')
         except UserAssociation.DoesNotExist:
             #error response
             message = _('Login method %(provider_name)s does not exist')
-            return HttpResponse(message, status=500, mimetype = 'application/json')
+            return HttpResponse(message, status=500, content_type='application/json')
         except UserAssociation.MultipleObjectsReturned:
             logging.critical(
                     'have multiple %(provider)s logins for user %(id)s'
                 ) % {'provider':provider_name, 'id': request.user.id}
             message = _('Oops, sorry - there was some error - please try again')
-            return HttpResponse(message, status=500, mimetype = 'application/json')
+            return HttpResponse(message, status=500, content_type='application/json')
     else:
         raise Http404
 

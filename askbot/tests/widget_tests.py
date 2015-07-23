@@ -60,8 +60,8 @@ class WidgetViewsTests(AskbotTestCase):
     def test_render_widget_view(self):
         response = self.client.get(reverse('render_ask_widget', args=(self.widget.id, )))
         self.assertEquals(200, response.status_code)
-        mimetype = 'text/javascript'
-        self.assertTrue(mimetype in response['Content-Type'])
+        content_type = 'text/javascript'
+        self.assertTrue(content_type in response['Content-Type'])
 
 
 class WidgetLoginViewTest(AskbotTestCase):
