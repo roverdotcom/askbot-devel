@@ -76,13 +76,5 @@ class AskbotUserAdmin(admin.ModelAdmin):
     user_link.allow_tags = True
     person_link.allow_tags = True
 
-admin.site.register(models.Post)
-admin.site.register(models.Tag, TagAdmin)
-admin.site.register(models.Vote, VoteAdmin)
-admin.site.register(models.FavoriteQuestion, FavoriteQuestionAdmin)
-admin.site.register(models.PostRevision, PostRevisionAdmin)
-admin.site.register(models.Award, AwardAdmin)
-admin.site.register(models.Repute, ReputeAdmin)
-admin.site.register(models.Activity, ActivityAdmin)
-admin.site.register(models.BulkTagSubscription)
-admin.site.register(models.AskbotUser, AskbotUserAdmin)
+# We don't register any ModelAdmin's for askbot as they don't
+# provide useful functionality
