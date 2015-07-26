@@ -5,7 +5,7 @@ Time-stamp: <2008-07-19 23:16:19 carljm context_processors.py>
 
 """
 from django.conf import settings as django_settings
-from django.utils.encoding import StrAndUnicode
+from django.utils.encoding import python_2_unicode_compatible
 
 from askbot.user_messages import get_and_delete_messages
 
@@ -22,7 +22,7 @@ def user_messages(request):
     #the get_and_delete_messages is added to anonymous user by the
     #ConnectToSessionMessages middleware by the process_request,
     #however - if the user is logging out via /admin/logout/
-    #the AnonymousUser is installed in the response and thus 
+    #the AnonymousUser is installed in the response and thus
     #the Askbot's session messages hack will fail, so we have
     #an extra if statement here.
     if hasattr(request.user, 'get_and_delete_messages'):
@@ -30,7 +30,8 @@ def user_messages(request):
         return { 'user_messages': messages }
     return {}
 
-class LazyMessages(StrAndUnicode):
+@python_2_unicode_compatible
+class LazyMessages(object):
     """
     Lazy message container, so messages aren't actually retrieved from
     session and deleted until the template asks for them.
@@ -48,7 +49,7 @@ class LazyMessages(StrAndUnicode):
     def __nonzero__(self):
         return bool(self.messages)
 
-    def __unicode__(self):
+    def __str__(self):
         return unicode(self.messages)
 
     def __getitem__(self, *args, **kwargs):

@@ -44,14 +44,14 @@ def generic_view(request, template = None, page_class = None):
 
 PUBLIC_VARIABLES = ('CUSTOM_CSS', 'CUSTOM_JS')
 
-def config_variable(request, variable_name = None, mimetype = None):
+def config_variable(request, variable_name = None, content_type=None):
     """Print value from the configuration settings
     as response content. All parameters are required.
     """
     if variable_name in PUBLIC_VARIABLES:
         #todo add http header-based caching here!!!
         output = getattr(askbot_settings, variable_name, '')
-        return HttpResponse(output, mimetype = mimetype)
+        return HttpResponse(output, content_type=content_type)
     else:
         return HttpResponseForbidden()
 

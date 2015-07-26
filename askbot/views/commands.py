@@ -498,7 +498,7 @@ def get_tags_by_wildcard(request):
     count = matching_tags.count()
     names = matching_tags.values_list('name', flat = True)[:20]
     re_data = json.dumps({'tag_count': count, 'tag_names': list(names)})
-    return HttpResponse(re_data, mimetype = 'application/json')
+    return HttpResponse(re_data, content_type='application/json')
 
 @decorators.get_only
 def get_thread_shared_users(request):
@@ -564,14 +564,14 @@ def get_tag_list(request):
                     )
 
     output = '\n'.join(map(escape, tag_names))
-    return HttpResponse(output, mimetype = 'text/plain')
+    return HttpResponse(output, content_type='text/plain')
 
 @decorators.get_only
 def load_object_description(request):
     """returns text of the object description in text"""
     obj = get_db_object_or_404(request.GET)#askbot forms utility
     text = getattr(obj.description, 'text', '').strip()
-    return HttpResponse(text, mimetype = 'text/plain')
+    return HttpResponse(text, content_type='text/plain')
 
 @csrf.csrf_exempt
 @decorators.ajax_only
@@ -686,7 +686,7 @@ def get_groups_list(request):
                         'name', flat = True
                     )
     output = '\n'.join(group_names)
-    return HttpResponse(output, mimetype = 'text/plain')
+    return HttpResponse(output, content_type='text/plain')
 
 @csrf.csrf_protect
 def subscribe_for_tags(request):
@@ -866,7 +866,7 @@ def api_get_questions(request):
             continue
 
     json_data = json.dumps(thread_list)
-    return HttpResponse(json_data, mimetype = "application/json")
+    return HttpResponse(json_data, content_type="application/json")
 
 
 @csrf.csrf_exempt
@@ -888,7 +888,7 @@ def set_tag_filter_strategy(request):
         assert(filter_value in allowed_values_dict)
         request.user.email_tag_filter_strategy = filter_value
     request.user.save()
-    return HttpResponse('', mimetype = "application/json")
+    return HttpResponse('', content_type="application/json")
 
 
 @login_required
@@ -1385,7 +1385,7 @@ def get_users_info(request):
         user_info_list = user_info_list.values_list('username')
 
     result_list = ['|'.join(info) for info in user_info_list[:limit]]
-    return HttpResponse('\n'.join(result_list), mimetype = 'text/plain')
+    return HttpResponse('\n'.join(result_list), content_type='text/plain')
 
 @csrf.csrf_protect
 def share_question_with_group(request):

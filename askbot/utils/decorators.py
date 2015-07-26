@@ -113,7 +113,7 @@ def ajax_only(view_func):
             return HttpResponse(json.dumps(data), content_type='application/json')
 
         if isinstance(data, HttpResponse):#is this used?
-            data.mimetype = 'application/json'
+            data.content_type = 'application/json'
             return data
         else:
             data['success'] = 1
@@ -209,8 +209,8 @@ def check_spam(field):
 
                 from akismet import Akismet
                 api = Akismet(
-                    askbot_settings.AKISMET_API_KEY, 
-                    smart_str(site_url(reverse('questions'))), 
+                    askbot_settings.AKISMET_API_KEY,
+                    smart_str(site_url(reverse('questions'))),
                     "Askbot/%s" % get_version()
                 )
 
@@ -226,8 +226,8 @@ def check_spam(field):
                     )
                     if request.is_ajax():
                         return HttpResponseForbidden(
-                                spam_message, 
-                                mimetype="application/json"
+                                spam_message,
+                                content_type="application/json"
                             )
                     else:
                         request.user.message_set.create(message=spam_message)

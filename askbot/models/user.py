@@ -395,7 +395,7 @@ class AuthUserGroups(models.Model):
     user = models.ForeignKey(AuthUser)
 
     class Meta:
-        app_label = 'auth'
+        app_label = 'askbot'
         unique_together = ('group', 'user')
         db_table = 'auth_user_groups'
         managed = False
@@ -671,7 +671,7 @@ class BulkTagSubscriptionManager(BaseQuerySetManager):
     def create(
                 self,
                 tag_names=None,
-                user_list=None, 
+                user_list=None,
                 group_list=None,
                 tag_author=None,
                 language_code=None,

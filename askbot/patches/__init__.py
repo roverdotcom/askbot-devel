@@ -1,4 +1,4 @@
-"""module for monkey patching that is 
+"""module for monkey patching that is
 necessary for interoperability of different
 versions of various components used in askbot
 """
@@ -27,6 +27,11 @@ def patch_django():
             from django.utils.functional import keep_lazy
         except ImportError:
             django_patches.fix_lazy_double_escape()
+
+    if major == 1 and minor > 6:
+        # We need simplejson in django.utils to make
+        # django-recaptcha-works. Oh Askbot :(
+        django_patches.inject_simplejson()
 
 def patch_coffin():
     """coffin before version 0.3.4
