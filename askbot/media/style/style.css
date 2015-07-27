@@ -1698,15 +1698,6 @@ ul#related-tags li {
   color: #525252;
   font-size: 13px;
 }
-.ask-page #id_tags,
-.edit-question-page #id_tags {
-  box-sizing: border-box;
-  height: 31px;
-  padding-left: 5px;
-  font-size: 14px;
-  width: 100%;
-  max-width: 395px;
-}
 .ask-page .lang-selector,
 .edit-question-page .lang-selector {
   margin: 9px 0 0 0;
