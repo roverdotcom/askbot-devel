@@ -9,8 +9,8 @@ import re
 
 # Trying to access these from conf introduces an absolutely hideous
 # circular import.
-WORDS_TAG_SINGULAR = 'keyword'
-WORDS_TAG_PLURAL = 'keywords'
+WORDS_TAG_SINGULAR = 'tag'
+WORDS_TAG_PLURAL = 'tags'
 
 #todo: customize words
 CLOSE_REASONS = (

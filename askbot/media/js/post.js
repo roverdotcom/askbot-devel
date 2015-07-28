@@ -65,7 +65,7 @@ function setupFormValidation(form, validationRules, validationMessages, onSubmit
                 if (span.length === 0){
                     //for resizable textarea
                     var element_id = element.attr('id');
-                    span = $('label[for="' + element_id + '"]');
+                    span = $('label[for="' + element_id + '"]').last();
                 }
             }
             span.replaceWith(error);
@@ -100,6 +100,15 @@ var validateTagCount = function(value){
 
 $.validator.addMethod('limit_tag_count', validateTagCount);
 $.validator.addMethod('limit_tag_length', validateTagLength);
+$.validator.addMethod("pattern", function(value, element, param) {
+    if (this.optional(element)) {
+        return true;
+    }
+    if (typeof param === "string") {
+        param = new RegExp("^(?:" + param + ")$");
+    }
+    return param.test(value);
+}, "Invalid format.");
 
 var CPValidator = function() {
     return {
@@ -112,17 +121,20 @@ var CPValidator = function() {
                     limit_tag_length: true
                 },
                 text: {
-                    minlength: askbot['settings']['minQuestionBodyLength']
+                    minlength: askbot['settings']['minQuestionBodyLength'],
+                    required: true
                 },
                 title: {
-                    minlength: askbot['settings']['minTitleLength']
+                    minlength: askbot['settings']['minTitleLength'],
+                    required: true,
+                    pattern: /\?$/
                 }
             };
         },
         getQuestionFormMessages: function(){
             return {
                 tags: {
-                    required: " " + gettext('keywords cannot be empty'),
+                    required: " " + gettext('tags cannot be empty'),
                     maxlength: askbot['messages']['tagLimits'],
                     limit_tag_count: askbot['messages']['maxTagsPerPost'],
                     limit_tag_length: askbot['messages']['maxTagLength']
@@ -140,6 +152,7 @@ var CPValidator = function() {
                 },
                 title: {
                     required: " " + gettext('enter your question'),
+                    pattern: "Must be in question format and end with a question mark",
                     minlength: interpolate(
                                     ngettext(
                                         '%(question)s must have > %(length)s character',
@@ -1246,7 +1259,7 @@ var questionRetagger = function(){
             },
             messages: {
                 tags: {
-                    required: gettext('keywords cannot be empty'),
+                    required: gettext('tags cannot be empty'),
                     maxlength: askbot['messages']['tagLimits'],
                     limit_tag_count: askbot['messages']['maxTagsPerPost'],
                     limit_tag_length: askbot['messages']['maxTagLength']
