@@ -2096,42 +2096,6 @@ ul#related-tags li {
   float: right;
   width: 175px;
 }
-.question-page .post-update-info {
-  background: #ffffff url(../images/background-user-info.png) repeat-x bottom;
-  float: right;
-  font-size: 9px;
-  font-family: 'Open Sans', Arial;
-  line-height: 12px;
-  margin: 0px 0px 5px 5px;
-  padding: 4px;
-  width: 166px;
-  border-radius: 4px;
-  -ms-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  -khtml-border-radius: 4px;
-  -webkit-box-shadow: 0px 2px 1px #bfbfbf;
-  -moz-box-shadow: 0px 2px 1px #bfbfbf;
-  box-shadow: 0px 2px 1px #bfbfbf;
-}
-.question-page .post-update-info p {
-  line-height: 13px;
-  font-size: 11px;
-  margin: 0 0 2px 1px;
-  padding: 0;
-}
-.question-page .post-update-info a {
-  color: #444;
-}
-.question-page .post-update-info .gravatar {
-  float: left;
-  margin-right: 4px;
-}
-.question-page .post-update-info p.tip {
-  color: #444;
-  line-height: 13px;
-  font-size: 10px;
-}
 .question-page .post-controls {
   clear: left;
   float: right;
