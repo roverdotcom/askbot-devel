@@ -207,8 +207,6 @@ def list_suggested_tags(request):
     """moderators and administrators can list tags that are
     in the moderation queue, apply suggested tag to questions
     or cancel the moderation reuest."""
-    if askbot_settings.ENABLE_TAG_MODERATION == False:
-        raise Http404
     tags = Tag.objects.filter(
                     status = Tag.STATUS_SUGGESTED,
                     language_code=translation.get_language()
