@@ -88,6 +88,9 @@ def questions(request, **kwargs):
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
 
+    if not kwargs['tags']:
+        kwargs['tags'] = 'dogs'
+
     search_state = SearchState(
                     user_logged_in=request.user.is_authenticated(),
                     **kwargs
