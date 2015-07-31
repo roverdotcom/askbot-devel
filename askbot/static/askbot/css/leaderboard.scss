@@ -1,0 +1,59 @@
+.leaderboard-list .leaderboard-card {
+    border: 1px solid #ccc;
+    border-radius: $border-radius-base;
+    height: auto;
+    margin: 5px 0;
+    padding: 10px;
+
+    .leaderboard-position {
+        font-weight: bold;
+        width: auto;
+        height: 46px;
+        margin-right: 10px;
+
+        p {
+            @include vertically-align;
+            font-size: 26px;
+        }
+    }
+
+    .avatar-box {
+        height: auto;
+    }
+
+    .user-info {
+        height: 46px;
+
+        .profile-info {
+            float: left;
+        }
+
+        .service-link-container {
+            @include vertically-align;
+            float: right;
+        }
+    }
+}
+
+.sidebar-gus-says .media-body {
+    padding-left: 10px;
+
+    h6 {
+        text-transform: none;
+        margin-bottom: 0;
+        color: #aaa;
+    }
+
+    p {
+        font-size: 14px;
+    }
+
+    a {
+        text-decoration: underline;
+        color: rgb(102, 102, 102);
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+}
