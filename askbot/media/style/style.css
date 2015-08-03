@@ -1987,8 +1987,6 @@ ul#related-tags li {
   margin: 12px 0 5px 0;
   width: 100%;
 }
-.edit-question-page #id_title,
-#fmedit #id_title,
 .wmd-preview #id_title {
   font-size: 24px;
   line-height: 24px;
@@ -4464,10 +4462,6 @@ td.setting-input textarea {
   .edit-answer-page #id_revision,
   .edit-question-page #id_revision {
     display: none;
-  }
-  .edit-answer-page #fmedit #id_title,
-  .edit-question-page #fmedit #id_title {
-    margin: 15px 0 0 0;
   }
   .edit-answer-page .after-editor {
     margin-top: 8px;
