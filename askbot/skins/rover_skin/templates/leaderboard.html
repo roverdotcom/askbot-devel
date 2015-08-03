@@ -1,8 +1,4 @@
-{% if settings.GROUPS_ENABLED %}
-    {% extends "two_column_body.html" %}
-{% else %}
-    {% extends "one_column_body.html" %}
-{% endif %}
+{% extends "two_column_body.html" %}
 {% import "macros.html" as macros %}
 <!-- users.html -->
 {% block title %}{% spaceless %}{% trans %}Treats Leaderboard{% endtrans %}{% endspaceless %}{% endblock %}
@@ -15,45 +11,9 @@
 {% endblock %}
 {% block content %}
 <div id="content-header">
-    <h1 class="section-title">Treats Leaderboard</h1>
+    <h3 class="section-title">Treats Leaderboard</h3>
     <div class="clearfix"></div>
 </div>
-{% if request.user.is_authenticated() %}
-    <ul class="leaderboard-list">
-        <li>
-            <div class="leaderboard-card">
-                <div class="leaderboard-position">
-                    <p>{{ request.user.get_leaderboard_position() }}</p>
-                </div>
-                {{ macros.gravatar(user, 64) }}
-                <div class="user-info">
-                    <a href="{{ request.user.get_profile_url() }}">{{ request.user.get_full_name()|escape }}</a>
-                    {{ macros.user_country_flag(request.user) }}
-
-                    <br/>
-
-                    {% if settings.KARMA_MODE == 'public' %}
-                    <span class="reputation-score">{{ request.user.reputation }} {{ ngettext(settings.WORDS_KARMA_SINGULAR, settings.WORDS_KARMA_PLURAL, request.user.reputation) }}</span>
-                    {% endif %}
-
-                    {% if settings.BADGES_MODE == 'public' %}
-                    <span class="badges" title="{{ user.get_badge_summary() }}">
-                        {% if request.user.gold %}
-                            <span class='badge1'>&#9679;</span><span class="badgecount">{{ request.user.gold }}</span>
-                        {% endif %}
-                        {% if request.user.silver %}
-                            <span class='badge2'>&#9679;</span><span class="badgecount">{{ request.user.silver }}</span>
-                        {% endif %}
-                        {% if request.user.bronze %}
-                            <span class='badge3'>&#9679;</span><span class="badgecount">{{ request.user.bronze }}</span>
-                        {% endif %}
-                    </span>
-                    {% endif %}
-                </div>
-            </div>
-        </li>
-    </ul>
-{% endif %}
 {% if users %}
     <ul class="leaderboard-list">
         {% for user in users %}
@@ -63,39 +23,40 @@
                 <div class="leaderboard-position">
                     <p>{{ page_obj.start_index() + loop.index0 }}</p>
                 </div>
-                {{ macros.gravatar(user, 64) }}
+                {{ macros.gravatar(user, 46) }}
                 <div class="user-info">
-                    <a href="{{ user.get_profile_url() }}">{{ user.get_full_name()|escape }}</a>
-                    {{ macros.user_country_flag(user) }}
+                    <div class="profile-info">
+                        <a href="{{ user.get_profile_url() }}">{{ user.get_full_name()|escape }}</a>
 
-                    <br/>
+                        <br/>
 
-                    {% if settings.KARMA_MODE == 'public' %}
-                    <span class="reputation-score">{{ user.reputation }} {{ ngettext(settings.WORDS_KARMA_SINGULAR, settings.WORDS_KARMA_PLURAL, user.reputation) }}</span>
-                    {% endif %}
-
-                    {% if settings.BADGES_MODE == 'public' %}
-                    <span class="badges" title="{{ user.get_badge_summary() }}">
-                        {% if user.gold %}
-                            <span class='badge1'>&#9679;</span><span class="badgecount">{{ user.gold }}</span>
+                        {% if settings.KARMA_MODE == 'public' %}
+                        <span class="reputation-score">{{ user.reputation }} {{ ngettext(settings.WORDS_KARMA_SINGULAR, settings.WORDS_KARMA_PLURAL, user.reputation) }}</span>
                         {% endif %}
-                        {% if user.silver %}
-                            <span class='badge2'>&#9679;</span><span class="badgecount">{{ user.silver }}</span>
-                        {% endif %}
-                        {% if user.bronze %}
-                            <span class='badge3'>&#9679;</span><span class="badgecount">{{ user.bronze }}</span>
-                        {% endif %}
-                    </span>
-                    {% endif %}
 
-                    <br/>
-
-                    {# Add link to user's sitter profile. #}
-                    {% with user.person.get_active_services() as active_services %}
-                        {% if active_services %}
-                            <a class="service-link" href="{{ user.person.get_absolute_url() }}">Book a Stay With Me in {{ user.person.get_short_location() }}</a>
+                        {% if settings.BADGES_MODE == 'public' %}
+                        <span class="badges" title="{{ user.get_badge_summary() }}">
+                            {% if user.gold %}
+                                <span class='badge1'>&#9679;</span><span class="badgecount">{{ user.gold }}</span>
+                            {% endif %}
+                            {% if user.silver %}
+                                <span class='badge2'>&#9679;</span><span class="badgecount">{{ user.silver }}</span>
+                            {% endif %}
+                            {% if user.bronze %}
+                                <span class='badge3'>&#9679;</span><span class="badgecount">{{ user.bronze }}</span>
+                            {% endif %}
+                        </span>
                         {% endif %}
-                    {% endwith %}
+                    </div>
+
+                    <div class="service-link-container hidden-xs">
+                        {# Add link to user's sitter profile. #}
+                        {% with user.person.get_active_services() as active_services %}
+                            {% if active_services %}
+                                <a class="service-link" href="{{ user.person.get_absolute_url() }}">Book a Stay with me in {{ user.person.get_short_location() }}</a>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
                 </div>
             </div>
         </li>
@@ -109,10 +70,16 @@
 </div>
 {% endblock %}
 {% block sidebar %}
-    {% if group %}
-        {# this widget takes variables: group, user_can_join_group, user_is_group_member #}
-        {% include "widgets/group_info.html" %}
-    {% endif %}
+<div class="sidebar-gus-says">
+    <img src="{% static "images/gus.png" %}" class="pull-left">
+    <div class="media-body">
+        <h6>Gus says...</h6>
+        <p>
+            Treats are given when you answer questions and help out around
+            the community. Learn more <a href="{% url 'faq' %}">here</a>.
+        <p>
+    </div>
+</div>
 {% endblock %}
 {% block endjs %}
     <script type='text/javascript'>
