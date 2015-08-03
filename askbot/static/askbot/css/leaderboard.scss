@@ -1,36 +1,41 @@
-.leaderboard-list .leaderboard-card {
-    border: 1px solid #ccc;
-    border-radius: $border-radius-base;
-    height: auto;
-    margin: 5px 0;
-    padding: 10px;
+.leaderboard-list {
+    margin-left: 0;
 
-    .leaderboard-position {
-        font-weight: bold;
-        width: auto;
-        height: 46px;
-        margin-right: 10px;
-
-        p {
-            @include vertically-align;
-            font-size: 26px;
-        }
-    }
-
-    .avatar-box {
+    .leaderboard-card {
+        border: 1px solid #ccc;
+        border-radius: $border-radius-base;
         height: auto;
-    }
+        margin: 5px 0;
+        padding: 10px;
 
-    .user-info {
-        height: 46px;
+        .leaderboard-position {
+            font-weight: bold;
+            width: auto;
+            min-width: 30px;
+            height: 46px;
+            margin-right: 10px;
 
-        .profile-info {
-            float: left;
+            p {
+                @include vertically-align;
+                font-size: 26px;
+            }
         }
 
-        .service-link-container {
-            @include vertically-align;
-            float: right;
+        .avatar-box {
+            height: auto;
+        }
+
+        .user-info {
+            height: 46px;
+
+            .profile-info {
+                float: left;
+            }
+
+            .service-link-container {
+                @include vertically-align;
+                float: right;
+            }
         }
     }
 }
