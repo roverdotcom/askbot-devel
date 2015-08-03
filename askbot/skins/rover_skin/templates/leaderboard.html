@@ -49,7 +49,7 @@
                         {% endif %}
                     </div>
 
-                    <div class="service-link-container">
+                    <div class="service-link-container hidden-xs">
                         {# Add link to user's sitter profile. #}
                         {% with user.person.get_active_services() as active_services %}
                             {% if active_services %}
