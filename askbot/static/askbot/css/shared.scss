@@ -109,6 +109,19 @@ abbr[title].timeago {
         }
     }
 
+    .share-icon-toggle {
+        font-size: 25px;
+        margin-top: 10px;
+
+        &:hover {
+            color: $green-light;
+        }
+    }
+
+    .share-buttons {
+        display: none;
+    }
+
     .vote-number {
         padding: 0;
         font-size: 18px;
