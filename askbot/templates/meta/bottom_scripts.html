@@ -127,6 +127,13 @@
             title: 'Views',
             placement: 'bottom'
         });
+
+        $('.js-share-icon-toggle').on(
+            'click',
+            function() {
+                $('.js-share-buttons').slideToggle();
+            }
+        );
     });
     if (askbot['data']['haveFlashNotifications']) {
         $('#validate_email_alert').click(function(){notify.close(true)})
