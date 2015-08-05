@@ -1,0 +1,83 @@
+&.user-profile-page {
+    #ContentLeft {
+        .section-title {
+            float: left;
+        }
+
+        .tabBar-profile {
+            width: auto;
+            margin-top: 21px;
+            margin-bottom: 10.5px;
+            margin-left: 35px;
+        }
+
+        .user-info-table {
+            .avatar {
+                margin: 0 15px 0 0;
+
+                .avatar-box .gravatar {
+                    border: none;
+                    border-radius: 0;
+                    padding: 0;
+                }
+            }
+
+            .user-profile-overview, .user-profile-overview p {
+                color: $gray-light;
+
+                .follow-button {
+                    margin-top: 20px;
+                }
+            }
+        }
+
+        .answers-heading {
+            clear: both;
+            padding-top: 21px;
+        }
+
+        .users-answers {
+            font-size: 16px;
+
+            .answer-votes {
+                font-size: 16px;
+                background-color: transparent;
+                border: 1px solid #ccc;
+                border-radius: $border-radius-base;
+                height: auto;
+                padding: 0;
+                color: #aaa;
+            }
+
+            .answer-link a {
+                color: $gray-light;
+            }
+        }
+
+        .user-stats-table {
+            .users-questions {
+                margin: 0;
+
+                .counts {
+                    margin: 0;
+
+                    .votes {
+                        margin-left: 0;
+                    }
+
+                    .votes, .votes-down {
+                        float: left;
+                    }
+                }
+            }
+
+            #user-tag-list {
+                max-width: none;
+
+                .tag-left {
+                    margin-bottom: 5px;
+                }
+            }
+        }
+    }
+}
