@@ -132,7 +132,7 @@ abbr[title].timeago {
     background: transparent;
     height: auto;
 
-    .tabsA {
+    .tabsA, .tabsC {
         background: transparent;
         border: 1px solid #ccc;
         border-radius: $border-radius-base;
@@ -154,8 +154,18 @@ abbr[title].timeago {
             padding: 4px 10px;
             margin: 0;
 
+            &.first {
+                border-left: none;
+            }
+
             &.on, &[classname="on"] {
                 background-color: #ebedee;
+
+                &:first-child {
+                    // we subtract one to account for the border width
+                    border-top-left-radius: $border-radius-base - 1;
+                    border-bottom-left-radius: $border-radius-base - 1;
+                }
 
                 &:last-child {
                     // we subtract one to account for the border width
