@@ -196,3 +196,8 @@ abbr[title].timeago {
     width: 20px;
     height: 20px;
 }
+
+.follow-toggle .unfollow:hover .unfollow-red {
+    font-weight: normal;
+    color: $brand-warning;
+}
