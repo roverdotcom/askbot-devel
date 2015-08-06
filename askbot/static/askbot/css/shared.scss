@@ -59,8 +59,12 @@ abbr[title].timeago {
     }
 }
 
-.avatar-box .gravatar {
-    @extend .img-circle;
+.avatar-box {
+    height: auto;
+
+    .gravatar {
+        @extend .img-circle;
+    }
 }
 
 .tooltip.bottom {
