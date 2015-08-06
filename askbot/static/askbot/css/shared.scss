@@ -59,8 +59,12 @@ abbr[title].timeago {
     }
 }
 
-.avatar-box .gravatar {
-    @extend .img-circle;
+.avatar-box {
+    height: auto;
+
+    .gravatar {
+        @extend .img-circle;
+    }
 }
 
 .tooltip.bottom {
@@ -195,4 +199,9 @@ abbr[title].timeago {
     top: 7px;
     width: 20px;
     height: 20px;
+}
+
+.follow-toggle .unfollow:hover .unfollow-red {
+    font-weight: normal;
+    color: $brand-warning;
 }

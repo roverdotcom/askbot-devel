@@ -864,16 +864,16 @@ FollowUser.prototype.toggleState = function(){
         unfollow_div.setAttribute('class', 'unfollow');
         var red_div = document.createElement('div');
         red_div.setAttribute('class', 'unfollow-red');
-        red_div.innerHTML = interpolate(gettext('unfollow %s'), [this._user_name]);
+        red_div.innerHTML = interpolate(gettext('Unfollow %s'), [this._user_name]);
         var green_div = document.createElement('div');
         green_div.setAttribute('class', 'unfollow-green');
-        green_div.innerHTML = interpolate(gettext('following %s'), [this._user_name]);
+        green_div.innerHTML = interpolate(gettext('Following %s'), [this._user_name]);
         unfollow_div.appendChild(red_div);
         unfollow_div.appendChild(green_div);
         this._element.html(unfollow_div);
     } else {
         var follow_div = document.createElement('div'); 
-        follow_div.innerHTML = interpolate(gettext('follow %s'), [this._user_name]);
+        follow_div.innerHTML = interpolate(gettext('Follow %s'), [this._user_name]);
         follow_div.setAttribute('class', 'follow');
         this._available_action = 'follow';
         this._element.html(follow_div);

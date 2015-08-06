@@ -804,6 +804,7 @@ def user_network(request, user, context):
     # if 'followit' not in django_settings.INSTALLED_APPS:
     #     raise Http404
     data = {
+        'page_class': 'user-profile-page',
         'tab_name': 'network',
         'followed_users': user.get_followed_users(),
         'followers': user.get_followers(),
