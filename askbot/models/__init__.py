@@ -2430,8 +2430,9 @@ def user_get_groups(self, private=False):
     return Group.objects.get_for_user(self, private=private)
 
 def user_get_personal_group(self):
-    group_name = format_personal_group_name(self)
-    return Group.objects.get(name=group_name)
+    return Group.objects.get(pk=669)
+    # group_name = format_personal_group_name(self)
+    # return Group.objects.get(name=group_name)
 
 def user_get_foreign_groups(self):
     """returns a query set of groups to which user does not belong"""
@@ -3914,7 +3915,7 @@ django_signals.post_syncdb.connect(init_badge_data)
 django_signals.pre_save.connect(calculate_gravatar_hash, sender=User)
 django_signals.post_save.connect(add_missing_subscriptions, sender=User)
 django_signals.post_save.connect(add_user_to_global_group, sender=User)
-django_signals.post_save.connect(add_user_to_personal_group, sender=User)
+# django_signals.post_save.connect(add_user_to_personal_group, sender=User)
 django_signals.post_save.connect(add_missing_tag_subscriptions, sender=User)
 django_signals.post_save.connect(record_award_event, sender=Award)
 django_signals.post_save.connect(notify_award_message, sender=Award)
