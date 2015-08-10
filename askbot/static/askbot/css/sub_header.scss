@@ -1,0 +1,86 @@
+.secondary-header-container {
+    background-color: $aqua;
+
+    #secondaryHeader {
+        border: none;
+        background-color: rgba(0, 0, 0, 0.3);
+
+        #homeButton {
+            background: transparent;
+            padding-top: 10px;
+            font-size: 32px;
+            border: none;
+            margin-left: 10px;
+            @extend .text-contrast;
+
+            &:hover {
+                @extend .text-contrast-muted;
+                background: transparent;
+            }
+        }
+
+        #scopeNav {
+
+            .scope-selector {
+                @extend .text-contrast;
+                font-size: 14px;
+
+                &:hover {
+                    @extend .text-contrast-muted;
+                }
+
+                &.on {
+                    @include img-retina('../images/selected-triangle.png', '../images/selected-triangle@2x.png', 28px, 14px);
+                    background-repeat: no-repeat;
+                    background-position: center bottom;
+                }
+            }
+        }
+
+        #searchBar {
+            border-radius: $border-radius-base;
+            border: none;
+
+            .searchInput {
+                font-size: 14px;
+            }
+
+            .input-tool-tip {
+                color: $aqua;
+                font-style: normal;
+                font-size: 14px;
+            }
+
+            .searchBtn {
+                background: transparent;
+                right: 0;
+                top: 0;
+                position: absolute;
+                z-index: 100;
+                width: 48px;
+                height: 41px;
+                border: none;
+                text-shadow: none;
+                box-shadow: none;
+                font-size: 22px;
+                color: $aqua;
+            }
+
+            .cancelSearchBtn {
+                right: 35px;
+                font-size: 25px !important;
+                border: none;
+                box-shadow: none;
+                color: #aaa;
+            }
+
+            .search-drop-menu {
+                margin-top: -$border-radius-base;
+
+                a {
+                    color: $gray-dark;
+                }
+            }
+        }
+    }
+}

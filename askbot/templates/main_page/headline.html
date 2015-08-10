@@ -1,11 +1,11 @@
 {% import "macros.html" as macros %}
 {% if questions_count > 0 %}
-        <h1 id="questionCount" class="search-result-summary">
+        <p id="questionCount" class="search-result-summary">
             {{ questions_count|intcomma }} {{ settings.WORDS_QUESTIONS_COUNTABLE_FORMS|py_pluralize(questions_count) }}
         {% if author_name %}
             {% trans %}with {{author_name}}'s contributions{% endtrans %}
         {% endif %}
-        </h1>
+        </p>
         <div class="clearfix"></div>
         <div id="listSearchTags" {% if not search_tags %}style="display: none;"{% endif %}>
             <span class="left">{% trans tag=settings.WORDS_TAG_SINGULAR|lower %}With {{ tag }}{% endtrans %}:</span>

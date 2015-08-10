@@ -14,7 +14,7 @@
         {% endif %}
     </script>
 {% endif %}
-<div class="form-item">
+<div class="form-item textarea-errors-container">
     <label for="editor" class="form-error">{{ post_form.text.errors }}</label>
     <p class="editor-status action-status"><span></span></p>
 </div>
@@ -23,32 +23,21 @@
     <div class="form-item question-tags">
         {% if use_category_selector %}
             {% include "widgets/three_column_category_selector.html" %}
-            <div class="tags-desc">{% trans tags=settings.WORDS_TAG_PLURAL %}{{ tags }}{% endtrans %}</div>
+            <div class="tags-desc">tags</div>
             {% include "widgets/tag_editor.html" %}
         {% else %}
-            {% if tags_are_required %}
-                <label for="id_tags">
-                {% if mandatory_tags %}
-                    <strong>{% trans tags=settings.WORDS_TAG_PLURAL|lower %}{{ tags }}{% endtrans %}</strong>
-                    {% trans %}, one of these is required{% endtrans %}
-                    {{
-                        tag_list_widget(
-                            mandatory_tags,
-                            make_links = False,
-                            css_class = 'clearfix'
-                        )
-                    }}
-                {% else %}
-                    <strong>{% trans tags=settings.WORDS_TAG_PLURAL|lower%}{{ tags }}:{% endtrans %}</strong>
-                    {% trans %}(required){% endtrans %}
-                {% endif %}
+            <div class="form-group">
+                <label for="id_tags" class="tag-form-label">
+                    <div class="label-header">Add some tags</div>
+                    <p class="label-help-text small-text">
+                        Tags help others find answers to the same questions. For example,
+                        if your question is about puppy chewing shoes, you would put
+                        "puppy chewing behavior". Up to 10 tags can be used.
+                    </p>
                 </label>
-            {% else %}
-                <strong>{% trans tags=settings.WORDS_TAG_PLURAL|lower %}{{ tags }}:{% endtrans %}</strong>
-            {% endif %}
-            <span class="form-error">{{ post_form.tags.errors }}</span><br/>
-            {{ post_form.tags }}
-            <br/><label for="id_tags">{{ post_form.tags.help_text }}</label>
+                <span class="form-error">{{ post_form.tags.errors }}</span>
+                {{ post_form.tags }}
+            </div>
         {% endif %}
     </div>
 {% endif %}

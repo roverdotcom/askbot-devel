@@ -421,7 +421,7 @@ class TagNamesField(forms.CharField):
         super(TagNamesField, self).__init__(*args, **kwargs)
         self.required = kwargs.get('required', False)
         self.widget = forms.TextInput(
-            attrs={'size': 50, 'autocomplete': 'off'}
+            attrs={'autocomplete': 'off', 'class': 'form-control'}
         )
         self.max_length = 255
         self.error_messages['max_length'] = _(
@@ -934,6 +934,16 @@ class AskForm(PostAsSomeoneForm, PostPrivatelyForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
+        data = args[0] if args else kwargs.get('data', None)
+        if data:
+            data = data.copy()
+            data['tags'] += ' {}'.format(data.get('required_tag', ''))
+            if args:
+                args = list(args)
+                args[0] = data
+            else:
+                kwargs['data'] = data
+
         super(AskForm, self).__init__(*args, **kwargs)
         #it's important that this field is set up dynamically
         self.fields['title'] = TitleField()

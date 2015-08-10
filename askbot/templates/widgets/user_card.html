@@ -6,41 +6,22 @@
 <div class="user-card">
     {{ macros.gravatar(user, 46) }}
     <div class="user-info">
-        <a href="{{ user.get_profile_url() }}">{{ user.get_full_name()|escape }}</a>
-        {{ macros.user_country_flag(user) }}
-
-        <br/>
-
-        {% if karma_mode == 'public' %}
-            {% with user.get_leaderboard_position() as user_position %}
-                {% if user_position != 'N/A' %}
-                    <a href="{% url 'leaderboard' %}" class="reputation-score">{{ user.reputation }} {{ ngettext(settings.WORDS_KARMA_SINGULAR, settings.WORDS_KARMA_PLURAL, user.reputation) }} ({{ user.get_leaderboard_position() }} of {{ user.__class__.objects.count() }})</a>
-                {% else %}
-                    <span class="reputation-score">{{ user.reputation }} {{ ngettext(settings.WORDS_KARMA_SINGULAR, settings.WORDS_KARMA_PLURAL, user.reputation) }}</span>
+        <div class="user-link-container">
+            <a class="user-link" href="{{ user.get_profile_url() }}">
+                <div>{{ user.get_full_name()|escape }}</div>
+                {% if karma_mode == 'public' %}
+                    <div>
+                        {{ user.reputation }} {{ ngettext(settings.WORDS_KARMA_SINGULAR, settings.WORDS_KARMA_PLURAL, user.reputation)|lower }}
+                    </div>
                 {% endif %}
-            {% endwith %}
-        {% endif %}
+            </a>
+        </div>
 
-        {% if badges_mode == 'public' %}
-        <span class="badges" title="{{ user.get_badge_summary() }}">
-            {% if user.gold %}
-                <span class='badge1'>&#9679;</span><span class="badgecount">{{ user.gold }}</span>
-            {% endif %}
-            {% if user.silver %}
-                <span class='badge2'>&#9679;</span><span class="badgecount">{{ user.silver }}</span>
-            {% endif %}
-            {% if user.bronze %}
-                <span class='badge3'>&#9679;</span><span class="badgecount">{{ user.bronze }}</span>
-            {% endif %}
-        </span>
-        {% endif %}
-
-        <br/>
-
-        {# Add link to user's sitter profile. #}
         {% with user.person.get_active_services() as active_services %}
             {% if active_services %}
-                <a class="service-link" href="{{ user.person.get_absolute_url() }}">Book a Stay With Me<br/>in {{ user.person.get_short_location() }}</a>
+            <div class="service-link-container">
+                <a class="service-link" href="{{ user.person.get_absolute_url() }}"><i class="rover-icon rover-icon-sitter-traveling"></i> Book a Stay<br/>{{ user.person.get_short_location() }}</a>
+            </div>
             {% endif %}
         {% endwith %}
     </div>

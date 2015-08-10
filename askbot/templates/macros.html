@@ -56,11 +56,6 @@
             karma_mode = karma_mode, badges_mode = badges_mode
         )
     }}
-    {{ post_contributor_info(
-            post, "last_updater", post.wiki, min_rep_to_edit_wiki,
-            karma_mode = karma_mode, badges_mode = badges_mode
-        )
-    }}
 {%- endmacro -%}
 
 {%- macro post_contributor_info(
@@ -90,21 +85,6 @@ poor design of the data or methods on data objects #}
         <p class="tip">{% trans karma=settings.WORDS_KARMA_PLURAL %}This post is a wiki.
         Anyone with &gt;{{wiki_min_rep}} {{ karma }} is welcome to improve it.{% endtrans %}</p>
     {% else %}
-        <p style="line-height:12px;">
-            {# todo: access to class names needs to be removed here #}
-            {% if post.post_type == 'question' %}
-                {{ settings.WORDS_ASKED|escape }}
-            {% elif post.post_type == 'answer' %}
-                {{ settings.WORDS_ANSWERED|escape }}
-            {% else %}
-                {% trans %}posted{% endtrans %}
-            {% endif %}
-            {% if post.__class__.__name__ == 'PostRevision' %}
-                <strong>{{ timeago(post.revised_at) }}</strong>
-            {% else %}
-                <strong>{{ timeago(post.added_at) }}</strong>
-            {% endif %}
-        </p>
         {{ post_contributor_avatar_and_credentials(
             post, post.author, karma_mode = karma_mode, badges_mode = badges_mode
         ) }}
@@ -122,15 +102,6 @@ poor design of the data or methods on data objects #}
     {% endif %}
     {% if last_edited_at %}
     <div class='post-update-info'>
-        <p style="line-height:12px;">
-            <a 
-        {% if post.post_type == 'question' %}
-            href="{% url question_revisions post.id %}"
-        {% else %}
-            href="{% url answer_revisions post.id %}"
-        {% endif %}
-            >{% trans %}updated{% endtrans %} <strong>{{ timeago(last_edited_at) }}</strong></a>
-        </p>
         {% if original_author != update_author or is_wiki %}
             {{ 
                 post_contributor_avatar_and_credentials(
@@ -348,7 +319,7 @@ for the purposes of the AJAX comment editor #}
     {% else %}
         {% set remaining_comment_count = 0 %}
     {% endif %}
-    <a id="add-comment-to-post-{{post.id}}" class="button"></a>
+    <a id="add-comment-to-post-{{post.id}}" class="add-comment-button rover-btn rover-btn-default"></a>
     <script type="text/javascript">
         askbot['data']['{{widget_id}}'] = {
             truncated: {% if post.comment_count > max_comments %}true{% else %}false{% endif %}
@@ -417,7 +388,7 @@ for the purposes of the AJAX comment editor #}
                             <span 
                                 class="delete-icon"
                                 title="{% trans %}delete this comment{% endtrans %}"
-                            ></span>
+                            ><i class="rover-icon rover-icon-generic-none"></i></span>
                         </div>
                         <div class="comment-body">
                             {{ comment.summary }}
@@ -425,7 +396,7 @@ for the purposes of the AJAX comment editor #}
                                 class="author"
                                 href="{{comment.author.get_profile_url()}}"
                             >{{comment.author.get_full_name()|escape}}</a>
-                            <span class="age">&nbsp;({{ timeago(comment.added_at) }})</span>
+                            <span class="age">&nbsp;{{ timeago(comment.added_at) }}</span>
                             <a 
                                 id="post-{{comment.id}}-edit"
                                 class="edit"
@@ -561,15 +532,15 @@ for the purposes of the AJAX comment editor #}
 {%- macro follow_toggle(follow, name, alias, id) -%}
     {# follow - boolean; name - object type name; alias - e.g. users name; id - object id #}
     <div 
-        class="button follow-toggle follow-user-toggle" 
+        class="rover-btn rover-btn-default follow-toggle follow-user-toggle" 
         id="follow-{{ name|escape }}-{{ id }}"
     >
         {% if follow %}
-        <div class="follow">{% trans %}follow {{alias}}{% endtrans %}</div>
+        <div class="follow">{% trans %}Follow {{alias}}{% endtrans %}</div>
         {% else %}
         <div class="unfollow">
-          <div class="unfollow-red">{% trans %}unfollow {{alias}}{% endtrans %}</div>
-          <div class="unfollow-green">{% trans %}following {{alias}}{% endtrans %}</div>
+          <div class="unfollow-red">{% trans %}Unfollow {{alias}}{% endtrans %}</div>
+          <div class="unfollow-green">{% trans %}Following {{alias}}{% endtrans %}</div>
         </div>
         {% endif %}
     </div>

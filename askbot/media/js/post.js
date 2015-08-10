@@ -65,7 +65,7 @@ function setupFormValidation(form, validationRules, validationMessages, onSubmit
                 if (span.length === 0){
                     //for resizable textarea
                     var element_id = element.attr('id');
-                    span = $('label[for="' + element_id + '"]');
+                    span = $('label[for="' + element_id + '"]').last();
                 }
             }
             span.replaceWith(error);
@@ -100,6 +100,15 @@ var validateTagCount = function(value){
 
 $.validator.addMethod('limit_tag_count', validateTagCount);
 $.validator.addMethod('limit_tag_length', validateTagLength);
+$.validator.addMethod("pattern", function(value, element, param) {
+    if (this.optional(element)) {
+        return true;
+    }
+    if (typeof param === "string") {
+        param = new RegExp("^(?:" + param + ")$");
+    }
+    return param.test(value);
+}, "Invalid format.");
 
 var CPValidator = function() {
     return {
@@ -112,17 +121,20 @@ var CPValidator = function() {
                     limit_tag_length: true
                 },
                 text: {
-                    minlength: askbot['settings']['minQuestionBodyLength']
+                    minlength: askbot['settings']['minQuestionBodyLength'],
+                    required: true
                 },
                 title: {
-                    minlength: askbot['settings']['minTitleLength']
+                    minlength: askbot['settings']['minTitleLength'],
+                    required: true,
+                    pattern: /\?$/
                 }
             };
         },
         getQuestionFormMessages: function(){
             return {
                 tags: {
-                    required: " " + gettext('keywords cannot be empty'),
+                    required: " " + gettext('tags cannot be empty'),
                     maxlength: askbot['messages']['tagLimits'],
                     limit_tag_count: askbot['messages']['maxTagsPerPost'],
                     limit_tag_length: askbot['messages']['maxTagLength']
@@ -140,6 +152,7 @@ var CPValidator = function() {
                 },
                 title: {
                     required: " " + gettext('enter your question'),
+                    pattern: "Must be in question format and end with a question mark",
                     minlength: interpolate(
                                     ngettext(
                                         '%(question)s must have > %(length)s character',
@@ -565,8 +578,7 @@ var Vote = function(){
     };
 
     var getFavoriteButton = function(){
-        var favoriteButton = 'div.'+ voteContainerId +' a[class="'+ classPrefixFollow +'"]';
-        favoriteButton += ', div.'+ voteContainerId +' a[class="'+ classPrefixFollowed +'"]';
+        var favoriteButton = '.' + voteContainerId + ' .button.followed, ' + '.' + voteContainerId + ' .button.follow';
         return $(favoriteButton);
     };
     var getFavoriteNumber = function(){
@@ -816,7 +828,7 @@ var Vote = function(){
         }
         else if(data.status == "1"){
             var follow_html = gettext('Follow');
-            object.attr("class", 'button follow');
+            object.attr("class", 'button follow rover-btn rover-btn-default btn-block');
             object.html(follow_html);
             var fav = getFavoriteNumber();
             fav.removeClass("my-favorite-number");
@@ -831,7 +843,7 @@ var Vote = function(){
         else if(data.success == "1"){
             var followed_html = gettext('<div>Following</div><div class="unfollow">Unfollow</div>');
             object.html(followed_html);
-            object.attr("class", 'button followed');
+            object.attr("class", 'button followed rover-btn rover-btn-default btn-block');
             var fav = getFavoriteNumber();
             var fmts = ngettext('%s follower', '%s followers', data.count);
             fav.text(interpolate(fmts, [data.count]));
@@ -1247,7 +1259,7 @@ var questionRetagger = function(){
             },
             messages: {
                 tags: {
-                    required: gettext('keywords cannot be empty'),
+                    required: gettext('tags cannot be empty'),
                     maxlength: askbot['messages']['tagLimits'],
                     limit_tag_count: askbot['messages']['maxTagsPerPost'],
                     limit_tag_length: askbot['messages']['maxTagLength']
@@ -1643,13 +1655,13 @@ EditCommentForm.prototype.attachTo = function(comment, mode){
     this._commentsWidget.hideButton();//hide add comment button
     //fix up the comment submit button, depending on the mode
     if (this._type == 'add'){
-        this._submit_btn.html(gettext('add comment'));
+        this._submit_btn.html(gettext('Add Comment'));
         if (this._minorEditBox) {
             this._minorEditBox.hide();
         }
     }
     else {
-        this._submit_btn.html(gettext('save comment'));
+        this._submit_btn.html(gettext('Save Comment'));
         if (this._minorEditBox) {
             this._minorEditBox.show();
         }
@@ -1784,15 +1796,15 @@ EditCommentForm.prototype.createDom = function(){
     this._text_counter = $('<span></span>').attr('class', 'counter');
     this._controlsBox.append(this._text_counter);
 
-    this._submit_btn = $('<button class="submit"></button>');
+    this._submit_btn = $('<button class="rover-btn rover-btn-secondary btn-sm margin-right-x2"></button>');
     this._controlsBox.append(this._submit_btn);
-    this._cancel_btn = $('<button class="submit cancel"></button>');
-    this._cancel_btn.html(gettext('cancel'));
+    this._cancel_btn = $('<button class="rover-btn rover-btn-default btn-sm"></button>');
+    this._cancel_btn.html(gettext('Cancel'));
     this._controlsBox.append(this._cancel_btn);
 
     //if email alerts are enabled, add a checkbox "suppress_email"
     if (askbot['settings']['enableEmailAlerts'] === true) {
-        this._minorEditBox = this.makeElement('div');
+        this._minorEditBox = this.makeElement('span');
         this._minorEditBox.addClass('checkbox');
         this._controlsBox.append(this._minorEditBox);
         var checkBox = this.makeElement('input');
@@ -2289,7 +2301,7 @@ PostCommentsWidget.prototype.decorate = function(element){
 
     //see if user can comment here
     var controls = element.find('.controls');
-    this._activate_button = controls.find('.button');
+    this._activate_button = controls.find('.add-comment-button');
 
     if (this._user_can_post == false){
         setupButtonEventHandlers(

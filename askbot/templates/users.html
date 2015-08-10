@@ -34,7 +34,7 @@
                 ><span>{{ a_group.name|replace('-',' ')|escape }}</span></a>
             {% endfor %}
         {% else %#}
-            <span class="label">{% trans %}Sort by &raquo;{% endtrans %}</span>
+            <span class="label">{% trans %}Sort by{% endtrans %}</span>
         {#% endif %#}
             {% if settings.KARMA_MODE == 'public' %}
             <a 

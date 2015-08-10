@@ -1,0 +1,179 @@
+.post-content {
+    h1 a {
+        font-size: 22px;
+    }
+
+    .tags {
+        max-width: 680px;
+    }
+
+    .question-asked-timeago {
+        font-size: 11px;
+        color: #ccc;
+        margin-top: 10px;
+    }
+
+    .post-body {
+        margin: 2px 0 0 0;
+
+        p {
+            @extend .body-text;
+        }
+
+        .post-update-info-container {
+            width: auto;
+            margin-right: 5px;
+
+            .post-update-info {
+                border: 1px solid #ccc;
+                border-radius: $border-radius-base;
+                padding: 10px;
+
+                .user-card {
+                    width: 119px;
+
+                    .avatar-box {
+                        margin: 0;
+                    }
+                }
+
+                .user-info {
+                    float: right;
+                }
+
+                .user-link {
+                    font-size: 10px;
+                    line-height: 150%;
+                    color: #777;
+                }
+
+                .service-link-container {
+                    background-color: $aqua;
+                    border-radius: $border-radius-base;
+                    padding: 2px 4px;
+
+                    a {
+                        font-size: 8px;
+                        color: white;
+                        line-height: 150%;
+                    }
+                }
+            }
+        }
+    }
+
+    .post-controls a {
+        color: #ccc;
+
+        &:hover {
+            background-color: transparent;
+        }
+    }
+
+    .comment-title {
+        @extend .h5;
+    }
+
+    .comments {
+        margin-left: 15px;
+
+        .comment {
+            border-left: 1px solid #ccc;
+            border-bottom: none;
+            margin-bottom: 15px;
+            padding-left: 5px;
+
+            .comment-votes {
+                display: none;
+            }
+
+            .comment-content {
+                .comment-delete .delete-icon {
+                    background: none;
+                    color: $gray-light;
+                    font-size: 11px;
+                    width: auto;
+                    height: auto;
+                    text-shadow: none;
+
+                    &:hover {
+                        border: none;
+                        color: $brand-danger;
+                        margin: 0;
+                        font-size: 12px;
+                    }
+                }
+
+                .comment-body {
+                    color: $gray;
+
+                    p {
+                        @extend .body-text;
+                        margin-bottom: 5px;
+                    }
+
+                    .author {
+                        color: black;
+                    }
+
+                    .age, .edit, .convert-comment input{
+                        font-size: 11px;
+                        margin: 0 0 0 10px;
+                        padding: 0;
+                    }
+
+                    .age {
+                        color: #ccc;
+                    }
+
+                    .convert-comment input {
+                        color: $link-color;
+                        height: auto;
+                        box-shadow: none;
+                        text-shadow: none;
+
+                        &:hover {
+                            color: $link-hover-color;
+                        }
+                    }
+                }
+            }
+        }
+
+        .controls a {
+            color: $gray-light;
+
+            i {
+                margin-right: 8px;
+                font-size: 24px;
+            }
+
+            span {
+                line-height: 1;
+                position: relative;
+                top: -6px;
+            }
+        }
+
+        .content .post-comments {
+            .edit-comment-buttons .checkbox {
+                display: inline;
+                top: 10px;
+                margin-left: 25px;
+
+                @include xs-only {
+                    display: block;
+                }
+
+                input {
+                    margin: 0;
+                }
+
+                label {
+                    top: -5px;
+                    position: relative;
+                }
+            }
+        }
+    }
+}

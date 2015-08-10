@@ -79,10 +79,6 @@ textarea:focus,
 input:focus {
   outline: none;
 }
-input[type="text"],
-input[type="password"],
-select,
-textarea,
 #askFormBar .questionTitleInput,
 .wmd-container,
 .folded-editor {
@@ -721,11 +717,11 @@ input[type="button"].cancelSearchBtn {
 .cancelSearchBtn:hover {
   color: #d84040;
 }
-button,
-input[type="submit"],
-input[type="button"],
-input[type="reset"],
-.button {
+button:not(.rover-btn),
+input[type="submit"]:not(.rover-btn),
+input[type="button"]:not(.rover-btn),
+input[type="reset"]:not(.rover-btn),
+.button:not(.rover-btn) {
   border: 0 !important;
   border-top: #eaf2f3 1px solid;
   cursor: pointer;
@@ -767,8 +763,8 @@ input[type="reset"].large,
   line-height: 35px;
   padding: 0 10px;
 }
-button:hover,
-input[type="submit"]:hover,
+button:hover:not(.rover-btn),
+input[type="submit"]:hover:not(.rover-btn),
 .button:hover {
   background-color: #cde5e9;
   background-repeat: no-repeat;
@@ -832,11 +828,6 @@ form.ajax-file-upload img.spinner {
   /* check blocks/secondary_header.html and widgets/ask_button.html*/
 
   float: right;
-  font-size: 16px;
-  height: 42px;
-  line-height: 44px;
-  margin: -1px 0 0 0;
-  text-transform: uppercase;
   width: 200px;
   /* to match width of sidebar */
 
@@ -1264,11 +1255,6 @@ ul#searchTags {
   margin: 4px 0 0 5px;
   font-family: 'Open Sans', Arial, sans-serif;
 }
-.short-summary .counts .item-count {
-  padding: 0px 5px 0px 5px;
-  font-size: 25px;
-  font-family: 'Open Sans', Arial, sans-serif;
-}
 .short-summary .counts .votes div,
 .short-summary .counts .views div,
 .short-summary .counts .answers div,
@@ -1301,39 +1287,6 @@ ul#searchTags {
 }
 .short-summary .views {
   background: url(../images/view-background.png) repeat-x;
-}
-.short-summary .no-votes .item-count {
-  color: #b1b5b6;
-}
-.short-summary .some-votes .item-count {
-  color: #4a757f;
-}
-.short-summary .no-answers .item-count {
-  color: #b1b5b6;
-}
-.short-summary .some-answers .item-count {
-  color: #eab243;
-}
-.short-summary .no-views .item-count {
-  color: #b1b5b6;
-}
-.short-summary .some-views .item-count {
-  color: #d33f00;
-}
-.short-summary .accepted .item-count {
-  background: url(../images/accept.png) no-repeat top right;
-  display: block;
-  text-align: center;
-  width: 40px;
-  color: #eab243;
-}
-.short-summary .some-favorites .item-count {
-  background: #338333;
-  color: #d0f5a9;
-}
-.short-summary .no-favorites .item-count {
-  background: #eab243;
-  color: yellow;
 }
 /* ----- Question list Paginator , check main_content/pager.html and macros/utils_macros.html----- */
 .evenMore {
@@ -1745,15 +1698,6 @@ ul#related-tags li {
   color: #525252;
   font-size: 13px;
 }
-.ask-page #id_tags,
-.edit-question-page #id_tags {
-  box-sizing: border-box;
-  height: 31px;
-  padding-left: 5px;
-  font-size: 14px;
-  width: 100%;
-  max-width: 395px;
-}
 .ask-page .lang-selector,
 .edit-question-page .lang-selector {
   margin: 9px 0 0 0;
@@ -2043,8 +1987,6 @@ ul#related-tags li {
   margin: 12px 0 5px 0;
   width: 100%;
 }
-.edit-question-page #id_title,
-#fmedit #id_title,
 .wmd-preview #id_title {
   font-size: 24px;
   line-height: 24px;
@@ -2151,42 +2093,6 @@ ul#related-tags li {
 .question-page .post-update-info-container {
   float: right;
   width: 175px;
-}
-.question-page .post-update-info {
-  background: #ffffff url(../images/background-user-info.png) repeat-x bottom;
-  float: right;
-  font-size: 9px;
-  font-family: 'Open Sans', Arial;
-  line-height: 12px;
-  margin: 0px 0px 5px 5px;
-  padding: 4px;
-  width: 166px;
-  border-radius: 4px;
-  -ms-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  -khtml-border-radius: 4px;
-  -webkit-box-shadow: 0px 2px 1px #bfbfbf;
-  -moz-box-shadow: 0px 2px 1px #bfbfbf;
-  box-shadow: 0px 2px 1px #bfbfbf;
-}
-.question-page .post-update-info p {
-  line-height: 13px;
-  font-size: 11px;
-  margin: 0 0 2px 1px;
-  padding: 0;
-}
-.question-page .post-update-info a {
-  color: #444;
-}
-.question-page .post-update-info .gravatar {
-  float: left;
-  margin-right: 4px;
-}
-.question-page .post-update-info p.tip {
-  color: #444;
-  line-height: 13px;
-  font-size: 10px;
 }
 .question-page .post-controls {
   clear: left;
@@ -2387,34 +2293,11 @@ ul#related-tags li {
 .question-page .comments .edit-comment-buttons .checkbox {
   margin: 3px;
 }
-.question-page .comments .controls a {
-  border: none;
-  color: #988e4c;
-  padding: 0 3px 5px 22px;
-  font-family: 'Open Sans', Arial;
-  font-size: 13px;
-  font-weight: normal;
-  background: url(../images/comment.png) no-repeat center left;
-  -webkit-box-shadow: 0 0 0 #929292;
-  -moz-box-shadow: 0 0 0 #929292;
-  box-shadow: 0 0 0 #929292;
-  text-shadow: 0 0 0 #929292;
-  -moz-text-shadow: 0 0 0 #929292;
-  -webkit-text-shadow: 0 0 0 #929292;
-}
-.question-page .comments .controls a:hover {
-  text-decoration: none;
-}
 .question-page .comments .button {
   color: #988e4c;
   font-size: 11px;
   padding: 3px;
   cursor: pointer;
-}
-.question-page .comments a {
-  background-color: inherit;
-  color: #1b79bd;
-  padding: 0;
 }
 .question-page .comments form.post-comments {
   padding: 1px 6px 7px 31px;
@@ -2494,14 +2377,6 @@ ul#related-tags li {
 .question-page .comments div.comment:hover {
   background-color: #efefef;
 }
-.question-page .comments a.author {
-  background-color: inherit;
-  color: #1b79bd;
-  padding: 0;
-}
-.question-page .comments a.author:hover {
-  text-decoration: underline;
-}
 .question-page .comments span.delete-icon {
   background: url(../images/close-small.png) no-repeat;
   border: 0;
@@ -2549,7 +2424,6 @@ ul#related-tags li {
   font-family: 'Open Sans', Arial;
   font-size: 13px;
   font-weight: normal;
-  line-height: 13px;
   margin: 0 0 3px 8px;
   vertical-align: middle;
   -webkit-box-shadow: 0 0 0 #929292;
@@ -2676,12 +2550,6 @@ ul#related-tags li {
   color: #707070;
   line-height: 1.2;
   margin-top: 10px;
-}
-.question-page #fmanswer h2 {
-  font-family: 'Raleway', Arial, sans-serif;
-  color: #7ea9b3;
-  font-size: 24px;
-  font-weight: 400;
 }
 .question-page #fmanswer label {
   font-size: 13px;
@@ -4594,10 +4462,6 @@ td.setting-input textarea {
   .edit-answer-page #id_revision,
   .edit-question-page #id_revision {
     display: none;
-  }
-  .edit-answer-page #fmedit #id_title,
-  .edit-question-page #fmedit #id_title {
-    margin: 15px 0 0 0;
   }
   .edit-answer-page .after-editor {
     margin-top: 8px;

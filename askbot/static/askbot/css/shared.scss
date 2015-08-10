@@ -1,0 +1,207 @@
+.tags {
+    max-width: 455px;
+
+    .tag-left {
+        box-shadow: none;
+        margin: 0;
+
+        .tag {
+            color: $gray-light;
+            background-color: #e5e5e5;
+            border-radius: $border-radius-base * 2;
+            padding: 0px 12px;
+            border: none;
+            outline: none !important;
+            margin: 0 8px 8px 0;
+
+            // we want these tags to be hidden
+            &[data-tag-name="dogs"], &[data-tag-name="support"], &[data-tag-name="sitter"],
+            &[title$="'dogs'"], &[title$="'support'"], &[title$="'sitter'"] {
+                display: none;
+            }
+        }
+    }
+}
+
+abbr[title].timeago {
+    border: none;
+    font-weight: normal;
+    cursor: auto;
+}
+
+.wmd-container {
+    border: 1px solid #ccc;
+    border-radius: $border-radius-base;
+
+    .wmd-button-bar {
+        background: transparent;
+        border-bottom: 1px solid #ccc;
+    }
+
+    textarea, #editor {
+        margin: -1px;
+        width: calc(100% + 2px);
+        background: transparent;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        transition: box-shadow ease-in-out 0.15s;
+        border-radius: $border-radius-base;
+        border: 1px solid transparent !important;
+
+        &:focus {
+            border: 1px solid #66afe9;
+            box-shadow: inset 0px 0px 8px 0px rgba(102, 175, 233, 0.6);
+        }
+    }
+
+    #editor {
+        border-top-right-radius: 0;
+        border-top-left-radius: 0;
+    }
+}
+
+.avatar-box {
+    height: auto;
+
+    .gravatar {
+        @extend .img-circle;
+    }
+}
+
+.tooltip.bottom {
+    .tooltip-arrow {
+        border-bottom-color: $gray-light;
+    }
+
+    .tooltip-inner {
+        background-color: $gray-light;
+    }
+}
+
+.vote-buttons {
+    .post-vote {
+        background: transparent;
+        width: auto;
+        height: auto;
+        font-family: 'rover-icons';
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-size: 25px;
+        margin: 5px 0;
+
+        &:hover {
+            background: transparent;
+        }
+
+        &.upvote {
+            &:before {
+                content: "\e640";
+            }
+
+            &:hover, &.on {
+                color: $green-light;
+            }
+        }
+
+        &.downvote {
+            &:before {
+                content: "\e64a";
+            }
+
+            &:hover, &.on {
+                color: $brand-danger;
+            }
+        }
+    }
+
+    .share-icon-toggle {
+        font-size: 25px;
+        margin-top: 10px;
+
+        &:hover {
+            color: $green-light;
+        }
+    }
+
+    .share-buttons {
+        display: none;
+    }
+
+    .vote-number {
+        padding: 0;
+        font-size: 18px;
+    }
+}
+
+.tabBar {
+    background: transparent;
+    height: auto;
+
+    .tabsA, .tabsC {
+        background: transparent;
+        border: 1px solid #ccc;
+        border-radius: $border-radius-base;
+        font-size: 12px;
+        height: auto;
+
+        .label {
+            color: $gray-light;
+            line-height: 20px;
+            font-size: 12px;
+            margin: 4px 10px;
+            padding: 0;
+        }
+
+        a {
+            border-left: 1px solid #ccc;
+            height: auto;
+            color: $gray-light;
+            padding: 4px 10px;
+            margin: 0;
+
+            &.first {
+                border-left: none;
+            }
+
+            &.on, &[classname="on"] {
+                background-color: #ebedee;
+
+                &:first-child {
+                    // we subtract one to account for the border width
+                    border-top-left-radius: $border-radius-base - 1;
+                    border-bottom-left-radius: $border-radius-base - 1;
+                }
+
+                &:last-child {
+                    // we subtract one to account for the border width
+                    border-top-right-radius: $border-radius-base - 1;
+                    border-bottom-right-radius: $border-radius-base - 1;
+                }
+            }
+        }
+    }
+}
+
+.vote-notification {
+    @extend .alert;
+    @extend .alert-danger;
+    box-shadow: none;
+
+    h3 {
+        @extend .h5;
+        border: none;
+        background: transparent;
+    }
+}
+
+.notify.alert .close {
+    position: absolute;
+    right: 5px;
+    top: 7px;
+    width: 20px;
+    height: 20px;
+}
+
+.follow-toggle .unfollow:hover .unfollow-red {
+    font-weight: normal;
+    color: $brand-warning;
+}
