@@ -1571,7 +1571,9 @@ class Thread(models.Model):
 
     def get_summary_html(self, search_state=None, visitor = None):
         html = self.get_cached_summary_html(visitor)
-        if not html:
+        if html:
+            html = html.decode('utf-8')
+        else:
             html = self.update_summary_html(visitor)
 
         # todo: this work may be pushed onto javascript we post-process tag names
