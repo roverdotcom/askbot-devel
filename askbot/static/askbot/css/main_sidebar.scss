@@ -1,4 +1,6 @@
 #ContentRight {
+    margin-top: 0;
+
     .sidebar-content-block {
         @extend .rover-content-block;
         background-color: #ebedee;
@@ -65,6 +67,7 @@
         h6 {
             text-transform: none;
             font-weight: bold;
+            margin-top: 0;
         }
 
         .landing-message {

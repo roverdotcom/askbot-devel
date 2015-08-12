@@ -1,9 +1,11 @@
 .secondary-header-container {
     background-color: $aqua;
+    margin-bottom: 20px;
 
     #secondaryHeader {
         border: none;
         background-color: rgba(0, 0, 0, 0.3);
+        margin-bottom: 0;
 
         #homeButton {
             background: transparent;

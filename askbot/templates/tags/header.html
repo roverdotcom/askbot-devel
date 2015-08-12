@@ -1,14 +1,16 @@
 <div id="content-header">
     {% set tag_query = stag|escape %}
-    {% if page_title %}
-            <h1 class="section-title">{{ page_title }}</h1>
-    {% else %}
-        {% if stag %}
-            <h1 class="section-title">{% trans tags=settings.WORDS_TAG_PLURAL %}Rover Q&A Community {{ tags }}, matching "{{ tag_query }}"{% endtrans %}</h1>
+    <h3 class="section-title pull-left">
+        {% if page_title %}
+                {{ page_title }}
         {% else %}
-            <h1 class="section-title">{% trans tags=settings.WORDS_TAG_PLURAL %}Rover Q&A Community {{ tags }}{% endtrans %}</h1>
+            {% if stag %}
+                {% trans tags=settings.WORDS_TAG_PLURAL %}Rover Q&A Community {{ tags }}, matching "{{ tag_query }}"{% endtrans %}
+            {% else %}
+                {% trans tags=settings.WORDS_TAG_PLURAL %}Rover Q&A Community {{ tags }}{% endtrans %}
+            {% endif %}
         {% endif %}
-    {% endif %}
+    </h3>
     <div class="tabBar tabBar-tags">
         <div class="tabsA">
             <span class="label">{% trans %}Sort by{% endtrans %}</span>

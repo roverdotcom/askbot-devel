@@ -1,10 +1,5 @@
 {% import "macros.html" as macros %}
 
-{% if 'SIDEBAR_MAIN_HEADER'|show_block_to(request.user) %}
-<div class="box">
-    {{ settings.SIDEBAR_MAIN_HEADER }}
-</div>
-{% endif %}
 <div class="sidebar-content-block">
     <h6 class="landing-message-header">How It Works</h6>
     <p class="landing-message">Welcome to the Rover Q&amp;A Community! We’re building connections between dog lovers, and creating a space for support and camaraderie.</p>

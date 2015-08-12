@@ -34,6 +34,7 @@ from django.core import exceptions as django_exceptions
 from django.contrib.humanize.templatetags import humanize
 from django.http import QueryDict
 from django.conf import settings as django_settings
+from django.db.models import Q
 
 import askbot
 from askbot import exceptions
@@ -106,10 +107,10 @@ def questions(request, **kwargs):
         kwargs['query']
     ])
 
-    # remove support tagged questions from non-specific searches
+    # remove support and sitter tagged questions from non-specific searches
     # or for anonymous users
     if not is_specific_search or not request.user.is_authenticated():
-        qs = qs.exclude(tags__name='support')
+        qs = qs.exclude(tags__name__in=['support', 'sitter'])
 
     if meta_data['non_existing_tags']:
         search_state = search_state.remove_tags(meta_data['non_existing_tags'])
@@ -344,7 +345,9 @@ def tags(request):#view showing a listing of available tags - plain list
     if query != '':
         query_params['name__icontains'] = query
 
-    tags_qs = Tag.objects.filter(**query_params).exclude(used_count=0)
+    tags_qs = Tag.objects.filter(**query_params).exclude(
+        Q(used_count=0) | Q(name__in=['dogs', 'sitter', 'support'])
+    )
 
     tags_qs = tags_qs.order_by(order_by)
 

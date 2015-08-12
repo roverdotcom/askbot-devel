@@ -4,8 +4,6 @@
     }
 
     #fmask, #fmedit {
-        margin-top: 10px;
-
         label:not(.radio-inline) {
             font-style: normal;
             font-size: 22px;
@@ -13,7 +11,7 @@
             border-bottom: 1px solid #ccc;
             padding-bottom: 15px;
             margin-bottom: 15px;
-            margin-top: 30px;
+            margin-top: 35px;
 
             &.title-label {
                 margin-top: 0;
