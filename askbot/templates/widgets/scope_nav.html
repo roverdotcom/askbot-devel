@@ -12,8 +12,8 @@
             {% set search_state=search_state|get_empty_search_state %}
         {% endif %}
         <a class="scope-selector{% if 'dogs' in search_tags %} on{% endif %}" href="{{ search_state.add_tag('dogs').full_url() }}">Dog Questions</a>
-        <a class="scope-selector{% if 'support' in search_tags %} on{% endif %}" href="{{ search_state.add_tag('support').full_url() }}">Rover Questions</a>
         <a class="scope-selector{% if 'sitters' in search_tags %} on{% endif %}" href="{{ search_state.add_tag('sitters').full_url() }}">Sitter-to-Sitter</a>
+        <a class="scope-selector{% if 'support' in search_tags %} on{% endif %}" href="{{ search_state.add_tag('support').full_url() }}">Using Rover</a>
     {% else %}
     <a class="scope-selector on" href="#">{{ settings.WORDS_PLEASE_ASK_YOUR_QUESTION_HERE|escape }}</a>
     {% endif %}
