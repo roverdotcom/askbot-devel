@@ -135,6 +135,7 @@ abbr[title].timeago {
 .tabBar {
     background: transparent;
     height: auto;
+    margin-top: 0;
 
     .tabsA, .tabsC {
         background: transparent;
@@ -204,4 +205,10 @@ abbr[title].timeago {
 .follow-toggle .unfollow:hover .unfollow-red {
     font-weight: normal;
     color: $brand-warning;
+}
+
+h3.section-title {
+    margin-top: 0;
+    padding-top: 0;
+    line-height: 1;
 }
