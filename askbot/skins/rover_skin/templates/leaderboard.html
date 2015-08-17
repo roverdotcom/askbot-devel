@@ -53,7 +53,7 @@
                         {# Add link to user's sitter profile. #}
                         {% with user.person.get_active_services() as active_services %}
                             {% if active_services %}
-                                <a class="service-link" href="{{ user.person.get_absolute_url() }}">Book a Stay with me in {{ user.person.get_short_location() }}</a>
+                                <a class="service-link" href="{{ user.person.get_absolute_url() }}?ref=qa-community">Book a Stay with me in {{ user.person.get_short_location() }}</a>
                             {% endif %}
                         {% endwith %}
                     </div>

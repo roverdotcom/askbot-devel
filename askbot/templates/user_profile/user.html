@@ -47,11 +47,11 @@
         <p class="landing-message padding-bottom-x2">24/7 customer support</p>
         {% set active_services = view_user.person.get_active_services() %}
         {% if active_services %}
-            <a class="rover-btn rover-btn-primary btn-block" href="{{ view_user.person.get_absolute_url() }}">
+            <a class="rover-btn rover-btn-primary btn-block" href="{{ view_user.person.get_absolute_url() }}?ref=qa-community">
                 Book a Stay with <br>{{ view_user.get_full_name()|escape }}
             </a>
         {% else %}
-            <a class="rover-btn rover-btn-primary btn-block" href="{% url 'index' %}">
+            <a class="rover-btn rover-btn-primary btn-block" href="{% url 'index' %}?ref=qa-community">
                 Book a Stay on Rover
             </a>
         {% endif %}

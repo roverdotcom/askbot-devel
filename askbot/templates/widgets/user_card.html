@@ -20,7 +20,7 @@
         {% with user.person.get_active_services() as active_services %}
             {% if active_services %}
             <div class="service-link-container">
-                <a class="service-link" href="{{ user.person.get_absolute_url() }}"><i class="rover-icon rover-icon-sitter-traveling"></i> Book a Stay<br/>{{ user.person.get_short_location() }}</a>
+                <a class="service-link" href="{{ user.person.get_absolute_url() }}?ref=qa-community"><i class="rover-icon rover-icon-sitter-traveling"></i> Book a Stay<br/>{{ user.person.get_short_location() }}</a>
             </div>
             {% endif %}
         {% endwith %}
