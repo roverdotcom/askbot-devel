@@ -4417,7 +4417,6 @@ td.setting-input textarea {
   .counts .votes,
   .help,
   .rss,
-  .scope-selector,
   .settings,
   .tabBar,
   .tags,
@@ -4527,8 +4526,17 @@ td.setting-input textarea {
   .short-summary {
     width: 100%;
   }
+  #secondaryHeader {
+    height: 109px;
+  }
   #secondaryHeader td.search-bar {
     padding: 0 6px;
+  }
+  #homeButton {
+    padding-top: 15px;
+  }
+  #searchBar {
+    margin-top: 10px;
   }
 }
 @media screen and (max-width: 540px) {
