@@ -20,31 +20,50 @@
             {% endif %}
             class="{{ enabled_scopes_class }}"
             method="get">
-            {# 
-                A single row table to help the semi-fixed width layout where:
-                * all cells have "tight width" without linebreaks
-                * except that the search bar cell takes the remaining width
-                We had hard time making this layout work without tables.
-                Please suggest if there is a better way.
-            #}
-            <table width="100%">
-                <tr>
-                    {# width 1 means that cell will expand just enough to fit the contents #}
-                    <td width="1">
-                        <a id="homeButton" href="{% url questions %}">
-                            <i class="rover-icon rover-icon-house"></i>
-                        </a>
-                    </td>
-                    <td width="1">{% include "widgets/scope_nav.html" %}</td>
-                    {# width * means that the cell takes the remaining table width #}
-                    <td width="*" class="search-bar">{% include "widgets/search_bar.html" %}</td> 
-                    {% if settings.ASK_BUTTON_ENABLED %}
-                    <td width="1">
-                        {% include "widgets/ask_button.html" %}            
-                    </td>
-                    {% endif %}
-                </tr>
-            </table>
+            <div class="hidden-xs visible-sm visible-md visible-lg">
+                {#
+                    For non-mobile screens:
+                    A single row table to help the semi-fixed width layout where:
+                    * all cells have "tight width" without linebreaks
+                    * except that the search bar cell takes the remaining width
+                    We had hard time making this layout work without tables.
+                    Please suggest if there is a better way.
+                #}
+                <table width="100%">
+                    <tr>
+                        {# width 1 means that cell will expand just enough to fit the contents #}
+                        <td width="1">
+                            <a id="homeButton" href="{% url questions %}">
+                                <i class="rover-icon rover-icon-house"></i>
+                            </a>
+                        </td>
+                        <td width="1">{% include "widgets/scope_nav.html" %}</td>
+                        {# width * means that the cell takes the remaining table width #}
+                        <td width="*" class="search-bar">{% include "widgets/search_bar.html" %}</td>
+                        {% if settings.ASK_BUTTON_ENABLED %}
+                        <td width="1">
+                            {% include "widgets/ask_button.html" %}
+                        </td>
+                        {% endif %}
+                    </tr>
+                </table>
+            </div>
+            <div class="visible-xs hidden-sm hidden-md hidden-lg">
+                {# For mobile, a two-row table with the scope nav below and no button #}
+                <table width="100%">
+                    <tr>
+                        <td width="1">
+                            <a id="homeButton" href="{% url questions %}">
+                                <i class="rover-icon rover-icon-house"></i>
+                            </a>
+                        </td>
+                        <td width="*" class="search-bar">{% include "widgets/search_bar.html" %}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">{% include "widgets/scope_nav.html" %}</td>
+                    </tr>
+                </table>
+            </div>
         </form>
     </div>
 </div>
