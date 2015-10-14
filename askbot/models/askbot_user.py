@@ -3,8 +3,6 @@ from django.contrib.auth.models import UserManager
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.db import models
-from django.dispatch import receiver
-from django.db.models.signals import post_save
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.query import QuerySet
 from django.db.models import Q
@@ -279,7 +277,7 @@ class AskbotUser(models.Model):
         related_name='followed_by'
     )
 
-    date_joined = models.DateTimeField(auto_now_add=True)
+    date_joined = models.DateTimeField(default=timezone.now)
 
     objects = AskbotUserManager.for_queryset_class(AskbotUserQuerySet)()
 
@@ -327,8 +325,9 @@ class AskbotUser(models.Model):
         # try-except to catch attempts to access self.user before it has been
         # assigned (during AskbotUser instantiation).
         try:
-            if name != u'id' and \
-                    name in get_user_model()._meta.get_all_field_names():
+            if (
+                    name not in self._meta.get_all_field_names() and
+                    name in get_user_model()._meta.get_all_field_names()):
                 setattr(self.user, name, value)
             else:
                 super(AskbotUser, self).__setattr__(name, value)
