@@ -44,7 +44,6 @@ settings.register(
     )
 )
 
-
 settings.register(
     values.ImageValue(
         GENERAL_SKIN_SETTINGS,
@@ -56,6 +55,25 @@ settings.register(
                     ),
         default = '/images/logo.gif',
         url_resolver = skin_utils.get_media_url
+    )
+)
+
+settings.register(
+    values.BooleanValue(
+        GENERAL_SKIN_SETTINGS,
+        'SHOW_NEW_FEATURE_HEADER',
+        description = _('Show new feature header'),
+        help_text = _('Check if you want to show the new feature header'),
+        default = False
+    )
+)
+
+settings.register(
+    values.URLValue(
+        GENERAL_SKIN_SETTINGS,
+        'NEW_FEATURE_HEADER_URL',
+        description=_('New feature iframe URL'),
+        default='',
     )
 )
 
@@ -109,13 +127,13 @@ settings.register(
     values.ImageValue(
         GENERAL_SKIN_SETTINGS,
         'LOCAL_LOGIN_ICON',
-        description = _('Password login button'),
-        help_text = _(
+        description=_('Password login button'),
+        help_text=_(
                         'An 88x38 pixel image that is used on the login screen '
                         'for the password login button.'
                     ),
-        default = '/images/pw-login.gif',
-        url_resolver = skin_utils.get_media_url
+        default='/images/pw-login.gif',
+        url_resolver=skin_utils.get_media_url
     )
 )
 

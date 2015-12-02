@@ -1,3 +1,12 @@
+.new-feature-header-container {
+    height: 65px;
+    overflow: hidden;
+}
+.new-feature-header {
+    width: 100%;
+    overflow: hidden;
+}
+
 #header.without-logo {
     background-color: $aqua;
     font-family: $font-family-sans-serif;
