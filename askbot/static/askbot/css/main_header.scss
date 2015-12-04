@@ -2,6 +2,13 @@
     height: 65px;
     overflow: hidden;
 }
+
+@include xs-only {
+    .new-feature-header-container {
+        height: 90px;
+    }
+}
+
 .new-feature-header {
     width: 100%;
     overflow: hidden;
