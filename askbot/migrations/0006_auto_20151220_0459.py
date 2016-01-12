@@ -28,7 +28,7 @@ def populate_claimed_localized_profiles(apps, schema_editor):
     for user in ProgressBar(users.iterator(), users.count(), message):
         profile = user.askbot_profile
         langs = profile.languages.strip().split()
-        localized_profiles = user.localized_user_profiles
+        localized_profiles = user.localized_askbot_profiles.all()
         for localized in localized_profiles:
             if localized.language_code in langs:
                 localized.is_claimed = True
