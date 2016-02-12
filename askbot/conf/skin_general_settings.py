@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings as django_settings
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
+from django.templatetags.static import static
 from askbot.skins import utils as skin_utils
 from askbot import const
 from askbot.conf.super_groups import CONTENT_AND_UI
@@ -59,6 +60,25 @@ settings.register(
     )
 )
 
+settings.register(
+    values.BooleanValue(
+        GENERAL_SKIN_SETTINGS,
+        'SHOW_NEW_FEATURE_HEADER',
+        description = _('Show new feature header'),
+        help_text = _('Check if you want to show the new feature header'),
+        default = False
+    )
+)
+
+settings.register(
+    values.URLValue(
+        GENERAL_SKIN_SETTINGS,
+        'NEW_FEATURE_HEADER_URL',
+        description=_('New feature iframe URL'),
+        default='',
+    )
+)
+
 #cannot use HAS_ASKBOT_LOCALE_MIDDLEWARE due to circular import error
 if not askbot.is_multilingual() and \
         'askbot.middleware.locale.LocaleMiddleware' in django_settings.MIDDLEWARE_CLASSES:
@@ -99,8 +119,9 @@ settings.register(
                         'at <a href="%(favicon_info_url)s">this page</a>.'
                     ) % {'favicon_info_url': const.DEPENDENCY_URLS['favicon']},
         allowed_file_extensions = ('ico',),#only allow .ico files
-        default = '/images/favicon.gif',
-        url_resolver = skin_utils.get_media_url
+        default = 'new_design/images/favicon.png',
+        # url_resolver = skin_utils.get_media_url
+        url_resolver=static
     )
 )
 
@@ -108,13 +129,13 @@ settings.register(
     values.ImageValue(
         GENERAL_SKIN_SETTINGS,
         'LOCAL_LOGIN_ICON',
-        description = _('Password login button'),
-        help_text = _(
+        description=_('Password login button'),
+        help_text=_(
                         'An 88x38 pixel image that is used on the login screen '
                         'for the password login button.'
                     ),
-        default = '/images/pw-login.gif',
-        url_resolver = skin_utils.get_media_url
+        default='/images/pw-login.gif',
+        url_resolver=skin_utils.get_media_url
     )
 )
 
@@ -212,7 +233,7 @@ settings.register(
                     ('customize', 'customize'),
                     ('disable', 'disable')
                 ),
-        default = 'default',
+        default = 'disable',
     )
 )
 

@@ -33,15 +33,20 @@
                 {{ settings.WORDS_INSTRUCTION_TO_GIVE_ANSWER }}
             </p>
             <div class="folded-editor{% if editor_is_unfolded %}unfolded{% endif %}" tabindex="6">
-              <p class="prompt"><a>{{ settings.WORDS_ADD_ANSWER|escape }}</a></p>
+                <p class="prompt">
+                    <a class="rover-btn rover-btn-default">
+                        <i class="rover-icon rover-icon-add-comment"></i>
+                        <span>{{ settings.WORDS_ADD_ANSWER|escape }}</span>
+                    </a>
+                </p>
                 <div class="editor-proper">
                     {{ macros.edit_post(answer) }}
                     <div class="answer-options">
                         {% if settings.WIKI_ON %}
                             {{ macros.checkbox_in_div(answer.wiki) }}
                         {% endif %}
-                        {% if settings.GROUPS_ENABLED and 
-                            request.user.is_authenticated() and 
+                        {% if settings.GROUPS_ENABLED and
+                            request.user.is_authenticated() and
                             request.user.can_make_group_private_posts()
                         %}
                             {{ macros.checkbox_in_div(answer.post_privately) }}
@@ -53,7 +58,7 @@
                         <div>{{ macros.form_field_with_errors(answer.recaptcha) }}</div>
                         <div class="clearfix"></div>
                     {% endif %}
-                    <input id="add-answer-btn" type="submit" class="submit"/>
+                    <input id="add-answer-btn" type="submit" class="submit after-editor rover-btn rover-btn-secondary" style="float:left"/>
                     <script type="text/javascript">
                         askbot['functions']['renderAddAnswerButton']();
                     </script>

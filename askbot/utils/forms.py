@@ -290,7 +290,7 @@ class SetPasswordForm(forms.Form):
                                     attrs=login_form_widget_attrs,
                                     render_value=True
                                 ),
-                                label=_('Password retyped'),
+                                label=_('Re-type Password'),
                                 error_messages={'required':_('please, retype your password'),
                                                 'nomatch':_('entered passwords did not match, please try again')},
                             )

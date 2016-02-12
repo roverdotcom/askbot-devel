@@ -1,5 +1,5 @@
 <p style="font-size:10px; font-style:italic;">
-    {% set url = 'user_subscriptions'|url(recipient_user.id, recipient_user.username|slugify) %}
+    {% set url = 'user_subscriptions'|url(recipient_user.id) %}
     {% if is_multilingual %}
         {% trans %}To change frequency, language and content of these alerts, please visit <a href="{{ url }}">your user profile</a>.{% endtrans %}
     {% else %}

@@ -12,6 +12,8 @@ import askbot
 from askbot.utils import hasher
 from django.conf import settings as django_settings
 from django.utils.datastructures import SortedDict
+from django.contrib.staticfiles import finders
+from django.templatetags.static import static
 
 class MediaNotFound(Exception):
     """raised when media file is not found"""
@@ -153,7 +155,15 @@ def get_media_url(url, ignore_missing = False):
     try:
         use_skin = resolve_skin_for_media(media=url, preferred_skin = use_skin)
     except MediaNotFound:
-        if ignore_missing == False:
+        # Update: attempt to find this file in the ordinary staticfiles
+        # hierarchy before giving up.
+        if url.startswith('/'):
+            url = url[1:]
+        media = finders.find(url)
+        if media is not None:
+            return static(url)
+
+        elif ignore_missing == False:
             log_message = 'missing media resource %s in skin %s' \
                             % (url, use_skin)
             logging.critical(log_message)

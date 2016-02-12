@@ -2503,7 +2503,7 @@ class PostRevision(models.Model):
 
         if self.post.is_question():
             return self.QUESTION_REVISION_TEMPLATE_NO_TAGS % {
-                'title': self.title,
+                'title': escape(self.title),
                 'html': sanitized_html
             }
         else:
@@ -2511,7 +2511,7 @@ class PostRevision(models.Model):
 
     def get_snippet(self, max_length = 120):
         """a little simpler than as Post.get_snippet"""
-        return html_utils.strip_tags(self.html)[:max_length] + '...'
+        return escape(html_utils.strip_tags(self.html)[:max_length] + '...')
 
 
 class PostFlagReason(models.Model):

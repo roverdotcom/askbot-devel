@@ -378,3 +378,11 @@ var getSuperClass = function (cls) {
     return cls.superClass_;
 };
 
+
+$(function() {
+    $('.js-keyword-dropdown').on('change', function() {
+        if (this.value !== 'none') {
+            window.location.href = this.value;
+        }
+    });
+});

@@ -1,5 +1,5 @@
 <a id="post-{{question.id}}-edit" class="question-edit js-edit" href="{% url edit_question question.id %}">{% trans %}edit{% endtrans %}</a>
-<a id="retag" class="question-retag" href="{% url retag_question question.id %}">{% trans %}retag{% endtrans %}</a>
+<a id="retag" class="question-retag" href="{% url retag_question question.id %}">{% trans tags=settings.WORDS_TAG_PLURAL|lower %}edit {{ tags }}{% endtrans %}</a>
 {% if question.offensive_flag_count > 0 %}
     <span
         id="question-offensive-remove-flag-{{ question.id }}"

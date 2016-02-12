@@ -249,6 +249,38 @@ settings.register(
     )
 )
 
+# NOTE TO FUTURE DEVS - the WORDS_TAG_SINGULAR and WORDS_TAG_PLURAL
+# constants also need to be changed in askbot.const.__init__ in order for
+# changes in these two livesettings to take complete effect. askbot.conf
+# can't be accessed from that package, as it introduces an absolutely
+# disgusting circular import.
+
+settings.register(
+    values.StringValue(
+        WORDS,
+        'WORDS_TAG_SINGULAR',
+        default=_('Keyword'),
+        description=_(
+            'Singular user-facing name for Tag.'
+            " Python changes are required to completely change this setting -"
+            " contact the dev team."
+        ),
+    )
+)
+
+settings.register(
+    values.StringValue(
+        WORDS,
+        'WORDS_TAG_PLURAL',
+        default=_('Keywords'),
+        description=_(
+            'Plural user-facing name for Tag.'
+            " Python changes are required to completely change this setting -"
+            " contact the dev team."
+        ),
+    )
+)
+
 settings.register(
     values.StringValue(
         WORDS,
@@ -273,7 +305,7 @@ settings.register(
     values.LongStringValue(
         WORDS,
         'WORDS_QUESTIONS_COUNTABLE_FORMS',
-        default=_('question\nquestions'),
+        default=_('question about dogs\nquestions about dogs'),
         description=_('Countable plural forms for "question"'),
         help_text=_('Enter one form per line, pay attention'),
         localized=True
@@ -516,7 +548,7 @@ settings.register(
     values.StringValue(
         WORDS,
         'WORDS_PLEASE_ASK_YOUR_QUESTION_HERE',
-        default=_('Please ask your question here'),
+        default=_('Ask Dog Questions'),
         description=_('Please ask your question here'),
         localized=True
     )
@@ -830,8 +862,8 @@ settings.register(
     values.StringValue(
         WORDS,
         'WORDS_CLOSE_QUESTION',
-        default=_('Close question'),
-        description=_('Close question'),
+        default=_('Close Question'),
+        description=_('Close Question'),
         localized=True
     )
 )
@@ -840,8 +872,8 @@ settings.register(
     values.StringValue(
         WORDS,
         'WORDS_CLOSE_QUESTIONS',
-        default=_('close questions'),
-        description=_('close questions'),
+        default=_('Close Questions'),
+        description=_('Close Questions'),
         localized=True
     )
 )
@@ -850,8 +882,8 @@ settings.register(
     values.StringValue(
         WORDS,
         'WORDS_EDIT_QUESTION',
-        default=_('Edit question'),
-        description=_('Edit question'),
+        default=_('Edit Question'),
+        description=_('Edit Question'),
         localized=True
     )
 )
@@ -870,8 +902,8 @@ settings.register(
     values.StringValue(
         WORDS,
         'WORDS_RETAG_QUESTION',
-        default=_('Retag question'),
-        description=_('Retag question'),
+        default=_('Retag Question'),
+        description=_('Retag Question'),
         localized=True
     )
 )
@@ -880,8 +912,8 @@ settings.register(
     values.StringValue(
         WORDS,
         'WORDS_RETAG_QUESTIONS',
-        default=_('retag questions'),
-        description=_('retag questions'),
+        default=_('Retag Questions'),
+        description=_('Retag Questions'),
         localized=True
     )
 )
@@ -890,8 +922,8 @@ settings.register(
     values.StringValue(
         WORDS,
         'WORDS_REOPEN_QUESTION',
-        default=_('Reopen question'),
-        description=_('Reopen question'),
+        default=_('Reopen Question'),
+        description=_('Reopen Question'),
         localized=True
     )
 )
@@ -959,16 +991,6 @@ settings.register(
 settings.register(
     values.StringValue(
         WORDS,
-        'WORDS_GIVE_AN_ANSWER_INTERESTING_TO_THIS_COMMUNITY',
-        default=_('give an answer interesting to this community'),
-        description=_('give an answer interesting to this community'),
-        localized=True
-    )
-)
-
-settings.register(
-    values.StringValue(
-        WORDS,
         'WORDS_GIVE_A_GOOD_ANSWER',
         default=_('give a substantial answer'),
         description=_('give a substantial answer'),
@@ -1023,5 +1045,23 @@ settings.register(
         default=_('Answered'),
         description=_('Answered'),
         localized=True
+    )
+)
+
+settings.register(
+    values.StringValue(
+        WORDS,
+        'WORDS_KARMA_SINGULAR',
+        default=_('Treat'),
+        description=_('Singular display name for karma points.'),
+    )
+)
+
+settings.register(
+    values.StringValue(
+        WORDS,
+        'WORDS_KARMA_PLURAL',
+        default=_('Treats'),
+        description=_('Plural display name for karma points.'),
     )
 )

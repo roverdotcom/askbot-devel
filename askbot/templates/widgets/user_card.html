@@ -1,33 +1,20 @@
 {% import "macros.html" as macros %}
-{# 
+{#
     thumbnail for the user - shown on the users listings
     and elsewhere
 #}
 <div class="user-card">
-    {{ macros.gravatar(user, 32) }}
+    {{ macros.gravatar(user, 46) }}
     <div class="user-info">
-        <a href="{{ user.get_profile_url() }}">{{ user.username|escape }}</a>
-        {{ macros.user_country_flag(user) }}
-
-        <br/>
-
-        {% if settings.KARMA_MODE == 'public' %}
-        <span class="reputation-score">{{ user.reputation }}</span>
-        {% endif %}
-
-        {% if settings.BADGES_MODE == 'public' %}
-        <span class="badges" title="{{ user.get_badge_summary() }}">
-            {% if user.gold %}
-                <span class='badge1'>&#9679;</span><span class="badgecount">{{ user.gold }}</span>
-            {% endif %}
-            {% if user.silver %}
-                <span class='badge2'>&#9679;</span><span class="badgecount">{{ user.silver }}</span>
-            {% endif %}
-            {% if user.bronze %}
-                <span class='badge3'>&#9679;</span><span class="badgecount">{{ user.bronze }}</span>
-            {% endif %}
-        </span>
-        {% endif %}
-        {{ macros.user_website_link(user) }}
+        <div class="user-link-container">
+            <a class="user-link" href="{{ user.get_profile_url() }}">
+                <div>{{ user.display_name|escape }}</div>
+                {% if karma_mode == 'public' %}
+                    <div>
+                        {{ user.reputation }} {{ ngettext(settings.WORDS_KARMA_SINGULAR, settings.WORDS_KARMA_PLURAL, user.reputation)|lower }}
+                    </div>
+                {% endif %}
+            </a>
+        </div>
     </div>
 </div>

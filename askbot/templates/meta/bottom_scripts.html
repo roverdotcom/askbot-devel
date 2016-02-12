@@ -107,6 +107,25 @@
     {% endif %}
     <!-- End Utils.js -->
     <script type="text/javascript" src="{{ '/js/live_search.js'|media }}"></script>
+
+    <script>
+    (function(fn) {
+        if (document.readyState != 'loading'){
+             fn();
+        } else {
+            document.addEventListener('DOMContentLoaded', fn);
+        }
+    })(function() {
+        if (document.cookie.replace(/(?:(?:^|.*;\s*)entry_page\s*\=\s*([^;]*).*$)|^.*$/, "$1") === '') {
+            document.cookie = [
+                "entry_page=",
+                escape(window.location.pathname),
+                "; expires=Fri, 31 Dec 9999 23:59:59 GMT; domain=.rover.com; path=/",
+            ].join('');
+        }
+    });
+    </script>
+
 {% endcompress %}
 <script type="text/javascript">
     /*<![CDATA[*/
@@ -128,7 +147,7 @@
             putCursorAtEnd(searchInput);
         }
 
-        var haveFullTextSearchTab = inArray(activeTab, ['questions', 'badges', 'ask']);
+        var haveFullTextSearchTab = true;
         var haveUserProfilePage = $('body').hasClass('user-profile-page');
         if ((haveUserProfilePage || haveFullTextSearchTab) && searchInput && searchInput.length) {
             var search = new FullTextSearch();
@@ -157,6 +176,28 @@
             var showPermsTrigger = new ShowPermsTrigger();
             showPermsTrigger.decorate(userRep);
         }
+
+
+        // set tooltips
+        $('.counts .votes').tooltip({
+            title: 'Votes',
+            placement: 'bottom'
+        });
+        $('.counts .answers').tooltip({
+            title: 'Answers',
+            placement: 'bottom'
+        });
+        $('.counts .views').tooltip({
+            title: 'Views',
+            placement: 'bottom'
+        });
+
+        $('.js-share-icon-toggle').on(
+            'click',
+            function() {
+                $('.js-share-buttons').slideToggle();
+            }
+        );
     });
     if (askbot['data']['haveFlashNotifications']) {
         $('#validate_email_alert').click(function(){notify.close(true)})

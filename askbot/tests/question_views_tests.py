@@ -16,8 +16,8 @@ class PrivateQuestionViewsTests(AskbotTestCase):
                     )
         self.user.join_group(self.group)
         self.qdata = {
-            'title': 'test question title',
-            'text': 'test question text'
+            'title': 'test question title?',
+            'text': 'test question text',
         }
         self.client.login(user_id=self.user.id, method='force')
 

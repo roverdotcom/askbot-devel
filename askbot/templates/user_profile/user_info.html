@@ -7,22 +7,24 @@
 {% endif %}
 <div class="user-info-table">
     <div class="col1">
-        <div class='avatar'>
-            {{ macros.gravatar(view_user, 128) }}
-            {% if request.user.pk == view_user.pk %}
-                <p><a 
-                    {% if support_custom_avatars %}
-                        href="{% url askbot_avatar_show_list view_user.id %}"
-                    {% else %}
-                        href="{% url faq %}#gravatar"
-                    {% endif %}
-                >{% trans %}change picture{% endtrans %}</a></p>
+        <div class="avatar">
+            {{ macros.gravatar(view_user, 176) }}
+            {% if request.user == view_user %}
+                <p><a href="{% url edit_user view_user.id %}">
+                    {% trans %}change picture{% endtrans %}
+                </a></p>
             {% endif %}
         </div>
+    </div>
+    <div class="col2 user-profile-overview">
+
         {% if can_show_karma %}
-            <div class="scoreNumber">{{view_user.reputation|intcomma}}</div>
-            <p><b style="color:#777;">{% trans %}karma{% endtrans %}</b></p>
+            <h4>{{view_user.reputation|intcomma}} treat{{ view_user.reputation|pluralize }}</h4>
         {% endif %}
+
+        <p><strong>member since</strong> {{ macros.timeago(view_user.date_joined) }}</p>
+        <p><strong>last seen</strong> {{ macros.timeago(view_user.last_seen) }}</p>
+        <p><strong>today&apos;s unused votes</strong> {{ votes_today_left }} votes left</p>
 
         {% if user_follow_feature_on and request.user != view_user %}
             {# User follow button #}
@@ -32,12 +34,13 @@
                 {% set is_following = False %}
             {% endif %}
             {% set alias=view_user.username|escape %}
+            <div class="follow-button">
             <button class="js-follow-user button large"
                 data-is-on="{{ is_following|as_js_bool }}"
-                data-off-prompt-text="{% trans %}unfollow {{ alias }}{% endtrans %}"
-                data-on-prompt-text="{% trans %}follow {{ alias }}{% endtrans %}"
-                data-on-state-text="{% trans %}following {{ alias }}{% endtrans %}"
-                data-off-state-text="{% trans %}follow {{ alias }}{% endtrans %}"
+                data-off-prompt-text="{% trans %}Unfollow {{ alias }}{% endtrans %}"
+                data-on-prompt-text="{% trans %}Follow {{ alias }}{% endtrans %}"
+                data-on-state-text="{% trans %}Following {{ alias }}{% endtrans %}"
+                data-off-state-text="{% trans %}Follow {{ alias }}{% endtrans %}"
                 data-toggle-url="{% url 'toggle_follow_object' model_name='user', object_id=view_user.id %}"
             >
                 {% if is_following %}
@@ -46,114 +49,8 @@
                     {% trans %}follow {{ alias }}{% endtrans %}
                 {% endif %}
             </button>
+            </div>
         {% endif %}
-    </div>
-    <div class="col2">
-        <table class="user-details">
-            {% if request.user == view_user or request.user.is_administrator_or_moderator %}
-            <tr>
-                <td class="user-profile-tool-links" align="left" colspan="2">
-                    <a href="{% url edit_user view_user.id %}">
-                        {% trans %}update profile{% endtrans %}
-                    </a>
-                    {% if settings.USE_ASKBOT_LOGIN_SYSTEM and request.user == view_user and settings.ALLOW_ADD_REMOVE_LOGIN_METHODS %}
-                        | <a href="{{ settings.LOGIN_URL }}?next={{ settings.LOGIN_URL }}">
-                            {% trans %}manage login methods{% endtrans %}
-                        </a>
-                    {% endif %}
-                </td>
-            </tr>  
-            {% endif %}
-            <tr>
-                <th colspan="2" align="left">
-                <h3>{{ view_user.get_status_display() }}</h3>
-                </th>
-            </tr>
-            {% if view_user.real_name %}
-            <tr>
-                <td>{% trans %}real name{% endtrans %}</td>
-                <td><b>{{view_user.real_name|escape}}</b></td>
-            </tr>
-            {% endif %}
-            {% if request.user|can_see_private_user_data(view_user) %}
-            <tr>
-                <td>{% trans %}email{% endtrans %}</td>
-                <td>{{view_user.email}}</td>
-            </tr>
-            {% endif %}
-            {% if settings.GROUPS_ENABLED %}
-            <tr>
-                <td>{% trans %}groups{% endtrans %}</td>
-                <td>
-                    <div id="user-groups">
-                        <table id="groups-list">
-                            {% for group in user_groups %}
-                            <tr>
-                                {{ macros.user_group(group, groups_membership_info[group.id]) }}
-                            </tr>
-                            {% endfor %}
-                        </table>
-                        <div class="clearfix"></div>
-                        <a id="add-group">{% trans %}add group{% endtrans %}</a>
-                    </div>
-                </td>
-            </tr>
-            {% endif %}
-            <tr>
-                <td>{% trans %}member since{% endtrans %}</td>
-                <td><strong>{{ macros.timeago(view_user.date_joined) }}</strong></td>
-            </tr>
-            {% if view_user.last_seen %}
-            <tr>
-                <td>{% trans %}last seen{% endtrans %}</td>
-                <td><strong title="{{ view_user.last_seen }}">{{ macros.timeago(view_user.last_seen) }}</strong></td>
-            </tr>
-            {% endif %}
-            {% if view_user.website and show_profile_info %}
-            <tr>
-                <td>{% trans %}website{% endtrans %}</td>
-                <td>{{ macros.user_website_link(
-                                        view_user,
-                                        max_display_length=30,
-                                        force_show=show_profile_info
-                                    )
-                    }}</td>
-            </tr>
-            {% endif  %}
-            {% if request.user == view_user and 
-                settings.TWITTER_SECRET and 
-                settings.TWITTER_KEY and 
-                settings.ENABLE_SHARING_TWITTER 
-            %}
-                {% include "user_profile/twitter_sharing_controls.html" %}
-            {% endif %}
-            {% if view_user.location or (view_user.country and view_user.country.code != 'none') %}
-            <tr>
-                <td>{% trans %}location{% endtrans %}</td>
-                <td>{{ macros.user_full_location(view_user) }}</td>
-            </tr>
-            {% endif %}
-            {% if view_user.date_of_birth %}
-            <tr>
-            <!--todo  - redo this with whole sentence translation -->
-                <td>{% trans %}age{% endtrans %}</td>
-                <td>{% trans age=view_user.date_of_birth|get_age%}{{ age }} years old{% endtrans %}</td>
-            </tr>
-            {% endif %}
-            {% if votes_today_left %}
-            <tr>
-                <td>{% trans %}todays unused votes{% endtrans %}</td>
-                <td><strong class="darkred">{{ votes_today_left }}</strong> {% trans %}votes left{% endtrans %}</td>
-            </tr>
-            {% endif %}
-        </table>
-    </div>
-    <div class="col3 user-about">
-    {% with view_user.get_localized_profile().about as user_about %}
-        {% if user_about and show_profile_info %}
-            {{ user_about|linebreaks }}
-        {% endif %}
-    {% endwith %}
     </div>
 </div>
 <!-- end user_info.html -->

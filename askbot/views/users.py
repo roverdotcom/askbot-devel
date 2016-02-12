@@ -24,6 +24,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.http import HttpResponse, HttpResponseForbidden
 from django.http import HttpResponseRedirect, Http404
 from django.utils.translation import get_language
@@ -52,6 +53,8 @@ from askbot.models.tag import format_personal_group_name
 from askbot.search.state_manager import SearchState
 from askbot.utils import url_utils
 from askbot.utils.loading import load_module
+
+USER_PROFILE_TITLE = "%s's Rover Q&A Community Profile - %s"
 
 def owner_or_moderator_required(f):
     @functools.wraps(f)
@@ -335,7 +338,10 @@ def user_moderate(request, subject, context):
         'active_tab': 'users',
         'page_class': 'user-profile-page',
         'tab_name': 'moderation',
-        'page_title': _('moderate user'),
+        'page_title': USER_PROFILE_TITLE % (
+            subject.display_name,
+            'Moderate'
+        ),
         'change_user_status_form': user_status_form,
         'change_user_reputation_form': user_rep_form,
         'send_message_form': send_message_form,
@@ -431,6 +437,19 @@ def edit_user(request, id):
         'view_user': user,
     }
     return render(request, 'user_profile/user_edit.html', data)
+
+
+@login_required
+@csrf.csrf_protect
+def edit_user(request, id):
+    """
+    View that allows to edit user profile on Rover.
+    This overrides the view that was previously defined above.
+    """
+    # Rover.com has it's own version of the user edit form and we
+    # want users to use that form
+    return redirect('/account/profile/account-info/')
+
 
 def user_stats(request, user, context):
     question_filter = {}
@@ -600,7 +619,7 @@ def user_stats(request, user, context):
         'show_moderation_warning': show_moderation_warning,
         'show_profile_info': show_profile_info,
         'tab_name' : 'stats',
-        'page_title' : _('user profile overview'),
+        'page_title' : USER_PROFILE_TITLE % (user.display_name, 'Overview'),
         'questions' : questions,
         'question_count': question_count,
         'q_paginator_context': q_paginator_context,
@@ -722,7 +741,10 @@ def user_recent(request, user, context):
         'active_tab': 'users',
         'page_class': 'user-profile-page',
         'tab_name' : 'recent',
-        'page_title' : _('profile - recent activity'),
+        'page_title' : USER_PROFILE_TITLE % (
+            user.display_name,
+            'Recent Activity'
+        ),
         'activities' : activities
     }
     context.update(data)
@@ -753,7 +775,10 @@ def show_group_join_requests(request, user, context):
         'inbox_section': 'group-join-requests',
         'page_class': 'user-profile-page',
         'tab_name' : 'join_requests',
-        'page_title' : _('profile - moderation'),
+        'page_title' : USER_PROFILE_TITLE % (
+            user.display_name,
+            'Moderation'
+        ),
         'groups_dict': groups_dict,
         'join_requests': join_requests
     }
@@ -802,7 +827,10 @@ def user_responses(request, user, context):
             'page_class': 'user-profile-page',
             'tab_name' : 'inbox',
             'inbox_section': section,
-            'page_title' : _('profile - messages')
+            'page_title' : USER_PROFILE_TITLE % (
+                user.display_name,
+                'Messages'
+            )
         }
         context.update(data)
         if 'thread_id' in request.GET:
@@ -890,7 +918,10 @@ def user_responses(request, user, context):
         'page_class': 'user-profile-page',
         'tab_name' : 'inbox',
         'inbox_section': section,
-        'page_title' : _('profile - responses'),
+        'page_title' : USER_PROFILE_TITLE % (
+            user.display_name,
+            'Responses'
+        ),
         'post_reject_reasons': reject_reasons,
         'messages' : filtered_message_list,
     }
@@ -902,9 +933,13 @@ def user_network(request, user, context):
     if 'followit' not in django_settings.INSTALLED_APPS:
         raise Http404
     data = {
+        'page_class': 'user-profile-page',
         'followed_users': user.get_followed_users(),
         'followers': user.get_followers(),
-        'page_title' : _('profile - network'),
+        'page_title' : USER_PROFILE_TITLE % (
+             user.display_name,
+             'Network'
+         ),
         'tab_name': 'network',
     }
     context.update(data)
@@ -933,7 +968,10 @@ def user_votes(request, user, context):
         'active_tab':'users',
         'page_class': 'user-profile-page',
         'tab_name' : 'votes',
-        'page_title' : _('profile - votes'),
+        'page_title' : USER_PROFILE_TITLE % (
+            user.display_name,
+            'Votes'
+        ),
         'votes' : votes[:const.USER_VIEW_DATA_SIZE]
     }
     context.update(data)
@@ -954,7 +992,10 @@ def user_reputation(request, user, context):
         'active_tab':'users',
         'page_class': 'user-profile-page',
         'tab_name': 'reputation',
-        'page_title': _("Profile - User's Karma"),
+        'page_title': USER_PROFILE_TITLE % (
+            user.display_name,
+            askbot_settings.WORDS_KARMA_PLURAL
+        ),
         'reputation': reputes,
         'reps': reps
     }
@@ -991,7 +1032,10 @@ def user_favorites(request, user, context):
         'active_tab':'users',
         'page_class': 'user-profile-page',
         'tab_name' : 'favorites',
-        'page_title' : _('profile - favorites'),
+        'page_title' : USER_PROFILE_TITLE % (
+            user.display_name,
+            'Favorites'
+        ),
         'questions' : questions,
         'q_paginator_context': q_paginator_context,
         'question_count': question_count,
@@ -1016,7 +1060,7 @@ def user_set_primary_language(request):
 
 
 @csrf.csrf_protect
-def user_select_languages(request, id=None, slug=None):
+def user_select_languages(request, id=None):
     if request.user.is_anonymous():
         raise django_exceptions.PermissionDenied
 
@@ -1039,10 +1083,7 @@ def user_select_languages(request, id=None, slug=None):
 
             redirect_url = reverse(
                 'user_select_languages',
-                kwargs={
-                    'id': user.id,
-                    'slug': slugify(user.username)
-                }
+                kwargs={'id': user.id}
             )
         return HttpResponseRedirect(redirect_url)
     else:
@@ -1103,7 +1144,10 @@ def user_email_subscriptions(request, user, context):
         'subscribed_tag_names': user.get_marked_tag_names('subscribed'),
         'page_class': 'user-profile-page',
         'tab_name': 'email_subscriptions',
-        'page_title': _('profile - email subscriptions'),
+        'page_title' : USER_PROFILE_TITLE % (
+            user.display_name,
+            'Email Subscriptions'
+        ),
         'email_feeds_form': email_feeds_form,
         'tag_filter_selection_form': tag_filter_form,
         'action_status': action_status,
@@ -1154,13 +1198,10 @@ if CUSTOM_TAB:
     USER_VIEW_CALL_TABLE[CUSTOM_SLUG] = user_custom_tab
 
 #todo: rename this function - variable named user is everywhere
-def user(request, id, slug=None, tab_name=None):
+def user(request, id, tab_name=None):
     """Main user view function that works as a switchboard
 
     id - id of the profile owner
-
-    todo: decide what to do with slug - it is not used
-    in the code in any way
     """
     profile_owner = get_object_or_404(models.User, id = id)
 
@@ -1168,11 +1209,6 @@ def user(request, id, slug=None, tab_name=None):
         if request.user.is_anonymous() \
             or not request.user.is_administrator_or_moderator():
             raise Http404
-
-    if slugify(profile_owner.username) != slug:
-        view_url = profile_owner.get_profile_url() + '?' \
-                                + urllib.urlencode(request.REQUEST)
-        return HttpResponseRedirect(view_url)
 
     if not tab_name:
         tab_name = request.GET.get('sort', 'stats')
@@ -1205,7 +1241,7 @@ def user(request, id, slug=None, tab_name=None):
         context['custom_tab_slug'] = CUSTOM_TAB['SLUG']
     return user_view_func(request, profile_owner, context)
 
-def groups(request, id = None, slug = None):
+def groups(request, id = None):
     """output groups page
     """
     if askbot_settings.GROUPS_ENABLED == False:

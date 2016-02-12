@@ -90,7 +90,8 @@ FORMULAE = {
 
 GERMANNIC_FAMILY = (
     'en', 'bg', 'bg_BG', 'el', 'nb_NO', 'pt', 'ast', 'ca', 'de',
-    'it', 'hu', 'hi', 'sv_SE', 'fi', 'he_IL', 'gl', 'es', 'bn_IN'
+    'it', 'hu', 'hi', 'sv_SE', 'fi', 'he_IL', 'gl', 'es', 'bn_IN',
+    'en-us'
 )
 
 FRANCOID_FAMILY = ('fr', 'pt', 'pt_BR', 'pt-br')

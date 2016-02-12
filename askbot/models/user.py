@@ -55,6 +55,9 @@ class MockUser(object):
     def is_watched(self):
         return False
 
+    def get_full_name(self):
+        return 'Steve Smith'
+
 
 class ResponseAndMentionActivityManager(models.Manager):
     def get_query_set(self):

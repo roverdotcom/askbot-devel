@@ -29,7 +29,7 @@ settings.register(
     livesettings.BooleanValue(
         USER_SETTINGS,
         'EDITABLE_SCREEN_NAME',
-        default=True,
+        default=False,
         description=_('Allow editing user screen name')
     )
 )
@@ -57,8 +57,17 @@ settings.register(
     livesettings.BooleanValue(
         USER_SETTINGS,
         'EDITABLE_EMAIL',
-        default = True,
+        default = False,
         description = _('Allow users change own email addresses')
+    )
+)
+
+settings.register(
+    livesettings.BooleanValue(
+        USER_SETTINGS,
+        'EDITABLE_REAL_NAME',
+        default = False,
+        description = _('Allow users change their own real names')
     )
 )
 
@@ -84,7 +93,7 @@ settings.register(
     livesettings.BooleanValue(
         USER_SETTINGS,
         'ALLOW_ADD_REMOVE_LOGIN_METHODS',
-        default = True,
+        default = False,
         description = _('Allow adding and removing login methods')
     )
 )
@@ -154,7 +163,7 @@ settings.register(
     livesettings.BooleanValue(
         USER_SETTINGS,
         'ENABLE_GRAVATAR',
-        default = True,
+        default = False,
         description = _('Use automatic avatars from gravatar service'),
         help_text=_(
             'Check this option if you want to allow the use of gravatar.com for avatars. Please, note that this feature might take about 10 minutes to become fully effective. You will have to enable uploaded avatars as well. For more information, please visit <a href="http://askbot.org/doc/optional-modules.html#uploaded-avatars">this page</a>.'

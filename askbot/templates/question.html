@@ -1,6 +1,6 @@
 {% extends "two_column_body.html" %}
 <!-- question.html -->
-{% block title %}{% spaceless %}{{ question.get_question_title()|escape }}{% endspaceless %}{% endblock %}
+{% block title %}{% spaceless %}{{ question.get_question_title()|truncate(34)|escape }}{% endspaceless %}{% endblock %}
 {% block meta_description %}
     <meta name="description" content="{{ question.summary|striptags|escape }}" />
 {% endblock %}
@@ -408,7 +408,7 @@
         askbot['data']['answersSortTab'] = '{{ tab_id }}';
         askbot['data']['questionId'] = {{ question.id }};
         askbot['data']['threadSlug'] = '{{ thread.title|slugify }}';
-        askbot['messages']['addComment'] = '{% trans %}add a comment{% endtrans %}';
+        askbot['messages']['addComment'] = '<i class="rover-icon rover-icon-add-comment"></i><span>{% trans %}Add a Comment{% endtrans %}</span>';
         askbot['messages']['userNamePrompt'] = '{% trans %}User name:{% endtrans %}';
         askbot['messages']['userEmailPrompt'] = '{% trans %}Email address:{% endtrans %}';
         askbot['messages']['mergeQuestions'] = '{{ settings.WORDS_MERGE_QUESTIONS }}';

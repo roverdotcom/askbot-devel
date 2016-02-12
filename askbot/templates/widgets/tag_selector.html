@@ -1,7 +1,7 @@
 {# todo - maybe disable navigation from ignored tags here when "hide" is on - with js? #}
 {% import "macros.html" as macros %}
 <div id="tagSelector" class="box">
-    <h2>{% trans %}Interesting tags{% endtrans %}</h2>
+    <h2>{% trans tags=settings.WORDS_TAG_PLURAL|lower %}Interesting {{ tags }}{% endtrans %}</h2>
     {{ 
         macros.tag_list_widget(
             interesting_tag_names,
@@ -19,7 +19,7 @@
         <input id="interestingTagInput" autocomplete="off" type="text"/>
         <input id="interestingTagAdd" type="submit" value="{% trans %}add{% endtrans %}"/>
     </div>
-    <h2>{% trans %}Ignored tags{% endtrans %}</h2>
+    <h2>{% trans tags=settings.WORDS_TAG_PLURAL|lower %}Ignored {{ tags }}{% endtrans %}</h2>
     {{
         macros.tag_list_widget(
             ignored_tag_names,
@@ -37,7 +37,7 @@
         <input id="ignoredTagAdd" type="submit" value="{% trans %}add{% endtrans%}"/>
     </div>
     {% if settings.SUBSCRIBED_TAG_SELECTOR_ENABLED %}
-        <h2>{% trans %}Subscribed tags{% endtrans %}</h2>
+        <h2>{% trans tags=settings.WORDS_TAG_PLURAL|lower %}Subscribed {{ tags }}{% endtrans %}</h2>
         {{
             macros.tag_list_widget(
                 subscribed_tag_names,

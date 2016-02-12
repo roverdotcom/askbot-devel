@@ -4,7 +4,7 @@
 {% block title %}{% spaceless %}{% trans %}Edit user profile{% endtrans %}{% endspaceless %}{% endblock %}
 {% block content %}
 <h1 class="section-title">
-    {{ request.user.username|escape }} - {% trans %}edit profile{% endtrans %}
+    {{ request.user.display_name|escape }} - {% trans %}edit profile{% endtrans %}
 </h1>
 <div id="main-body" style="width:100%;padding-top:10px">
     <form name="" action="{% url edit_user view_user.id %}" method="post">{% csrf_token %}
@@ -35,7 +35,7 @@
                             {{ form.username }}
                             <span class="form-error"> {{ form.username.errors }} </span>
                         {% else %}
-                            {{ view_user.username|escape }}
+                            {{ view_user.display_name|escape }}
                         {% endif %}
                     </td>
                 </tr>
@@ -55,7 +55,15 @@
                 </tr>
                 <tr>
                     <td>{{ form.realname.label_tag() }}:</td>
-                    <td>{{ form.realname }} <span class="form-error"> {{ form.realname.errors }} </span></td>
+                    <td>
+                        {% if settings.EDITABLE_REAL_NAME %}
+                            {{ form.realname }}
+                            <span class="form-error"> {{ form.realname.errors }} </span>
+                        {% else %}
+                            {{ view_user.first_name }} {{ view_user.last_name }}
+                            {% trans %}(cannot be changed){% endtrans %}
+                        {% endif %}
+                    </td>
                 </tr>
                 <tr>
                     <td>{{ form.website.label_tag() }}:</td>

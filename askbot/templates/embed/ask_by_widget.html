@@ -5,10 +5,6 @@
         {% compress css %}
         <link rel="stylesheet" type="text/css" href="{{ '/wmd/wmd.css'|media }}" />
         {% endcompress %}
-    {% else %}
-        {% compress css %}
-        <link href="{{ '/bootstrap/css/bootstrap.css'|media }}" rel="stylesheet" type="text/css" />
-        {% endcompress %}
     {% endif %}
 {% include "meta/fonts.html" %}
 <style type="text/css" media="screen">
@@ -48,7 +44,7 @@ body{
 }
 
 .title{
-    font-family: 'Open Sans Condensed', Arial, sans-serif;
+    font-family: 'Open Sans, Arial, sans-serif;
     font-size: 25px;
     margin-bottom: 10px;
 }
@@ -134,7 +130,7 @@ body{
     text-decoration: none;
     cursor: pointer;
     color: #4A757F;
-    font-family: 'Open Sans Condensed', Arial, sans-serif;
+    font-family: 'Open Sans, Arial, sans-serif;
     text-shadow: 0px 1px 0px #C6D9DD;
     -moz-text-shadow: 0px 1px 0px #c6d9dd;
     -webkit-text-shadow: 0px 1px 0px #c6d9dd;

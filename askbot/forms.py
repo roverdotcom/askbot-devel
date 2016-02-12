@@ -329,6 +329,12 @@ class TitleField(forms.CharField):
                 ) % {'question': question_term, 'length': self.max_length}
             )
 
+        # a question title must end with a question mark
+        if value[-1] != '?':
+            raise forms.ValidationError(
+                "Must be in question format and end with a question mark"
+            )
+
         return value.strip()  # TODO: test me
 
 
@@ -449,24 +455,19 @@ class TagNamesField(forms.CharField):
 
     def __init__(self, *args, **kwargs):
         super(TagNamesField, self).__init__(*args, **kwargs)
-        self.required = kwargs.get('required',
-                askbot_settings.TAGS_ARE_REQUIRED)
+        self.required = kwargs.get('required', False)
         self.widget = forms.TextInput(
-            attrs={'size': 50, 'autocomplete': 'off'}
+            attrs={'autocomplete': 'off', 'class': 'form-control'}
         )
         self.max_length = 255
         self.error_messages['max_length'] = _(
                             'We ran out of space for recording the tags. '
                             'Please shorten or delete some of them.'
                         )
-        self.label = kwargs.get('label') or _('tags')
-        self.help_text = kwargs.get('help_text') or ungettext_lazy(
+        self.label = _('tags')
+        self.help_text = kwargs.get('help_text') or _(
             'Tags are short keywords, with no spaces within. '
-            'Up to %(max_tags)d tag can be used.',
-            'Tags are short keywords, with no spaces within. '
-            'Up to %(max_tags)d tags can be used.',
-            askbot_settings.MAX_TAGS_PER_POST
-        ) % {'max_tags': askbot_settings.MAX_TAGS_PER_POST}
+            'Up to 5 tags can be used.')
         self.initial = ''
 
     def clean(self, value):
@@ -524,9 +525,8 @@ class WikiField(forms.BooleanField):
         self.required = False
         self.initial = False
         self.label = _(
-            'community wiki (karma is not awarded & '
-            'many others can edit wiki post)'
-        )
+            'community wiki (Treats are not awarded & '
+            'many others can edit wiki post)')
 
     def clean(self, value):
         return value and askbot_settings.WIKI_ON
@@ -1040,6 +1040,19 @@ class AskForm(PostAsSomeoneForm, PostPrivatelyForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
+        data = args[0] if args else kwargs.get('data', None)
+        if data:
+            data = data.copy()
+            data['tags'] = '{} {}'.format(
+                data.get('tags', ''),
+                data.get('required_tag', '')
+            )
+            if args:
+                args = list(args)
+                args[0] = data
+            else:
+                kwargs['data'] = data
+
         super(AskForm, self).__init__(*args, **kwargs)
         #it's important that this field is set up dynamically
         self.fields['title'] = TitleField()
@@ -1550,7 +1563,7 @@ class EditUserForm(forms.Form):
 class TagFilterSelectionForm(forms.ModelForm):
     email_tag_filter_strategy = forms.ChoiceField(
         initial = const.EXCLUDE_IGNORED,
-        label = _('Choose email tag filter'),
+        label = _('Choose email keyword filter'),
         widget = forms.RadioSelect
     )
     def __init__(self, *args, **kwargs):
@@ -1607,7 +1620,7 @@ class EditUserEmailFeedsForm(forms.Form):
             ('asked_by_me', EmailFeedSettingField(label=askbot_settings.WORDS_ASKED_BY_ME)),
             ('answered_by_me', EmailFeedSettingField(label=askbot_settings.WORDS_ANSWERED_BY_ME)),
             ('individually_selected', EmailFeedSettingField(label=_('Individually selected'))),
-            ('all_questions', EmailFeedSettingField(label=_('Entire forum (tag filtered)'))),
+            ('all_questions', EmailFeedSettingField(label=_('Entire forum ({} filtered)'.format(askbot_settings.WORDS_TAG_SINGULAR.lower())))),
             ('mentions_and_comments', EmailFeedSettingField(label=_('Comments and posts mentioning me')))
         ))
 
@@ -1698,8 +1711,7 @@ class SubscribeForEmailUpdatesField(forms.ChoiceField):
             ('y', _('okay, let\'s try!')),
             (
                 'n',
-                _('no %(sitename)s email please, thanks')
-                    % {'sitename': askbot_settings.APP_SHORT_NAME}
+                _('no Askbot email please, thanks')
             )
         )
         super(SubscribeForEmailUpdatesField, self).__init__(**kwargs)

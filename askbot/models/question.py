@@ -1776,7 +1776,11 @@ class Thread(models.Model):
         return last_updated_at, last_updated_by
 
     def get_summary_html(self, search_state=None, visitor=None):
-        html = self.get_cached_summary_html(visitor) or self.update_summary_html(visitor)
+        html = (
+            self.get_cached_summary_html(visitor) or
+            self.update_summary_html(visitor)
+        ).decode('utf-8')
+
         # todo: this work may be pushed onto javascript we post-process tag names
         # in the snippet so that tag urls match the search state
         # use `<<<` and `>>>` because they cannot be confused with user input
