@@ -17,7 +17,7 @@ settings.register(
     BooleanValue(
         SOCIAL_SHARING,
         'RSS_ENABLED',
-        default=True,
+        default=False,
         description=_('Check to enable RSS feeds')
     )
 )

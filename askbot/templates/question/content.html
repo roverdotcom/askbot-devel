@@ -19,7 +19,7 @@
                 {% trans %}See the accepted answer{% endtrans %}
             </a>
         {% endif %}
-    {% endif %} 
+    {% endif %}
 
     {% for answer in answers %}
         {% include "question/answer_card.html" %}
@@ -53,7 +53,7 @@
     {% else %}
         {# TODO: make this button open in-place answer editor, if answer is on the same page #}
         <a
-            class="button submit"
+            class="rover-btn rover-btn-primary"
             href="{% url "edit_answer" previous_answer.id %}"
         >{{ settings.WORDS_EDIT_YOUR_PREVIOUS_ANSWER|escape }}</a>
         <span>{{ settings.WORDS_ONLY_ONE_ANSWER_PER_USER_IS_ALLOWED|escape }}</span>

@@ -14,6 +14,11 @@ from askbot.const.message_keys import * #pylint: disable=wildcard-import
 DEFAULT_USER_DATA_EXPORT_DIR = os.path.abspath(
     os.path.join(get_install_directory(), '..', 'user_data'))
 
+# Trying to access these from conf introduces an absolutely hideous
+# circular import.
+WORDS_TAG_SINGULAR = 'tag'
+WORDS_TAG_PLURAL = 'tags'
+
 #todo: customize words
 CLOSE_REASONS = (
     (1, _('duplicate question')),
@@ -238,7 +243,7 @@ TYPE_ACTIVITY = (
     (TYPE_ACTIVITY_DELETE_QUESTION, _('deleted question')),
     (TYPE_ACTIVITY_DELETE_ANSWER, _('deleted answer')),
     (TYPE_ACTIVITY_MARK_OFFENSIVE, _('marked offensive')),
-    (TYPE_ACTIVITY_UPDATE_TAGS, _('updated tags')),
+    (TYPE_ACTIVITY_UPDATE_TAGS, _('updated {}'.format(WORDS_TAG_PLURAL))),
     (TYPE_ACTIVITY_FAVORITE, _('selected favorite')),
     (TYPE_ACTIVITY_USER_FULL_UPDATED, _('completed user profile')),
     (TYPE_ACTIVITY_EMAIL_UPDATE_SENT, _('email update sent to user')),

@@ -1,6 +1,10 @@
 {% extends "one_column_body.html" %}
 <!-- template badges.html -->
 {% block title %}{% spaceless %}{% trans %}Widgets{% endtrans %}{% endspaceless %}{% endblock %}
+{% block meta_description %}
+    {{ super() }}
+    <meta name="robots" content="noindex">
+{% endblock %}
 {% block content %}
 <h1 class="section-title">{% trans %}Widgets{% endtrans %}</h1>
 <p>

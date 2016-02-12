@@ -3,8 +3,8 @@
     {% trans %}read only access{% endtrans %}
 {%- else -%}
     {%- if settings.KARMA_MODE != 'hidden' -%}
-    <a 
-      class="user-micro-info reputation" 
+    <a
+      class="user-micro-info reputation"
       href="{{user.get_absolute_url()}}?sort=reputation"
       data-fetch-data-url="{% url 'get_perms_data' %}"
       data-url="{% url 'get_perms_data' %}"

@@ -3,11 +3,11 @@
 {% macro tag_selection(tag_names, selection_type) %}
     <a name="{{selection_type}}-tags"></a>
     {% spaceless %}
-    <h2>{% 
-            trans counter=tag_names|length, type=gettext(selection_type)|capitalize
-        %}<span class="count">{{counter}}</span> {{type}} Tag{% 
-            pluralize 
-        %}<span class="count">{{counter}}</span> {{type}} Tags{% 
+    <h2>{%
+            trans counter=tag_names|length, type=gettext(selection_type)|capitalize, tag=settings.WORDS_TAG_SINGULAR, tags=settings.WORDS_TAG_PLURAL|lower
+        %}<span class="count">{{counter}}</span> {{type}} {{ tag }}{%
+            pluralize
+        %}<span class="count">{{counter}}</span> {{type}} {{ tags }}{%
             endtrans
         %}
     </h2>

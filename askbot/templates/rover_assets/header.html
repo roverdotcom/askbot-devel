@@ -1,0 +1,54 @@
+{% load staticfiles %}
+<div class="new-design js-new-design" itemscope itemtype="http://schema.org/Organization">
+    {# Invisible markup for Organization itemtype #}
+    <meta content="Rover.com" itemprop="name" />
+    <link href="http://en.wikipedia.org/wiki/Rover.com" itemprop="sameas">
+    <header class="navbar navbar-default header navbar-fixed-top" role="navigation">
+        <div class="container navbar-container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapsible-nav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'index' %}?ref=qa-community-header">
+                    <svg width="98" height="42">
+                        <image xlink:href="{{ '/images/logo.svg'|media }}" src="{{ '/image/logo@2px.png'|media }}" width="98" height="42" />
+                    </svg>
+                </a>
+            </div>
+
+            {# Collect the nav links, forms, and other content for toggling #}
+            <div class="collapse navbar-collapse" id="collapsible-nav">
+                <ul class="nav navbar-nav">
+
+                    <li><a href="/search/?ref=qa-community-header"><span class="fa fa-search link-icon"></span>Search Sitters</a></li>
+
+                    <li class="hide js-become-a-sitter hidden-xs js-anonymous-user"><a href="/become-a-sitter/?ref=qa-community-header"><span class="fa fa-heart link-icon"></span>Become a Sitter</a></li>
+
+                    <li class="hide js-list-more-services hidden-xs"><a href="/list-service/?ref=qa-community-header"><span class="fa fa-heart link-icon"></span>List More Services</a></li>
+
+                    <li class="js-authenticated-user authenticated-user hide visible-lg visible-md">
+                        <a href="#"><span class="fa fa-comment-o link-icon"></span><span id="extole-header">Give $20, Get $20</span></a>
+                    </li>
+
+                    <script type="extole/widget">
+                        {
+                            "zone": "header_feb",
+                            "reference_element": "#extole-header"
+                        }
+                    </script>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right js-anonymous-header">
+                    <li>
+                        <a href="https://support.rover.com/hc/en-us?ref=qa-community-header">
+                            <span class="fa fa-question-circle link-icon"></span>Help
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+</div>

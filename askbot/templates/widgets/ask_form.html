@@ -21,7 +21,7 @@
     {% if editor_is_folded %}
         <a class="js-question-body-trigger">{{ form.text.label }}</a>
         <div class="folded-editor">
-            <label for="{{ text_field_id }}" 
+            <label for="{{ text_field_id }}"
                 class="js-text-label">{{ form.text.label }}</label>
             <div class="js-text-error js-error">
                 {% if form.text.errors %}
@@ -44,7 +44,7 @@
     {% endif %}
 
     {% include "widgets/tags_field.html" %}
-    
+
     {{ form.group_id }}
 
     <div class="question-options">
@@ -74,9 +74,11 @@
         <div class="clearfix"></div>
     {% endif %}
     {% if request.user.is_anonymous() and not settings.ALLOW_ASK_UNREGISTERED %}
-        <input type="submit" name="post_anon" value="{% trans %}Login/Signup to Post{% endtrans %}" />
+        <input type="submit" class="rover-btn btn-block-xs rover-btn-secondary" name="post_anon" value="{% trans %}Login/Signup to Post{% endtrans %}" />
     {% else %}
-      <input type="submit" name="post" value="{{ settings.WORDS_ASK_YOUR_QUESTION|escape }}" />
+      <input type="submit" class="rover-btn btn-block-xs rover-btn-secondary" name="post" value="{{ settings.WORDS_ASK_YOUR_QUESTION|escape }}" />
     {% endif %}
     <div class="clean"></div>
 </form>
+<script>
+</script>

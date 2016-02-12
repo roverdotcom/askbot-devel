@@ -49,8 +49,9 @@ settings.register(
         localized=True,
         description=_('Message on the feedback page'),
         default=_(
-            '**Dear {{ USER_NAME }}**, we look forward to hearing your '
-            'feedback. Please type and send us your message below.'
+            '**Dear {{ USER_NAME }}**, we look forward to hearing your'
+            ' thoughts on the Rover Q&A Community. '
+            ' Please enter your message below.'
         ),
         help_text=_(
             'Save, then <a href="http://validator.w3.org/">use HTML validator</a> '

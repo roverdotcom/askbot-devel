@@ -1,21 +1,16 @@
 {% import "macros.html" as macros %}
 {% cache 0 "tags" tags tag_list_type query_string language_code %}
     <div class="js-related-tags">
+    <h6>{% trans tags=settings.WORDS_TAG_PLURAL %}{{ tags }}{% endtrans %}</h6>
     {% if tag_list_type == 'list' %}
-        <ul class="tags">
-            {% for tag in tags %}
-            <li>
-            {{ macros.tag_widget(
-                  tag.name,
-                  extra_content = '<span class="tag-number">&#215;' ~
-                  tag.local_used_count|intcomma ~ '</span>',
-                  search_state = search_state
-            )}}
-            </li>
-            {% endfor %}
-        </ul>
+      <select class="js-keyword-dropdown">
+          <option value="none">Select a Keyword</option>
+          {% for tag in tags %}
+          <option value="{{ search_state.add_tag(tag.name).full_url() }}" {% if tag.name in search_state.tags %}selected{% endif%}>{{ tag.name }} ({{ tag.used_count|intcomma }})</option>
+          {% endfor %}
+      </select>
     {% else %}
-        {{ 
+        {{
             macros.tag_cloud(
                 tags = tags,
                 font_sizes = font_size,

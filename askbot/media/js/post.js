@@ -91,7 +91,7 @@ function setupFormValidation(form, validationRules, validationMessages, onSubmit
                 if (span.length === 0) {
                     //for resizable textarea
                     var element_id = element.attr('id');
-                    $('label[for="' + element_id + '"]').after(error);
+                    $('label[for="' + element_id + '"]').last().after(error);
                 }
             } else {
                 span.replaceWith(error);
@@ -126,6 +126,15 @@ var validateTagCount = function (value) {
 
 $.validator.addMethod('limit_tag_count', validateTagCount);
 $.validator.addMethod('limit_tag_length', validateTagLength);
+$.validator.addMethod("pattern", function(value, element, param) {
+    if (this.optional(element)) {
+        return true;
+    }
+    if (typeof param === "string") {
+        param = new RegExp("^(?:" + param + ")$");
+    }
+    return param.test(value);
+}, "Invalid format.");
 
 askbot.validators = askbot.validators || {};
 
@@ -199,7 +208,8 @@ var CPValidator = (function () {
                 },
                 title: {
                     required: true,
-                    minlength: askbot.settings.minTitleLength
+                    minlength: askbot.settings.minTitleLength,
+                    pattern: /\?$/
                 }
             };
         },
@@ -224,6 +234,7 @@ var CPValidator = (function () {
                 },
                 title: {
                     required: ' ' + gettext('enter your question'),
+                    pattern: "Must be in question format and end with a question mark",
                     minlength: interpolate(
                                     ngettext(
                                         'enter > %(length)s character',
@@ -776,7 +787,7 @@ var updateQuestionFollowerCount = function (evt, data) {
     var fav = $('.js-question-follower-count');
     var count = data.num_followers;
     if (count === 0) {
-        fav.text('');
+        favo.text('');
     } else {
         var fmt = ngettext('%s follower', '%s followers', count);
         fav.text(interpolate(fmt, [count]));
@@ -2280,12 +2291,12 @@ EditCommentForm.prototype.attachTo = function (comment, mode) {
     this._commentsWidget.hideOpenEditorButton();//hide add comment button
     //fix up the comment submit button, depending on the mode
     if (this._type === 'add') {
-        this._submit_btn.html(gettext('add comment'));
+        this._submit_btn.html(gettext('Add Comment'));
         if (this._minorEditBox) {
             this._minorEditBox.hide();
         }
     } else {
-        this._submit_btn.html(gettext('save comment'));
+        this._submit_btn.html(gettext('Save Comment'));
         if (this._minorEditBox) {
             this._minorEditBox.show();
         }
@@ -2443,17 +2454,15 @@ EditCommentForm.prototype.createDom = function () {
     this._text_counter = $('<span></span>').attr('class', 'counter');
     this._controlsBox.append(this._text_counter);
 
-    this._submit_btn = $('<button></button>');
-    addExtraCssClasses(this._submit_btn, 'primaryButtonClasses');
+    this._submit_btn = $('<button class="rover-btn rover-btn-secondary btn-sm margin-right-x2"></button>');
     this._controlsBox.append(this._submit_btn);
-    this._cancel_btn = $('<button class="cancel"></button>');
-    addExtraCssClasses(this._cancel_btn, 'cancelButtonClasses');
-    this._cancel_btn.html(gettext('cancel'));
+    this._cancel_btn = $('<button class="rover-btn rover-btn-default btn-sm"></button>');
+    this._cancel_btn.html(gettext('Cancel'));
     this._controlsBox.append(this._cancel_btn);
 
     //if email alerts are enabled, add a checkbox "suppress_email"
     if (askbot.settings.enableEmailAlerts === true) {
-        this._minorEditBox = this.makeElement('div');
+        this._minorEditBox = this.makeElement('span');
         this._minorEditBox.addClass('checkbox');
         this._controlsBox.append(this._minorEditBox);
         var checkBox = this.makeElement('input');

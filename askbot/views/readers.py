@@ -31,6 +31,7 @@ from django.core import exceptions as django_exceptions
 from django.contrib.humanize.templatetags import humanize
 from django.http import QueryDict
 from django.conf import settings as django_settings
+from django.db.models import Q
 
 from askbot import conf, const, exceptions, models, signals
 from askbot.conf import settings as askbot_settings
@@ -78,6 +79,9 @@ def questions(request, **kwargs):
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
 
+    if not kwargs['tags']:
+        kwargs['tags'] = 'dogs'
+
     search_state = SearchState(
                     user_logged_in=request.user.is_authenticated(),
                     **kwargs
@@ -86,6 +90,18 @@ def questions(request, **kwargs):
     qs, meta_data = models.Thread.objects.run_advanced_search(
                         request_user=request.user, search_state=search_state
                     )
+
+    is_specific_search = any([
+        kwargs['author'],
+        kwargs['tags'],
+        kwargs['query']
+    ])
+
+    # remove support and sitter tagged questions from non-specific searches
+    # or for anonymous users
+    if not is_specific_search or not request.user.is_authenticated():
+        qs = qs.exclude(tags__name__in=['support', 'sitter'])
+
     if meta_data['non_existing_tags']:
         search_state = search_state.remove_tags(meta_data['non_existing_tags'])
 
@@ -99,10 +115,8 @@ def questions(request, **kwargs):
     #       down the pipeline, we have to precache them in thread objects
     models.Thread.objects.precache_view_data_hack(threads=page.object_list)
 
-    related_tags = Tag.objects.get_related_to_search(
-                        threads=page.object_list,
-                        ignored_tag_names=meta_data.get('ignored_tag_names',[])
-                    )
+    related_tags = Tag.objects.filter(used_count__gte=3)
+
     tag_list_type = askbot_settings.TAG_LIST_FORMAT
     if tag_list_type == 'cloud': #force cloud to sort by name
         related_tags = sorted(related_tags, key = operator.attrgetter('name'))
@@ -115,6 +129,7 @@ def questions(request, **kwargs):
                                            'askbot_profile__gravatar'
                                           )
                         )
+    contributors = contributors[:6]
 
     paginator_context = {
         'is_paginated' : (paginator.count > search_state.page_size),
@@ -324,7 +339,9 @@ def tags(request):#view showing a listing of available tags - plain list
     if query != '':
         query_params['name__icontains'] = query
 
-    tags_qs = Tag.objects.filter(**query_params).exclude(used_count=0)
+    tags_qs = Tag.objects.filter(**query_params).exclude(
+        Q(used_count=0) | Q(name__in=['dogs', 'sitter', 'support'])
+    )
 
     if sort_method == 'name':
         order_by = 'name'
@@ -679,6 +696,10 @@ def question(request, id):#refactor - long subroutine. display question body, an
 def revisions(request, id, post_type = None):
     assert post_type in ('question', 'answer')
     post = get_object_or_404(models.Post, post_type=post_type, id=id)
+
+    user = request.user
+    if not user.is_authenticated() or not user.is_administrator_or_moderator():
+        return HttpResponseRedirect(post.get_absolute_url())
 
     if post.deleted:
         if request.user.is_anonymous() \

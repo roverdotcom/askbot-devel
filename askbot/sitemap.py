@@ -1,6 +1,23 @@
 from django.contrib.sitemaps import Sitemap
+from django.core.urlresolvers import reverse
+
 from askbot.models import Post
 
+class OverviewSitemap(Sitemap):
+    changefreq = 'weekly'
+
+    def items(self):
+        return [
+            ('askbot.views.readers.index', 0.6),
+            ('askbot.views.readers.tags', 0.5),
+            ('askbot.views.users.show_users', 0.5),
+        ]
+
+    def priority(self, item):
+        return item[1]
+
+    def location(self, item):
+        return reverse(item[0])
 
 class QuestionsSitemap(Sitemap):
     changefreq = 'daily'

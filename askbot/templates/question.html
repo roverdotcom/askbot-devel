@@ -1,6 +1,6 @@
 {% extends "two_column_body.html" %}
 <!-- question.html -->
-{% block title %}{% spaceless %}{{ question.get_question_title()|escape }}{% endspaceless %}{% endblock %}
+{% block title %}{% spaceless %}{{ question.get_question_title()|truncate(34)|escape }}{% endspaceless %}{% endblock %}
 {% block meta_description %}
     <meta name="description" content="{{ question.summary|striptags|escape }}" />
 {% endblock %}
@@ -416,11 +416,11 @@
         askbot['data']['answersSortTab'] = '{{ tab_id }}';
         askbot['data']['questionId'] = {{ question.id }};
         askbot['data']['threadSlug'] = '{{ thread.title|slugify }}';
-        askbot['messages']['addComment'] = '{{ gettext('add a comment')|escapejs }}';
-        askbot['messages']['userNamePrompt'] = '{{ gettext('User name:')|escapejs }}';
-        askbot['messages']['userEmailPrompt'] = '{{ gettext('Email address:')|escapejs }}';
-        askbot['messages']['mergeQuestions'] = '{{ settings.WORDS_MERGE_QUESTIONS|escapejs }}';
-        askbot['messages']['enterDuplicateQuestionId'] = '{{ settings.WORDS_ENTER_DUPLICATE_QUESTION_ID|escapejs }}';
+        askbot['messages']['addComment'] = '<i class="rover-icon rover-icon-add-comment"></i><span>{% trans %}Add a Comment{% endtrans %}</span>';
+        askbot['messages']['userNamePrompt'] = '{% trans %}User name:{% endtrans %}';
+        askbot['messages']['userEmailPrompt'] = '{% trans %}Email address:{% endtrans %}';
+        askbot['messages']['mergeQuestions'] = '{{ settings.WORDS_MERGE_QUESTIONS }}';
+        askbot['messages']['enterDuplicateQuestionId'] = '{{ settings.WORDS_ENTER_DUPLICATE_QUESTION_ID }}';
         {% if settings.READ_ONLY_MODE_ENABLED %}
             askbot['messages']['readOnlyMessage'] = "{{ settings.READ_ONLY_MESSAGE|escapejs }}";
         {% endif %}

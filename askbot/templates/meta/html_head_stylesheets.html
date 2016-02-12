@@ -1,12 +1,27 @@
+{% load staticfiles %}
 {% compress css %}
+
     <link href="{{ '/style/style.css'|media }}" rel="stylesheet" type="text/css" />
     {% set extra_css = '/style/extra.css'|media(ignore_missing=True) %}
     {% if extra_css %}
         <link href="{{ extra_css }}" rel="stylesheet" type="text/css" />
     {% endif %}
-    <link href="{{ '/fa-4.3.0/css/font-awesome.css'|media }}" rel="stylesheet" type="text/css" />
-    <link href="{{ '/bootstrap/css/bootstrap.css'|media }}" rel="stylesheet" type="text/css" />
+
+    {# Add Rover style content here. #}
+
+    <link type="text/css"  rel="stylesheet" href="{{ '/css/jquery-ui-1.10.3.custom.css'|media }}" />
+    <link type="text/css"  rel="stylesheet" href="{% static 'rover/css/vendor/fontawesome/css/font-awesome.min.css' %}" />
+    <link type="text/css"  rel="stylesheet" href="{{ '/css/bootstrap-slider.css'|media }}" />
+    <link type="text/css"  rel="stylesheet" href="{{ '/rover_icons/rover_icons.css'|media }}" />
+
+    {# Override to fix the width of the header bar. #}
+    <link type="text/css" rel="stylesheet" href="{{ '/css/override.css'|media }}"/>
 {% endcompress %}
+<!-- start -->
+{% compress css %}
+    <link type="text/x-scss" rel="stylesheet" href="{% static 'rover/css/askbot.scss' %}" data-foo="bar" />
+{% endcompress %}
+<!-- end -->
 {% if settings.USE_CUSTOM_CSS %}
     {# can't compress yet because this comes from live settings #}
     <link

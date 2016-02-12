@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings as django_settings
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
+from django.templatetags.static import static
 
 import askbot
 from askbot.conf.settings_wrapper import settings
@@ -57,6 +58,25 @@ settings.register(
     )
 )
 
+settings.register(
+    values.BooleanValue(
+        GENERAL_SKIN_SETTINGS,
+        'SHOW_NEW_FEATURE_HEADER',
+        description = _('Show new feature header'),
+        help_text = _('Check if you want to show the new feature header'),
+        default = False
+    )
+)
+
+settings.register(
+    values.URLValue(
+        GENERAL_SKIN_SETTINGS,
+        'NEW_FEATURE_HEADER_URL',
+        description=_('New feature iframe URL'),
+        default='',
+    )
+)
+
 #cannot use HAS_ASKBOT_LOCALE_MIDDLEWARE due to circular import error
 LANG_MODE = getattr(django_settings, 'ASKBOT_LANGUAGE_MODE', 'single-lang')
 HAS_ASKBOT_LOCALE_MIDDLEWARE = (
@@ -91,16 +111,18 @@ settings.register(
     values.ImageValue(
         GENERAL_SKIN_SETTINGS,
         'SITE_FAVICON',
-        description=_('Site favicon'),
-        help_text=_(
-            'A small 16x16 or 32x32 pixel icon image used to distinguish '
-            'your site in the browser user interface. Please find more '
-            'information about favicon at '
-            '<a href="%(favicon_info_url)s">this page</a>.') % {
-                'favicon_info_url': const.DEPENDENCY_URLS['favicon']},
-        allowed_file_extensions=('ico',),  # only allow .ico files
-        default='/images/favicon.gif',
-        url_resolver=skin_utils.get_media_url
+        description = _('Site favicon'),
+        help_text = _(
+                        'A small 16x16 or 32x32 pixel icon image '
+                        'used to distinguish your site in the browser '
+                        'user interface. Please find more information '
+                        'about favicon '
+                        'at <a href="%(favicon_info_url)s">this page</a>.'
+                    ) % {'favicon_info_url': const.DEPENDENCY_URLS['favicon']},
+        allowed_file_extensions = ('ico',),#only allow .ico files
+        default = 'new_design/images/favicon.png',
+        # url_resolver = skin_utils.get_media_url
+        url_resolver=static
     )
 )
 
@@ -110,8 +132,9 @@ settings.register(
         'LOCAL_LOGIN_ICON',
         description=_('Password login button'),
         help_text=_(
-            'An 88x38 pixel image that is used on the login screen '
-            'for the password login button.'),
+                        'An 88x38 pixel image that is used on the login screen '
+                        'for the password login button.'
+                    ),
         default='/images/pw-login.gif',
         url_resolver=skin_utils.get_media_url
     )
@@ -190,17 +213,18 @@ settings.register(
     values.StringValue(
         GENERAL_SKIN_SETTINGS,
         'FOOTER_MODE',
-        description=_('Site footer mode'),
-        help_text=_(
-            'Footer is the bottom portion of the content, which is common to '
-            'all pages. You can disable, customize, or use the default footer.'
-        ),
-        choices=(
-            ('default', 'default'),
-            ('customize', 'customize'),
-            ('disable', 'disable')
-        ),
-        default='default',
+        description = _('Site footer mode'),
+        help_text = _(
+                    'Footer is the bottom portion of the content, '
+                    'which is common to all pages. '
+                    'You can disable, customize, or use the default footer.'
+                ),
+        choices = (
+                    ('default', 'default'),
+                    ('customize', 'customize'),
+                    ('disable', 'disable')
+                ),
+        default = 'disable',
     )
 )
 

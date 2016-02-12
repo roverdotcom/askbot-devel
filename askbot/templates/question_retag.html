@@ -18,18 +18,18 @@
         </div>
     </div>
     <div class="error" ></div>
-    <input type="submit" value="{% trans %}Retag{% endtrans %}"/>&nbsp;
+    <input type="submit" value="{% trans tags=settings.WORDS_TAG_PLURAL|lower %}Edit {{ tags }}{% endtrans %}"/>&nbsp;
     <input type="button" value="{% trans %}Cancel{% endtrans %}" onclick="history.back(-1);" />
 </form>
 {% endblock %}
 
 {% block sidebar %}
 <div class="boxC">
-    <h2>{% trans %}Why use and modify tags?{% endtrans %}</h2>
+    <h2>{% trans tags=settings.WORDS_TAG_PLURAL|lower %}Why use and modify {{ tags }}?{% endtrans %}</h2>
     <ul>
-        <li>{% trans %}Tags help to keep the content better organized and searchable{% endtrans %}</li>
+        <li>{% trans tags=settings.WORDS_TAG_PLURAL %}{{ tags }} help to keep the content better organized and searchable{% endtrans %}</li>
         <li>
-            {% trans %}tag editors receive special awards from the community{% endtrans %}
+            {% trans tag=settings.WORDS_TAG_SINGULAR|lower%}{{ tag }} editors receive special awards from the community{% endtrans %}
         </li>
     </ul>
     <p class='info-box-follow-up-links'>
@@ -59,8 +59,8 @@
                },
                messages: {
                    tags: {
-                           required: '{% trans %}tags are required{% endtrans %}',
-                           maxlength: '{% trans %}up to 5 tags, less than 20 characters each{% endtrans %}'
+                           required: "{% trans tags=settings.WORDS_TAG_PLURAL|lower %}{{ tags }} are required{% endtrans %}",
+                           maxlength: "{% trans tags=settings.WORDS_TAG_PLURAL|lower %}up to 5 {{ tags }}, less than 20 characters each{% endtrans %}"
                        }
                    }
 

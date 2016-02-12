@@ -1,10 +1,10 @@
 {% import "macros.html" as macros %}
-{# 
+{#
     thumbnail for the user - shown on the users listings
     and elsewhere
 #}
 <div class="user-card">
-    {{ macros.gravatar(user, 32) }}
+    {{ macros.gravatar(user, 46) }}
     <div class="user-info">
         <a href="{{ user.get_profile_url() }}">{{ user.username|escape }}</a>
         {{ macros.user_country_flag(user) }}

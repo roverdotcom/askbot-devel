@@ -26,6 +26,8 @@ else:
 
 # Defining template inputs.
 USERNAME_TEMPLATE = "test_user_%s"
+FIRST_NAME_TEMPLATE = "test_%s"
+LAST_NAME_TEMPLATE = "%s_testington"
 PASSWORD_TEMPLATE = "test_password_%s"
 EMAIL_TEMPLATE = "test_user_%s@askbot.org"
 TITLE_TEMPLATE = "Question No.%s"
@@ -96,14 +98,24 @@ class Command(NoArgsCommand):
         users = []
 
         #add admin with the same password - this user will be admin automatically
-        admin = User.objects.create_user('admin', 'admin@example.com')
+        admin = User.objects.create_user(
+            'admin',
+            'admin@example.com',
+            first_name='admin',
+            last_name='adminson'
+        )
         admin.set_password('admin')
         admin.save()
         self.print_if_verbose("Created User 'admin'")
         users.append(admin)
 
         #this user will have regular privileges, because it's second
-        joe = User.objects.create_user('joe', 'joe@example.com')
+        joe = User.objects.create_user(
+            'joe',
+            'joe@example.com',
+            first_name='joe',
+            last_name='joeson'
+        )
         joe.set_password('joe')
         joe.save()
         self.print_if_verbose("Created User 'joe'")
@@ -113,8 +125,12 @@ class Command(NoArgsCommand):
         for i in range(NUM_USERS):
             s_idx = str(i)
             username = self.bad_stuff() + USERNAME_TEMPLATE % s_idx
-            user = User.objects.create_user(username,
-                                            EMAIL_TEMPLATE % s_idx)
+            user = User.objects.create_user(
+                username,
+                EMAIL_TEMPLATE % s_idx,
+                first_name=FIRST_NAME_TEMPLATE % s_idx,
+                last_name=LAST_NAME_TEMPLATE % s_idx
+            )
             user.set_password(PASSWORD_TEMPLATE % s_idx)
             user.receive_reputation(INITIAL_REPUTATION, get_language())
             user.save()

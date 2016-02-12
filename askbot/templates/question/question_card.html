@@ -24,6 +24,7 @@
         </h1>
         {% include "question/question_tags.html" %}
         <div class="clearfix"></div>
+        <div class="question-asked-timeago">asked {{ macros.timeago(question.added_at) }}</div>
 
         <div class="post-body">
             <div class="js-editable-hide-post-body-{{ question.pk }}">

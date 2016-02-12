@@ -329,9 +329,9 @@ class Value(object):
             for x in self.choices:
                 if x[0] in self.default:
                     work.append(force_unicode(x[1]))
-            note = _('Default value: ') + unicode(u", ".join(work))
+            note = ugettext_lazy('Default value: ') + unicode(u", ".join(work))
         else:
-            note = _("Default value: %s") % force_unicode(self.default)
+            note = ugettext_lazy("Default value: %s") % force_unicode(self.default)
 
         return note
 
@@ -896,7 +896,7 @@ class MultipleStringValue(Value):
     def get_db_prep_save(self, value):
         if is_string_like(value):
             value = [value]
-        return simplejson.dumps(value)
+        return json.dumps(value)
 
     def to_python(self, value):
         if not value or value == NOTSET:
@@ -905,7 +905,7 @@ class MultipleStringValue(Value):
             return value
         else:
             try:
-                return simplejson.loads(value)
+                return json.loads(value)
             except:
                 if is_string_like(value):
                     return [value]

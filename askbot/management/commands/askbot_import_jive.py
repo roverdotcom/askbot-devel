@@ -2,7 +2,6 @@ from __future__ import print_function
 from askbot import models
 from askbot.conf import settings as askbot_settings
 from askbot.utils.console import ProgressBar
-from askbot.utils.slug import slugify
 from askbot.utils.jive import JiveConverter
 from askbot.utils.jive import internal_link_re
 from askbot.utils.file_utils import make_file_name
@@ -12,7 +11,8 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.forms import EmailField, ValidationError
 from django.utils import translation
-from datetime import datetime
+from django.utils import timezone
+from optparse import make_option
 import re
 import os
 import shutil
@@ -51,7 +51,14 @@ FILE_TYPES = {
 jive = JiveConverter()
 
 def parse_date(date_str):
-    return datetime.strptime(date_str[:-8], '%Y/%m/%d %H:%M:%S')
+    return timezone.datetime.strptime(
+        date_str[:-8],
+        '%Y/%m/%d %H:%M:%S'
+    )
+    #   TO DO: find out what the get_tzinfo() call was supposed to do
+    #     .replace(
+    #     tzinfo=get_tzinfo()
+    # )
 
 def fix_internal_links_in_post(post):
     """will replace old internal urls with the new ones."""

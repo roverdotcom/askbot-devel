@@ -1,6 +1,6 @@
 """Forms, custom form fields and related utility functions
 used in AskBot"""
-import regex as re #todo: make explicit import
+import regex as re  # todo: make explicit import
 import askbot
 import unicodedata
 from collections import OrderedDict
@@ -42,7 +42,7 @@ def split_tags(data):
 def should_use_recaptcha(user):
     """True if user must use recaptcha"""
     return askbot_settings.USE_RECAPTCHA and \
-        (user.is_anonymous() or user.is_watched())
+           (user.is_anonymous() or user.is_watched())
 
 
 def cleanup_dict(dictionary, key, empty_value):
@@ -138,7 +138,7 @@ def filter_choices(remove_choices=None, from_choices=None):
                 remove = True
                 break
         if remove is False:
-            filtered_choices += (choice_to_test, )
+            filtered_choices += (choice_to_test,)
 
     return filtered_choices
 
@@ -244,6 +244,7 @@ class CountedWordsField(forms.CharField):
 
 class AskbotReCaptchaField(ReCaptchaField):
     """A recaptcha field with preset keys from the livesettings"""
+
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('private_key', askbot_settings.RECAPTCHA_SECRET)
         kwargs.setdefault('public_key', askbot_settings.RECAPTCHA_KEY)
@@ -265,11 +266,11 @@ class LanguageForm(forms.Form):
 
 class LanguagePrefsForm(forms.Form):
     languages = forms.MultipleChoiceField(
-                        widget=forms.CheckboxSelectMultiple,
-                        choices=django_settings.LANGUAGES,
-                        required=False)
+        widget=forms.CheckboxSelectMultiple,
+        choices=django_settings.LANGUAGES,
+        required=False)
     primary_language = forms.ChoiceField(
-                        choices=django_settings.LANGUAGES)
+        choices=django_settings.LANGUAGES)
 
 
 class TranslateUrlForm(forms.Form):
@@ -288,6 +289,7 @@ class DomainNameField(forms.CharField):
     """Field for Internet Domain Names
     todo: maybe there is a standard field for this?
     """
+
     def clean(self, value):
         # find a better regex, taking into account tlds
         domain_re = re.compile(r'[a-zA-Z\d]+(\.[a-zA-Z\d]+)+')
@@ -301,11 +303,12 @@ class DomainNameField(forms.CharField):
 
 class TitleField(forms.CharField):
     """Field receiving question title"""
+
     def __init__(self, *args, **kwargs):
         super(TitleField, self).__init__(*args, **kwargs)
         self.required = kwargs.get('required', True)
         self.widget = forms.TextInput(
-                            attrs={'size': 70, 'autocomplete': 'off'})
+            attrs={'size': 70, 'autocomplete': 'off'})
         self.max_length = 255
         self.label = askbot_settings.WORDS_PLEASE_ENTER_YOUR_QUESTION
         self.initial = ''
@@ -336,7 +339,13 @@ class TitleField(forms.CharField):
         elif len(encoded_value) > self.max_length:
             raise forms.ValidationError(
                 _('The input is too long, maximum %(length)d bytes is allowed'
-                ) % {'length': self.max_length}
+                  ) % {'length': self.max_length}
+            )
+
+        # a question title must end with a question mark
+        if value[-1] != '?':
+            raise forms.ValidationError(
+                "Must be in question format and end with a question mark"
             )
 
         return value.strip()  # TODO: test me
@@ -400,7 +409,7 @@ class QuestionEditorField(EditorField):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super(QuestionEditorField, self).__init__(
-                                user=user, *args, **kwargs)
+            user=user, *args, **kwargs)
         self.min_length = askbot_settings.MIN_QUESTION_BODY_LENGTH
 
 
@@ -445,8 +454,8 @@ def clean_tag(tag_name, look_in_db=True):
     else:
         from askbot import models
         matching_tags = models.Tag.objects.filter(
-                                            name__iexact=tag_name,
-                                            language_code=get_language())
+            name__iexact=tag_name,
+            language_code=get_language())
         if matching_tags:
             return matching_tags[0].name
         else:
@@ -458,23 +467,19 @@ class TagNamesField(forms.CharField):
 
     def __init__(self, *args, **kwargs):
         super(TagNamesField, self).__init__(*args, **kwargs)
-        self.required = kwargs.get('required',
-                                   askbot_settings.TAGS_ARE_REQUIRED)
+        self.required = kwargs.get('required', False)
         self.widget = forms.TextInput(
-            attrs={'size': 50, 'autocomplete': 'off'}
+            attrs={'autocomplete': 'off', 'class': 'form-control'}
         )
         self.max_length = 255
         self.error_messages['max_length'] = _(
-                            'We ran out of space for recording the tags. '
-                            'Please shorten or delete some of them.')
+            'We ran out of space for recording the tags. '
+            'Please shorten or delete some of them.'
+        )
         self.label = kwargs.get('label') or _('tags')
-        self.help_text = kwargs.get('help_text') or ungettext_lazy(
+        self.help_text = kwargs.get('help_text') or _(
             'Tags are short keywords, with no spaces within. '
-            'Up to %(max_tags)d tag can be used.',
-            'Tags are short keywords, with no spaces within. '
-            'Up to %(max_tags)d tags can be used.',
-            askbot_settings.MAX_TAGS_PER_POST
-        ) % {'max_tags': askbot_settings.MAX_TAGS_PER_POST}
+            'Up to 5 tags can be used.')
         self.initial = ''
 
     def clean(self, value):
@@ -494,9 +499,9 @@ class TagNamesField(forms.CharField):
         if tag_count > askbot_settings.MAX_TAGS_PER_POST:
             max_tags = askbot_settings.MAX_TAGS_PER_POST
             msg = ungettext_lazy(
-                        'please use %(tag_count)d tag or less',
-                        'please use %(tag_count)d tags or less',
-                        tag_count) % {'tag_count': max_tags}
+                'please use %(tag_count)d tag or less',
+                'please use %(tag_count)d tags or less',
+                tag_count) % {'tag_count': max_tags}
             raise forms.ValidationError(msg)
 
         if need_mandatory_tags():
@@ -530,9 +535,8 @@ class WikiField(forms.BooleanField):
         self.required = False
         self.initial = False
         self.label = _(
-            'community wiki (karma is not awarded & '
-            'many others can edit wiki post)'
-        )
+            'community wiki (Treats are not awarded & '
+            'many others can edit wiki post)')
 
     def clean(self, value):
         return value and askbot_settings.WIKI_ON
@@ -616,8 +620,8 @@ class ShowQuestionForm(forms.Form):
         # uses livesettings for the default so the 'sort' field
         # must be added in the __init__
         self.fields['sort'] = SortField(
-                choices=const.ANSWER_SORT_METHODS,
-                default=askbot_settings.DEFAULT_ANSWER_SORT_METHOD)
+            choices=const.ANSWER_SORT_METHODS,
+            default=askbot_settings.DEFAULT_ANSWER_SORT_METHOD)
 
     def get_pruned_data(self):
         nones = ('answer', 'comment', 'page')
@@ -699,6 +703,7 @@ class ChangeUserReputationForm(forms.Form):
             self.cleaned_data['comment'] = comment
             return comment
 
+
 MODERATOR_STATUS_CHOICES = (
     ('a', _('approved')),
     ('w', _('watched')),
@@ -706,9 +711,9 @@ MODERATOR_STATUS_CHOICES = (
     ('b', _('blocked')),
 )
 ADMINISTRATOR_STATUS_CHOICES = (
-    ('d', _('administrator')),
-    ('m', _('moderator')),
-) + MODERATOR_STATUS_CHOICES
+                                   ('d', _('administrator')),
+                                   ('m', _('moderator')),
+                               ) + MODERATOR_STATUS_CHOICES
 
 
 class ChangeUserStatusForm(forms.Form):
@@ -749,14 +754,14 @@ class ChangeUserStatusForm(forms.Form):
 
         # remove current status of the "subject" user from choices
         user_status_choices = filter_choices(
-                                        remove_choices=[subject.status, ],
-                                        from_choices=user_status_choices
-                                    )
+            remove_choices=[subject.status, ],
+            from_choices=user_status_choices
+        )
 
         # add prompt option
         user_status_choices = (
-            ('select', _('which one?')),
-        ) + user_status_choices
+                                  ('select', _('which one?')),
+                              ) + user_status_choices
 
         self.fields['user_status'].choices = user_status_choices
 
@@ -789,25 +794,25 @@ class ChangeUserStatusForm(forms.Form):
             if self.moderator.is_moderator() and user_status == 'moderator':
                 del self.cleanded_data['user_status']
                 raise forms.ValidationError(
-                                _('Cannot turn other user to moderator'))
+                    _('Cannot turn other user to moderator'))
 
             # do not allow moderator to change status of other moderators
             if self.moderator.is_moderator() and self.subject.is_moderator():
                 del self.cleaned_data['user_status']
                 raise forms.ValidationError(
-                                _('Cannot change status of another moderator'))
+                    _('Cannot change status of another moderator'))
 
             # do not allow moderator to change to admin
             if self.moderator.is_moderator() and user_status == 'd':
                 raise forms.ValidationError(
-                                _("Cannot change status to admin"))
+                    _("Cannot change status to admin"))
 
             if user_status == 'select':
                 del self.cleaned_data['user_status']
                 msg = _(
-                        'If you wish to change %(username)s\'s status, '
-                        'please make a meaningful selection.'
-                    ) % {'username': self.subject.username}
+                    'If you wish to change %(username)s\'s status, '
+                    'please make a meaningful selection.'
+                ) % {'username': self.subject.username}
                 raise forms.ValidationError(msg)
 
             if user_status not in ('s', 'b'):  # not blocked or suspended
@@ -1011,7 +1016,20 @@ class AskForm(PostAsSomeoneForm, PostPrivatelyForm):
         widget=forms.TextInput(attrs={'size': 40, 'class': 'openid-input'}))
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.get('user', None)
+        user = kwargs.pop('user', None)
+        data = args[0] if args else kwargs.get('data', None)
+        if data:
+            data = data.copy()
+            data['tags'] = '{} {}'.format(
+                data.get('tags', ''),
+                data.get('required_tag', '')
+            )
+            if args:
+                args = list(args)
+                args[0] = data
+            else:
+                kwargs['data'] = data
+
         super(AskForm, self).__init__(*args, **kwargs)
         # It's important that this field is set up dynamically
         self.fields['title'] = TitleField()
@@ -1042,6 +1060,7 @@ class AskForm(PostAsSomeoneForm, PostPrivatelyForm):
         if not askbot_settings.ALLOW_ASK_ANONYMOUSLY:
             self.cleaned_data['ask_anonymously'] = False
         return self.cleaned_data['ask_anonymously']
+
 
 ASK_BY_EMAIL_SUBJECT_HELP = _(
     'Subject line is expected in the format: '
@@ -1236,7 +1255,7 @@ class VoteForm(forms.Form):
         else:
             del self.cleaned_data['cancel_vote']
             raise forms.ValidationError(
-                    'either "true" or "false" strings expected')
+                'either "true" or "false" strings expected')
         self.cleaned_data['cancel_vote'] = result
         return self.cleaned_data['cancel_vote']
 
@@ -1285,7 +1304,7 @@ class EditQuestionForm(PostAsSomeoneForm, PostPrivatelyForm):
     def __init__(self, *args, **kwargs):
         """populate EditQuestionForm with initial data"""
         self.question = kwargs.pop('question')
-        self.user = kwargs.get('user')#preserve for superclass
+        self.user = kwargs.get('user')  # preserve for superclass
         revision = kwargs.pop('revision')
         super(EditQuestionForm, self).__init__(*args, **kwargs)
         # it is important to add this field dynamically
@@ -1300,7 +1319,7 @@ class EditQuestionForm(PostAsSomeoneForm, PostPrivatelyForm):
         # hide the reveal identity field
         if self.can_edit_anonymously():
             self.fields['reveal_identity'] = forms.BooleanField(
-                    label=_('remove anonymity'), required=False,)
+                label=_('remove anonymity'), required=False, )
 
         if askbot.is_multilingual():
             self.fields['language'] = LanguageField()
@@ -1361,7 +1380,7 @@ class EditAnswerForm(PostAsSomeoneForm, PostPrivatelyForm):
             return True
         if askbot_settings.GROUPS_ENABLED:
             return self.answer.is_private() \
-                != self.cleaned_data['post_privately']
+                   != self.cleaned_data['post_privately']
         else:
             return False
 
@@ -1400,7 +1419,7 @@ class EditUserForm(forms.Form):
         help_text=_(
             'will not be shown, used to calculate '
             'age, format: YYYY-MM-DD'
-            ),
+        ),
         widget=forms.TextInput(attrs={'size': 35}))
 
     about = forms.CharField(
@@ -1461,8 +1480,9 @@ class EditUserForm(forms.Form):
 class TagFilterSelectionForm(forms.ModelForm):
     email_tag_filter_strategy = forms.ChoiceField(
         initial=const.EXCLUDE_IGNORED,
-        label=_('Choose email tag filter'),
-        widget=forms.RadioSelect)
+        label=_('Choose email keyword filter'),
+        widget=forms.RadioSelect
+    )
 
     def __init__(self, *args, **kwargs):
         super(TagFilterSelectionForm, self).__init__(*args, **kwargs)
@@ -1584,7 +1604,7 @@ class EditUserEmailFeedsForm(forms.Form):
         changed = False
         for form_field, feed_type in self.FORM_TO_MODEL_MAP.items():
             s, created = models.EmailFeedSetting.objects.get_or_create(
-                    subscriber=user, feed_type=feed_type)
+                subscriber=user, feed_type=feed_type)
             if save_unbound:
                 # just save initial values instead
                 if form_field in self.initial:
@@ -1607,6 +1627,7 @@ class EditUserEmailFeedsForm(forms.Form):
 
 class SubscribeForEmailUpdatesField(forms.ChoiceField):
     """a simple yes or no field to subscribe for email or not"""
+
     def __init__(self, **kwargs):
         kwargs['widget'] = forms.widgets.RadioSelect
         kwargs['error_messages'] = {
@@ -1614,8 +1635,10 @@ class SubscribeForEmailUpdatesField(forms.ChoiceField):
         }
         kwargs['choices'] = (
             ('y', _('okay, let\'s try!')),
-            ('n', _('no %(sitename)s email please, thanks')
-             % {'sitename': askbot_settings.APP_SHORT_NAME})
+            (
+                'n',
+                _('no Askbot email please, thanks')
+            )
         )
         super(SubscribeForEmailUpdatesField, self).__init__(**kwargs)
 
@@ -1679,7 +1702,7 @@ class ModerateTagForm(forms.Form):
 
     def clean_action(self):
         action = self.cleaned_data['action']
-        assert(action in ('accept', 'reject'))
+        assert (action in ('accept', 'reject'))
         return action
 
 

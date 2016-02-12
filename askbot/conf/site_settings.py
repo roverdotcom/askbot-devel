@@ -22,7 +22,7 @@ settings.register(
     livesettings.StringValue(
         QA_SITE_SETTINGS,
         'APP_TITLE',
-        default=_('My site'),
+        default=_('Rover Q&A Community'),
         description=_('Site title for the Q&A forum')
     )
 )

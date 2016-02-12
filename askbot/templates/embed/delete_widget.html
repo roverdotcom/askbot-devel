@@ -1,6 +1,10 @@
 {% extends "one_column_body.html" %}
 <!-- create_ask_widget.html -->
 {% block title %}Delete {{widget_name|capitalize}} Widget{% endblock %}
+{% block meta_description %}
+    {{ super() }}
+    <meta name="robots" content="noindex">
+{% endblock %}
 {% block content %}
 <h1>Are you sure that you cant to delete this {{widget_name|capitalize}}Widget?</h1>
 <br/>
