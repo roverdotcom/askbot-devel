@@ -375,7 +375,14 @@ class AskbotUser(models.Model):
 
     def get_full_name(self):
         """Return first name and last initial, separated by a space."""
-        return ' '.join([self.user.first_name, self.user.last_name[0] + '.'])
+        name = ''
+        if self.user.first_name:
+            name = self.user.first_name
+
+        if self.user.last_name:
+            name = '{} {}.'.format(name, self.user.last_name[0])
+
+        return name
 
     def get_default_avatar_url(self, size=48):
         """Return Rover image url."""
