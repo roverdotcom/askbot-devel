@@ -380,7 +380,7 @@ class AskbotUser(models.Model):
             name = self.user.first_name
 
         if self.user.last_name:
-            name = '{} {}.'.format(name, self.user.last_name[0])
+            name = u'{} {}.'.format(name, self.user.last_name[0])
 
         return name
 
