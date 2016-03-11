@@ -17,7 +17,7 @@ from askbot.conf import settings as askbot_settings
 ###########################################
 ## actions and reputation changes event
 ###########################################
-@transaction.commit_on_success
+@transaction.atomic
 def onFlaggedItem(post, user, timestamp=None):
     if timestamp is None:
         timestamp = timezone.now()
@@ -100,7 +100,7 @@ def onFlaggedItem(post, user, timestamp=None):
         post.save()
 
 
-@transaction.commit_on_success
+@transaction.atomic
 def onUnFlaggedItem(post, user, timestamp=None):
     if timestamp is None:
         timestamp = timezone.now()
@@ -181,7 +181,7 @@ def onUnFlaggedItem(post, user, timestamp=None):
         post.deleted = False
         post.save()
 
-@transaction.commit_on_success
+@transaction.atomic
 def onAnswerAccept(answer, user, timestamp=None):
     answer.thread.set_accepted_answer(answer=answer, timestamp=timestamp)
     question = answer.thread._question_post()
@@ -214,7 +214,7 @@ def onAnswerAccept(answer, user, timestamp=None):
                reputation=user.reputation)
     reputation.save()
 
-@transaction.commit_on_success
+@transaction.atomic
 def onAnswerAcceptCanceled(answer, user, timestamp=None):
     if timestamp is None:
         timestamp = timezone.now()
@@ -255,7 +255,7 @@ def onAnswerAcceptCanceled(answer, user, timestamp=None):
                reputation=user.reputation)
     reputation.save()
 
-@transaction.commit_on_success
+@transaction.atomic
 def onUpVoted(vote, post, user, timestamp=None):
     if timestamp is None:
         timestamp = timezone.now()
@@ -289,7 +289,7 @@ def onUpVoted(vote, post, user, timestamp=None):
                        reputation=author.reputation)
             reputation.save()
 
-@transaction.commit_on_success
+@transaction.atomic
 def onUpVotedCanceled(vote, post, user, timestamp=None):
     if timestamp is None:
         timestamp = timezone.now()
@@ -326,7 +326,7 @@ def onUpVotedCanceled(vote, post, user, timestamp=None):
         )
         reputation.save()
 
-@transaction.commit_on_success
+@transaction.atomic
 def onDownVoted(vote, post, user, timestamp=None):
     if timestamp is None:
         timestamp = timezone.now()
@@ -366,7 +366,7 @@ def onDownVoted(vote, post, user, timestamp=None):
                    reputation=user.reputation)
         reputation.save()
 
-@transaction.commit_on_success
+@transaction.atomic
 def onDownVotedCanceled(vote, post, user, timestamp=None):
     if timestamp is None:
         timestamp = timezone.now()
