@@ -16,5 +16,5 @@
         />
     </form>
 {% else %}
-    <a href="/account/continue/?action=sign_in&amp;next={{ request.get_full_path()|urlencode }}">{% trans %}Hi there! Please sign in.{% endtrans %}</a>
+    <a href="{{ settings.ROVER_LOGIN_URL }}?action=sign_in&amp;next={{ request.get_full_path()|urlencode }}">{% trans %}Hi there! Please sign in.{% endtrans %}</a>
 {% endif %}
