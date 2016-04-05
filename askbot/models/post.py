@@ -12,6 +12,7 @@ from django.db import models
 from django.utils import html as html_utils
 from django.utils import timezone
 from django.utils.text import Truncator
+from django.utils.html import escape
 from django.utils.translation import activate as activate_language
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
