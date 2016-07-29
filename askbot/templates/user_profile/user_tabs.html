@@ -8,7 +8,7 @@
             <a id="inbox" {% if tab_name=="inbox" %}class="on"{% endif %}
                 href="{% url user_profile view_user.id %}?sort=inbox"
             ><span>{% trans %}notifications{% endtrans %}</span></a>
-            <a id="tags" href="{% url 'list_suggested_tags' %}">
+            <a id="tags_header" href="{% if request.user|can_moderate_user(view_user) %}{% url 'list_suggested_tags' %}{% else %}{% url user_profile view_user.id %}#tags{% endif %}">
                 <span>tags</span>
             </a>
 
