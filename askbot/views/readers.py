@@ -12,6 +12,7 @@ import operator
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from django.http import HttpResponsePermanentRedirect
 from django.http import HttpResponse
 from django.http import Http404
 from django.http import HttpResponseNotAllowed
@@ -463,7 +464,7 @@ def question(request, id):#refactor - long subroutine. display question body, an
         question_post.assert_is_visible_to(request.user)
     except exceptions.QuestionHidden as error:
         request.user.message_set.create(message = unicode(error))
-        return HttpResponseRedirect(reverse('index'))
+        return HttpResponsePermanentRedirect(reverse('index'))
 
     #redirect if slug in the url is wrong
     if request.path.split('/')[-2] != question_post.slug:
