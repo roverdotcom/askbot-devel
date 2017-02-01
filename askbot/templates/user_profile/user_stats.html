@@ -41,7 +41,7 @@
         <a name="tags"></a>
         <h3>{{ user_tags|length }} tag{{ user_tags|length|pluralize }}</h3>
         <div class="user-stats-table">
-            {% with user_tags|map(attribute='name') as tag_list %}
+            {% with tag_list = user_tags|map(attribute='name') %}
                 {{
                     macros.tag_list_widget(
                         tags = tag_list,
