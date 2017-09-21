@@ -1781,8 +1781,26 @@ SimpleEditor.prototype.getText = function () {
     return $.trim(this._textarea.val());
 };
 
+// Handle escaping user input, from mustache.js
+var entityMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+    '/': '&#x2F;',
+    '`': '&#x60;',
+    '=': '&#x3D;'
+};
+
+function escapeHtml (string) {
+    return String(string).replace(/[&<>"'`=\/]/g, function fromEntityMap (s) {
+        return entityMap[s];
+    });
+}
+
 SimpleEditor.prototype.getHtml = function () {
-    return '<div class="transient-comment"><p>' + this.getText() + '</p></div>';
+    return '<div class="transient-comment"><p>' + escapeHtml(this.getText()) + '</p></div>';
 };
 
 SimpleEditor.prototype.setText = function (text) {
