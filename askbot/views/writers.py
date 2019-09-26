@@ -267,8 +267,10 @@ def ask(request):#view used to ask a new question
 
             else:
                 session_key=request.session.session_key
-                if session_key is None:
-                    return HttpResponseForbidden()
+
+                if not session_key:
+                    session_key = request.session.create()
+                    session_key=request.session.session_key
 
                 models.AnonymousQuestion.objects.create(
                     session_key=session_key,
@@ -280,7 +282,7 @@ def ask(request):#view used to ask a new question
                     added_at=timestamp,
                     ip_addr=request.META.get('REMOTE_ADDR'),
                 )
-                return HttpResponseRedirect(url_utils.get_login_url())
+                return HttpResponseRedirect(settings.ROVER_LOGIN_URL + "?next={}".format(reverse('ask')))
 
     if request.method == 'GET':
         form = forms.AskForm(user=request.user)
