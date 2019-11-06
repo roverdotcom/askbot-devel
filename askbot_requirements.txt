@@ -2,7 +2,7 @@ Coffin>=0.3,<=0.3.8
 Jinja2==2.8
 django-appconf
 akismet==1.0.1
-beautifulsoup4<=4.4.1
+beautifulsoup4<=4.4.
 django-avatar==2.2.1
 django-celery>=3.0.11,<=3.1.17
 django-compressor>=1.3,<=1.5

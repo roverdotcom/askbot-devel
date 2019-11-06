@@ -9,6 +9,8 @@ allow adding new comments via Ajax form post.
 import logging
 import urllib
 import operator
+
+from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
@@ -66,10 +68,14 @@ from askbot.models import Post, Vote
 #should we dry them up?
 #related topics - information drill-down, search refinement
 
-def index(request):#generates front page - shows listing of questions sorted in various ways
+
+def index(request): #generates front page - shows listing of questions sorted in various ways
     """index view mapped to the root url of the Q&A site
     """
-    return HttpResponseRedirect(reverse('questions'))
+    # moloz = RequestContext(request)
+    return render(request, 'mypage.html')
+    # return render_to_response(request, 'mypage.html', context_instance=RequestContext(request))
+
 
 def questions(request, **kwargs):
     """

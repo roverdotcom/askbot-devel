@@ -6,13 +6,14 @@ from django.template import TemplateDoesNotExist
 from django.http import HttpResponse
 from django.utils import translation
 from django.conf import settings as django_settings
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, SuspiciousFileOperation
 from coffin.common import CoffinEnvironment
 from jinja2 import loaders as jinja_loaders
 from jinja2.exceptions import TemplateNotFound
 from jinja2.utils import open_if_exists
 from askbot.conf import settings as askbot_settings
 from askbot.skins import utils
+from django.utils._os import safe_join
 from askbot.utils.translation import get_language, HAS_ASKBOT_LOCALE_MIDDLEWARE
 
 from coffin import template
@@ -169,6 +170,7 @@ else:
     SKINS = load_skins(django_settings.LANGUAGE_CODE)
 
 APP_DIR_ENVS = dict()
+# USELSS
 if 'askbot.skins.loaders.JinjaAppDirectoryLoader' in LOADERS:
     if askbot.is_multilingual() or HAS_ASKBOT_LOCALE_MIDDLEWARE:
         for lang in dict(django_settings.LANGUAGES).keys():
@@ -222,6 +224,7 @@ class Loader(BaseLoader):
             return get_askbot_template(template_name), template_name
         except TemplateNotFound:
             raise TemplateDoesNotExist
+
 
 class JinjaAppDirectoryLoader(BaseLoader):
     """Optional Jinja2 template loader to support apps using

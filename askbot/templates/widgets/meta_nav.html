@@ -1,5 +1,5 @@
 {% import "macros.html" as macros%}
-<a 
+<a
   id="navTags"
   href="{% url tags %}"
   {% if active_tab == 'tags' %}class="on"{% endif %}
@@ -10,16 +10,16 @@
 {% if settings.GROUPS_ENABLED %}
 <span class="dropdown groups-dropdown">
 <a
-  id="navGroups" 
+  id="navGroups"
   {% if active_tab == 'groups' %}class="on"{% endif %}
   href="{% url groups %}" data-target="#" >
   {% trans %}people & groups{% endtrans %}
 </a>
 </span>
 {%else%}
-<a 
+<a
   id="navUsers"
-  href="{% url 'leaderboard' %}"
+  href="#"
   {% if active_tab == 'users' %}class="on"{% endif %}
 >
     <i class="rover-icon rover-icon-ribbon"></i>
@@ -27,7 +27,7 @@
 </a>
 {% endif %}
 {% if settings.BADGES_MODE == 'public' %}
-<a 
+<a
   id="navBadges"
   href="{% url badges %}"
   {% if active_tab == 'badges' %}class="on"{% endif %}

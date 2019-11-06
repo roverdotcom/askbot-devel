@@ -1,8 +1,20 @@
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.template.backends.base import BaseEngine
-from askbot.skins.loaders import Loader, get_skin
+from askbot.skins.loaders import Loader, get_skin, JinjaAppDirectoryLoader
 from askbot.utils.loading import load_module
+from django.utils.module_loading import import_string
+
+# class made to respect the compressor calls
+class FakeCompressEngine(object):
+    def __init__(self):
+        self.loaders = []
+
+    # this signature is needed
+    def get_template_loaders(self, template_loaders):
+        return []
+        return [JinjaAppDirectoryLoader(self), Loader(self)]
+
 
 class AskbotSkinTemplates(BaseEngine):
 
@@ -10,6 +22,7 @@ class AskbotSkinTemplates(BaseEngine):
         junk = params.pop('OPTIONS') #we don't use this parameter
         super(AskbotSkinTemplates, self).__init__(params)
         self.loader = Loader(self)
+        self.engine = FakeCompressEngine()
 
     def get_template(self, name):
         return Template(self.loader.load_template(name)[0])
@@ -40,7 +53,7 @@ class Template(object):
             if config['BACKEND'] == backend:
                 return config
         raise ImproperlyConfigured('template backend %s is required', backend)
-                
+
 
     @classmethod
     def get_extra_context_processor_paths(cls):
