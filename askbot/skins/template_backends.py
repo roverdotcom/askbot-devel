@@ -13,7 +13,6 @@ class FakeCompressEngine(object):
     # this signature is needed
     def get_template_loaders(self, template_loaders):
         return []
-        return [JinjaAppDirectoryLoader(self), Loader(self)]
 
 
 class AskbotSkinTemplates(BaseEngine):
