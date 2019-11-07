@@ -9,8 +9,6 @@ allow adding new comments via Ajax form post.
 import logging
 import urllib
 import operator
-
-from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
@@ -68,14 +66,10 @@ from askbot.models import Post, Vote
 #should we dry them up?
 #related topics - information drill-down, search refinement
 
-
-def index(request): #generates front page - shows listing of questions sorted in various ways
+def index(request):#generates front page - shows listing of questions sorted in various ways
     """index view mapped to the root url of the Q&A site
     """
-    # moloz = RequestContext(request)
-    return render(request, 'mypage.html')
-    # return render_to_response(request, 'mypage.html', context_instance=RequestContext(request))
-
+    return HttpResponseRedirect(reverse('questions'))
 
 def questions(request, **kwargs):
     """
@@ -468,7 +462,7 @@ def question(request, id):#refactor - long subroutine. display question body, an
 
     try:
         question_post.assert_is_visible_to(request.user)
-    except exceptions.QuestionHidden as error:
+    except exceptions.QuestionHidden, error:
         request.user.message_set.create(message = unicode(error))
         return HttpResponsePermanentRedirect(reverse('index'))
 
@@ -514,11 +508,11 @@ def question(request, id):#refactor - long subroutine. display question body, an
 
         try:
             show_comment.assert_is_visible_to(request.user)
-        except exceptions.AnswerHidden as error:
+        except exceptions.AnswerHidden, error:
             request.user.message_set.create(message = unicode(error))
             #use reverse function here because question is not yet loaded
             return HttpResponseRedirect(reverse('question', kwargs = {'id': id}))
-        except exceptions.QuestionHidden as error:
+        except exceptions.QuestionHidden, error:
             request.user.message_set.create(message = unicode(error))
             return HttpResponseRedirect(reverse('index'))
 
@@ -533,7 +527,7 @@ def question(request, id):#refactor - long subroutine. display question body, an
 
         try:
             show_post.assert_is_visible_to(request.user)
-        except django_exceptions.PermissionDenied as error:
+        except django_exceptions.PermissionDenied, error:
             request.user.message_set.create(message = unicode(error))
             return HttpResponseRedirect(reverse('question', kwargs = {'id': id}))
 
@@ -621,9 +615,9 @@ def question(request, id):#refactor - long subroutine. display question body, an
                                         thread=thread
                                     )
         if drafts.count() > 0:
-            initial['text'] = drafts[0].get_text()
+            initial['text'] = drafts[0].text
 
-    custom_answer_form_path = django_settings.ASKBOT_NEW_ANSWER_FORM
+    custom_answer_form_path = getattr(django_settings, 'ASKBOT_NEW_ANSWER_FORM', None)
     if custom_answer_form_path:
         answer_form_class = load_module(custom_answer_form_path)
     else:
@@ -651,11 +645,6 @@ def question(request, id):#refactor - long subroutine. display question body, an
     else:
         group_read_only = False
 
-    #session variable added so that the session is
-    #not empty and is not autodeleted, otherwise anonymous
-    #answer posting is impossible
-    request.session['askbot_write_intent'] = True
-
     data = {
         'active_tab': 'questions',
         'answer' : answer_form,
@@ -663,6 +652,7 @@ def question(request, id):#refactor - long subroutine. display question body, an
         'answer_count': thread.get_answer_count(request.user),
         'blank_comment': MockPost(post_type='comment', author=request.user),#data for the js comment template
         'category_tree_data': askbot_settings.CATEGORY_TREE,
+        'editor_is_unfolded': answer_form.has_data(),
         'favorited' : favorited,
         'group_read_only': group_read_only,
         'is_cacheable': False,#is_cacheable, #temporary, until invalidation fix
@@ -789,7 +779,7 @@ def get_perms_data(request):
         'MIN_REP_TO_VIEW_OFFENSIVE_FLAGS',
     )
 
-    if askbot_settings.REPLY_BY_EMAIL:
+    if askbot_settings.ALLOW_ASKING_BY_EMAIL or askbot_settings.REPLY_BY_EMAIL:
         items += (
             'MIN_REP_TO_POST_BY_EMAIL',
             'MIN_REP_TO_TWEET_ON_OTHERS_ACCOUNTS',
