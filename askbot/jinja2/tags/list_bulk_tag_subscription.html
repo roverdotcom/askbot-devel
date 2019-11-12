@@ -1,11 +1,11 @@
 {% extends "one_column_body.html" %}
 {% import "macros.html" as macros %}
 <!-- template list_bulk_tag_subscription.html -->
-{% block title %}{% spaceless %}{% trans tag=settings.WORDS_TAG_SINGULAR|lower %}Manage {{ tag }} subscriptions{% endtrans %}{% endspaceless %}{% endblock %}
+{% block title %}{% filter %}{% trans tag=settings.WORDS_TAG_SINGULAR|lower %}Manage {{ tag }} subscriptions{% endtrans %}{% endfilter %}{% endblock %}
 {% block content %}
 <h1 class="section-title">
     {% trans tag=settings.WORDS_TAG_SINGULAR|lower %}Manage {{ tag }} subscription</a> {% endtrans %}
-    (<a href="{% url create_bulk_tag_subscription %}">{%trans%}Create New{%endtrans%}</a>)
+    (<a href="{{ url('create_bulk_tag_subscription') }}">{%trans%}Create New{%endtrans%}</a>)
 <table class='tag-subscriptions'>
     <thead>
         <th>{% trans %}Date{% endtrans %}</th>
@@ -32,7 +32,7 @@
             {% set comma=joiner(',') %}
             <td>{%for user in subscription.users.all() %}{{ comma() }}
                 <a
-                    href='{% url user_profile user.id %}'
+                    href="{{ url('user_profile', user.id) }}"
                 >{{user.username}}</a>{%endfor%} <a href='#'>
             </td>
             {% if settings.GROUPS_ENABLED %}

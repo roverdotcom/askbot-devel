@@ -10,7 +10,7 @@
         <div class="avatar">
             {{ macros.gravatar(view_user, 176) }}
             {% if request.user == view_user %}
-                <p><a href="{% url edit_user view_user.id %}">
+                <p><a href="{{ url('edit_user', view_user.id) }}">
                     {% trans %}change picture{% endtrans %}
                 </a></p>
             {% endif %}

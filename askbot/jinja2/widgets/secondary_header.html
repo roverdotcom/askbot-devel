@@ -34,7 +34,7 @@
                 <tr>
                     {# width 1 means that cell will expand just enough to fit the contents #}
                     <td width="1">
-                        <a id="homeButton" href="{% url questions %}">
+                        <a id="homeButton" href="{{ url('questions') }}">
                             <i class="rover-icon rover-icon-house"></i>
                         </a>
                     </td>
@@ -54,7 +54,7 @@
             <table width="100%">
                 <tr>
                     <td width="1">
-                        <a id="homeButton" href="{% url questions %}">
+                        <a id="homeButton" href="{{ url('questions') }}">
                             <i class="rover-icon rover-icon-house"></i>
                         </a>
                     </td>

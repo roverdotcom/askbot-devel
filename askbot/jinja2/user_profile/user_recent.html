@@ -23,12 +23,12 @@
                         {% set question=act.content_object %}
                         <span>
                             (<a title="{{question.summary|collapse|escape}}"
-                                href="{% url question question.id %}{{question.thread.title|slugify}}">{% trans %}source{% endtrans %}</a>)
+                                href="{{ url('question', question.id) }}{{question.thread.title|slugify}}">{% trans %}source{% endtrans %}</a>)
                         </span>
                     {% elif act.content_object.post_type == 'answer' %}
                         {% set answer=act.content_object %}
                         (<a title="{{answer.text|collapse|escape}}"
-                            href="{% url question answer.thread._question_post().id %}{{answer.thread.title|slugify}}#{{answer.id}}">{% trans %}source{% endtrans %}</a>)
+                            href="{{ url('question', answer.thread._question_post().id) }}{{answer.thread.title|slugify}}#{{answer.id}}">{% trans %}source{% endtrans %}</a>)
                     {% endif %}
                 {% else %}
                     <a class="question-title" href="{{ act.title_link }}">{{ act.title|escape }}</a>

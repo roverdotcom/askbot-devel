@@ -19,7 +19,7 @@
 {%else%}
 <a
   id="navUsers"
-  href="{% url 'leaderboard' %}"
+  href="{{ url('users') }}"
   {% if active_tab == 'users' %}class="on"{% endif %}
 >
   <i class="rover-icon rover-icon-ribbon"></i>

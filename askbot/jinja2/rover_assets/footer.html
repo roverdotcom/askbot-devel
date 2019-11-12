@@ -32,7 +32,7 @@
                                 <h4>Learn More</h4>
                                 <ul class="footer-list">
                                     <li><a href="/blog/?ref=qa-community-footer">Read Our Blog</a></li>
-                                    <li><a href="{% url 'questions' %}">Rover Q&A Community</a></li>
+                                    <li><a href="{{ url('questions') }}">Rover Q&A Community</a></li>
                                     <li><a href="/insurance/?ref=qa-community-footerfooter">Premium Insurance</a></li>
                                     <li><a href="/sit-a-dog-save-a-life/?ref=qa-community-footer">Sit a Dog, Save a Life</a></li>
                                     {% if request.user.is_staff %}

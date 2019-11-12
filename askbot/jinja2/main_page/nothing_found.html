@@ -16,10 +16,11 @@
                 <a href="{{ search_state.remove_tags().full_url() }}">{% trans tags=settings.WORDS_TAG_PLURAL|lower %}resetting {{ tags }}{% endtrans %}</a>
             {% endif %}
             {% if search_state.query %}{% trans %} or {% endtrans %}
-                <a href="{% url questions %}">{% trans %}starting over{% endtrans %}</a>
+                <a href="{{ url('questions') }}">{% trans %}starting over{% endtrans %}</a>
             {% endif %}
         {% else %}
             <a href="{{ url('questions') }}">{% trans %}starting over{% endtrans %}</a>
         {% endif %}
+    {% endif %}
 </p>
 {% endif %}
