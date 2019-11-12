@@ -100,7 +100,7 @@ def questions(request, **kwargs):
 
     # remove support and sitter tagged questions from non-specific searches
     # or for anonymous users
-    if not is_specific_search or not request.user.is_authenticated():
+    if not is_specific_search or not request.user.is_authenticated:
         qs = qs.exclude(tags__name__in=['support', 'sitter'])
 
     if meta_data['non_existing_tags']:
@@ -696,7 +696,7 @@ def revisions(request, id, post_type = None):
     post = get_object_or_404(models.Post, post_type=post_type, id=id)
 
     user = request.user
-    if not user.is_authenticated() or not user.is_administrator_or_moderator():
+    if not user.is_authenticated or not user.is_administrator_or_moderator():
         return HttpResponseRedirect(post.get_absolute_url())
 
     if post.deleted:

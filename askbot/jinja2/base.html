@@ -25,7 +25,7 @@
             {{ settings.CUSTOM_HTML_HEAD }}
         {% endif %}
     </head>
-    <body class="new-design {% block body_class %}{% endblock %}{% if user_messages %} user-messages{% endif %}{% if page_class %} {{page_class}}{% endif %}{% if request.user.is_anonymous() %} anon{% endif %} lang-{{ current_language_code }}">
+    <body class="new-design {% block body_class %}{% endblock %}{% if user_messages %} user-messages{% endif %}{% if page_class %} {{page_class}}{% endif %}{% if request.user.is_anonymous %} anon{% endif %} lang-{{ current_language_code }}">
         {% include "rover_assets/header.html" %}
         {% include "widgets/system_messages.html" %}
         {% include "debug_header.html" %}

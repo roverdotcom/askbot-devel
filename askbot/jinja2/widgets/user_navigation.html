@@ -9,7 +9,7 @@
     </span>
 {% endif %}
 
-{% if request.user.is_authenticated() and request.user.is_administrator() %}
+{% if request.user.is_authenticated and request.user.is_administrator() %}
     <a class="settings" href="{% url site_settings %}">{% trans %}Settings{% endtrans %}</a>
     <a class="widgets" href="{% url widgets %}">{% trans %}Widgets{% endtrans %}</a>
 {% endif %}
@@ -18,7 +18,7 @@
 <a class="faq mobile-hidden-nav hidden-xs" href="{% url "faq" %}" title="{% trans %}faq{% endtrans %}">{% trans %}FAQ{% endtrans %}</a>
 <a class="faq mobile-hidden-nav hidden-xs" href="{% url "feedback" %}" title="{% trans %}faq{% endtrans %}">{% trans %}Leave Feedback{% endtrans %}</a>
 
-{%- if request.user.is_authenticated() -%}
+{%- if request.user.is_authenticated -%}
     {% if settings.USE_ASKBOT_LOGIN_SYSTEM %}
         <a href="{{ settings.LOGOUT_URL }}?next={{ request.get_full_path()|urlencode }}">{% trans %}Sign Out{% endtrans %}</a>
     {% endif %}
