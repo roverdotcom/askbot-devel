@@ -1674,7 +1674,7 @@ class Thread(models.Model):
         html = (
             self.get_cached_summary_html(visitor) or
             self.update_summary_html(visitor)
-        ).decode('utf-8')
+        )
 
         # TODO: this work may be pushed onto javascript we post-process tag names
         # in the snippet so that tag urls match the search state
