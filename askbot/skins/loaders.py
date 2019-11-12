@@ -3,7 +3,6 @@
 
 from askbot.conf import settings as askbot_settings
 from askbot.skins.askbot_environments import SkinEnvironment
-from askbot.skins.askbot_environments import AppDirectoryEnvironment
 import askbot.skins.shortcuts
 
 def get_skin():
