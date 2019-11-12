@@ -10,6 +10,7 @@ import askbot
 from askbot.conf.settings_wrapper import settings
 from livesettings.values import ConfigurationGroup
 from livesettings import values
+from django.templatetags.static import static
 from askbot.skins import utils as skin_utils
 from askbot import const
 from askbot.conf.super_groups import CONTENT_AND_UI
@@ -57,6 +58,25 @@ settings.register(
     )
 )
 
+settings.register(
+    values.BooleanValue(
+        GENERAL_SKIN_SETTINGS,
+        'SHOW_NEW_FEATURE_HEADER',
+        description = _('Show new feature header'),
+        help_text = _('Check if you want to show the new feature header'),
+        default = False
+    )
+)
+
+settings.register(
+    values.URLValue(
+        GENERAL_SKIN_SETTINGS,
+        'NEW_FEATURE_HEADER_URL',
+        description=_('New feature iframe URL'),
+        default='',
+    )
+)
+
 #cannot use HAS_ASKBOT_LOCALE_MIDDLEWARE due to circular import error
 LANG_MODE = getattr(django_settings, 'ASKBOT_LANGUAGE_MODE', 'single-lang')
 HAS_ASKBOT_LOCALE_MIDDLEWARE = (
@@ -99,8 +119,9 @@ settings.register(
             '<a href="%(favicon_info_url)s">this page</a>.') % {
                 'favicon_info_url': const.DEPENDENCY_URLS['favicon']},
         allowed_file_extensions=('ico',),  # only allow .ico files
-        default='/images/favicon.gif',
-        url_resolver=skin_utils.get_media_url
+        default='new_design/images/favicon.png',
+        # url_resolver = skin_utils.get_media_url
+        url_resolver=static
     )
 )
 
@@ -200,7 +221,7 @@ settings.register(
             ('customize', 'customize'),
             ('disable', 'disable')
         ),
-        default='default',
+        default='disable',
     )
 )
 

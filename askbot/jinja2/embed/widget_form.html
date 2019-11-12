@@ -1,6 +1,10 @@
 {% extends "one_column_body.html" %}
 <!-- create_ask_widget.html -->
 {% block title %}{% trans %}{{action}} an {{widget_name}} widget{% endtrans %}{% endblock %}
+{% block meta_description %}
+    {{ super() }}
+    <meta name="robots" content="noindex">
+{% endblock %}
 {% block content %}
 <h1 class="section-title">{% trans %}{{action}} an {{widget_name}} widget{% endtrans %}</h1>
 {#% if form.non_field_errors() %}

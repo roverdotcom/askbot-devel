@@ -2,6 +2,10 @@
 {% import "macros.html" as macros %}
 <!-- template feedback.html -->
 {% block title %}{% filter trim %}{% trans %}Feedback{% endtrans %}{% endfilter %}{% endblock %}
+{% block meta_description %}
+    {{ super() }}
+    <meta name="robots" content="noindex">
+{% endblock %}
 {% block content %}
 <h1 class="section-title">{% trans %}Give us your feedback!{% endtrans %}</h1>
 {% if form.errors %}

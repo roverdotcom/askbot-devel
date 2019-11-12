@@ -61,7 +61,7 @@ def parse_query(query):
     (query_title, query) = extract_matching_token(query, title_regexes)
 
     tag_re1 = re.compile(r'\[([^:]+?)\]')
-    tag_re2 = re.compile(r'\[tag:\s*([\S]+)\s*]')
+    tag_re2 = re.compile(r'\[{}:\s*([\S]+)\s*]'.format(askbot_settings.WORDS_TAG_SINGULAR.lower()))
     tag_re3 = re.compile(r'#(\S+)')
     tag_regexes = (tag_re1, tag_re2, tag_re3)
     (query_tags, query) = extract_all_matching_tokens(query, tag_regexes)
@@ -236,7 +236,7 @@ class SearchState(object):
     def add_tag(self, tag):
         ss = self.deepcopy()
         if tag not in ss.tags:
-            ss.tags.append(tag)
+            ss.tags = [tag]
             ss.page = 1 # state change causes page reset
         return ss
 

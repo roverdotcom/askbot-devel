@@ -1,0 +1,100 @@
+@media (min-width: 960px) {
+    .new-design .header .navbar-container {
+        width: 960px;
+    }
+  }
+  
+  .new-design .navbar-nav.navbar-right:last-child {
+      margin-right: -6px;
+  }
+  
+  .disclaimer {
+    text-align: center;
+  }
+  
+  .book-button {
+    padding: 10px;
+    display: block;
+    height: auto;
+  }
+  
+  .header-custom {
+    padding: 7px;
+  }
+  
+  .user-about-heading {
+    line-height: normal;
+    margin-top: -8px;
+  }
+  
+  .rover-benefits-list {
+    font-size: 130%;
+    margin-bottom: 35px;
+  }
+  
+  .rover-benefits-list li {
+    margin-bottom: 7px;
+  }
+  
+  .landing-message-header {
+    padding: 0;
+  }
+  
+  .landing-message {
+    font-size: 110%;
+  }
+  
+  .rover-forum-title {
+    padding: 6px 0 14px 0;
+  }
+  
+  h3 {
+    font-size: 14px;
+    padding-left: 0px;
+  }
+  
+  body {
+    padding-top: 50px;
+  }
+  
+  .input-tool-tip {
+    white-space: nowrap;
+  }
+  
+  .navbar .nav li a {
+    font-weight: normal;
+  }
+  
+  .navbar-toggle {
+    box-shadow: none;
+    border: 1px solid #ddd !important;
+    height: auto;
+  }
+  
+  @media (max-width: 800px) {
+    .mobile-hidden-nav {
+      display: none;
+    }
+  }
+  
+  .question-page .navbar-collapse:not(.collapse) {
+    height: auto !important;
+  }
+  
+  .avatar-box {
+    width: 46px;
+    height: 46px;
+  }
+  
+  .user-card {
+    height: inherit;
+  }
+  
+  /* Style the user card so it fits on the user's 'network' page. */
+  .user-list .service-link {
+    display: none;
+  }
+  
+  .user-list .user-card {
+    width: 200px;
+  }

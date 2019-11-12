@@ -1,7 +1,10 @@
 {% extends "two_column_body.html" %}
 {% import "macros.html" as macros %}
 <!-- template ask.html -->
-{% block title %}{% filter trim %}{% trans %}Ask Your Question{% endtrans %}{% endfilter %}{% endblock %}
+{% block title %}{% spaceless %}{% trans %}Ask Your Dog Question{% endtrans %}{% endspaceless %}{% endblock %}
+{% block meta_description %}
+    <meta name="description" content="Ask questions about your dog or puppy and chat with our community of dog lovers to get answers. Join the conversation at Rover.com's dog forum!">
+{% endblock %}
 {% block forestyle %}
     <link rel="stylesheet" type="text/css" href="{{"/wmd/wmd.css"|media}}" />
 {% endblock %}

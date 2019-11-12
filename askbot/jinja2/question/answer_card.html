@@ -13,6 +13,7 @@
         {% include "question/answer_vote_buttons.html" %}
     </div>
     <div class="post-content">
+        <div class="answer-timeago question-asked-timeago">answered {{ macros.timeago(answer.added_at) }}</div>
         <div class="post-body">
             <div class="js-editable-hide-post-body-{{ answer.pk }}">
                 <div class="post-update-info-container">

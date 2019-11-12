@@ -1,21 +1,32 @@
 <!-- template header.html -->
 {% import "macros.html" as macros %}
+{% if settings.SHOW_NEW_FEATURE_HEADER %}
+    <div class="new-feature-header-container">
+        <iframe scrolling="no" src="{{ settings.NEW_FEATURE_HEADER_URL }}" class="new-feature-header"></iframe>
+    </div>
+{% endif %}
 <div 
     id="header"
-    class="{% if settings.SHOW_LOGO %}with-logo{% else %}without-logo{% endif %}"
+    class="{% if settings.SHOW_LOGO %}with-logo{% else %}without-logo{% endif %} header-custom"
 >
     <div class="content-wrapper">
-        <div id="userToolsNav">
-            {% include "widgets/user_navigation.html" %}
-            {% if settings.MULTILINGUAL %}
-                {% include "widgets/language_nav.html" %}
-            {% endif %}
+        <div class="text-contrast text-center margin-v-x5">
+            <h2> Q&amp;A Community</h1>
+            <h5>Connect with fellow dog lovers and learn from one another</h5>
         </div>
         {% if settings.SHOW_LOGO %}
             {% include "widgets/logo.html" %}
         {% endif %}
-        <div id="metaNav">
-            {% include "widgets/meta_nav.html" %}
+        <div class="margin-v-x5 padding-bottom-x5">
+            <div id="userToolsNav">
+                {% include "widgets/user_navigation.html" %}
+            </div>
+            {% if settings.SHOW_LOGO %}
+                {% include "widgets/logo.html" %}
+            {% endif %}
+            <div class="mobile-hidden-nav visible-md-block visible-lg-block" id="metaNav">
+                {% include "widgets/meta_nav.html" %}
+            </div>
         </div>
         <div class="clean"></div>
     </div>

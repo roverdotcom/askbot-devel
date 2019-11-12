@@ -4,16 +4,24 @@
     data-title-validator="askbot.validators.titleValidator"
     data-text-validator="askbot.validators.questionDetailsValidator"
     >{{ csrf_input }}
-    <div class="form-item form-group ask-form-bar">
-        <label for="id_title">{{ form.title.label }}</label>
-        <div class="js-title-error js-error">
-            {% if form.title.errors %}
-                {{ form.title.errors }}
-            {% endif %}
-        </div>
-        <div id="askFormBar" class="search-bar">
-            <input id="id_title" class="questionTitleInput" name="title" autocomplete="off"
-                value="{% if form.initial.title %}{{form.initial.title|escape}}{% endif %}"/>
+    <div class="form-group {% if form.title.errors %} has-error{% endif %}">
+        <label for="id_title" class="title-label">What is your question?</label>
+        <input id="id_title" class="form-control" name="title" autocomplete="off"
+            value="{% if form.initial.title %}{{form.initial.title|escape}}{% endif %}"/>
+        <span class="form-error">{{ form.title.errors }}</span>
+    </div>
+    <div class="form-group">
+        <label for="id_required_tag">What type of question is this?</label>
+        <div class="required-tag-container">
+            <label class="radio-inline">
+              <input type="radio" name="required_tag" value="dogs" required>General dog question
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="required_tag" value="sitter">Sitter-to-Sitter question
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="required_tag" value="support">Rover.com question
+            </label>
         </div>
     </div>
 
@@ -74,9 +82,11 @@
         <div class="clearfix"></div>
     {% endif %}
     {% if request.user.is_anonymous and not settings.ALLOW_ASK_UNREGISTERED %}
-        <input type="submit" name="post_anon" value="{% trans %}Login/Signup to Post{% endtrans %}" />
+        <input type="submit" class="rover-btn btn-block-xs rover-btn-secondary" name="post_anon" value="{% trans %}Login/Signup to Post{% endtrans %}" />
     {% else %}
-      <input type="submit" name="post" value="{{ settings.WORDS_ASK_YOUR_QUESTION|escape }}" />
+        <input type="submit" class="rover-btn btn-block-xs rover-btn-secondary" name="post" value="{{ settings.WORDS_ASK_YOUR_QUESTION|escape }}" />
     {% endif %}
     <div class="clean"></div>
 </form>
+<script>
+</script>

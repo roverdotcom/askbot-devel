@@ -49,7 +49,7 @@
             {% set tag_names = post.get_tag_names() %}
             {% if tag_names %}
             <p style="font-size:10px; font-style:italic;">
-                {% trans %}Tags:{% endtrans %}
+                {% trans tags=settings.WORDS_TAG_PLURAL %}{{ tags }}:{% endtrans %}
                 {{ tag_names|join(', ') }}.
             </p>
             {% endif %}
@@ -71,6 +71,8 @@
         {% endif %}
 
         {{ post.html }}
+
+        <p>(See it <a href="{{ post.get_absolute_url() }}">here</a> on {{ settings.APP_TITLE }}.)</p>
 
     {{ end_quote(quote_level) }}
     {% endfilter %}

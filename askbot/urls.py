@@ -109,7 +109,7 @@ urlpatterns = [
         name='set_user_description',
     ),
     url(
-        r'^%s(?P<id>\d+)/(?P<slug>.+)/%s$' % (
+        r'^%s(?P<id>\d+)/%s$' % (
             pgettext('urls', 'users/'),
             pgettext('urls', 'subscriptions/'),
         ),
@@ -126,7 +126,7 @@ urlpatterns = [
         name='user_unsubscribe'
     ),
     url(
-        r'^%s(?P<id>\d+)/(?P<slug>.+)/%s$' % (
+        r'^%s(?P<id>\d+)/%s$' % (
             pgettext('urls', 'users/'),
             pgettext('urls', 'select_languages/'),
         ),
@@ -134,7 +134,7 @@ urlpatterns = [
         name='user_select_languages'
     ),
     url(
-        r'^%s(?P<id>\d+)/(?P<slug>.+)/$' % pgettext('urls', 'users/'),
+        r'^%s(?P<id>\d+)/$' % pgettext('urls', 'users/'),
         views.users.user,
         name='user_profile'
     ),

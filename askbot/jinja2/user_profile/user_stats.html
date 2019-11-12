@@ -7,55 +7,55 @@
 {% endblock %}
 {% block usercontent %}
     {% include "user_profile/user_info.html" %}
-    <a name="questions"></a>
-    {% filter trim %}
-        <h2>
-            {% set pluralized_item_term=settings.WORDS_QUESTIONS_COUNTABLE_FORMS|py_pluralize(question_count)|capitalize|escape %}
-            {% set item_count=question_count %}
-            {% trans %}<span class="count">{{ item_count }}</span> {{ pluralized_item_term }}{% endtrans %}
-        </h2>
-    {% endfilter %}
-    {% include "user_profile/users_questions.html" %}
-    <a name="answers"></a>
-    {% filter trim %}
-        <h2 style="clear:both;">
-            {% set pluralized_item_term=settings.WORDS_ANSWERS_COUNTABLE_FORMS|py_pluralize(top_answer_count)|capitalize|escape %}
-            {% set item_count=top_answer_count %}
-            {% trans %}<span class="count">{{ item_count }}</span> {{ pluralized_item_term }}{% endtrans %}
-        </h2>
-    {% endfilter %}
-    {% include "user_profile/users_answers.html" %}
-    <a name="votes"></a>
-    {% filter trim %}
-        <h2>{% trans cnt=total_votes %}<span class="count">{{cnt}}</span> Vote{% pluralize %}<span class="count">{{cnt}}</span> Votes {% endtrans %}</h2>
-    {% endfilter %}
-    <div class="user-stats-table">
-        <div class="up-votes">{{ up_votes }}</div>
-        <div class="down-votes">{{ down_votes }}</div>
-    </div>
-    <a name="tags"></a>
-    {% filter trim %}
-        <h2>{% trans counter=user_tags|length %}<span class="count">{{counter}}</span> Tag{% pluralize %}<span class="count">{{counter}}</span> Tags{% endtrans %}</h2>
-    {% endfilter %}
-    <div class="user-stats-table">
-        <ul id="ab-user-tags" class="tags">
-        {% for tag in user_tags %}
-            <li>
-            {{ macros.tag_widget(
-                tag.name,
-                search_state = search_state,
-                truncate_long_tag = True,
-                extra_content =
-                    '<span class="tag-number">&#215; ' ~
-                    tag.user_tag_usage_count|intcomma ~
-                    '</span>'
-               )
-            }}
-            </li>
-        {% endfor %}
-        </ul>
-        <div class="clearfix"></div>
-    </div>
+    {% if question_count %}
+        <a name="questions"></a>
+        <h3>{{ question_count }} question{{ question_count|pluralize }}</h3>
+        {% include "user_profile/users_questions.html" %}
+    {% endif %}
+
+    {% if top_answer_count %}
+        <a name="answers"></a>
+        <h3 class="answers-heading">{{ top_answer_count }} answer{{ top_answer_count|pluralize }}</h3>
+        {% include "user_profile/users_answers.html" %}
+    {% endif %}
+
+    {% if total_votes %}
+        <a name="votes"></a>
+        <h3>{{ total_votes }} vote{{ total_votes|pluralize }}</h3>
+        <div class="user-stats-table">
+            <div class="users-questions">
+                <div class="counts">
+                    <div class="votes some-votes">
+                        <span class="item-count">{{ up_votes }}</span>
+                    </div>
+                    <div class="votes-down some-votes">
+                        <span class="item-count">{{ down_votes }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="clearfix"></div>
+    {% endif %}
+
+    {% if user_tags %}
+        <a name="tags"></a>
+        <h3>{{ user_tags|length }} tag{{ user_tags|length|pluralize }}</h3>
+        <div class="user-stats-table">
+            {% with tag_list = user_tags|map(attribute='name') %}
+                {{
+                    macros.tag_list_widget(
+                        tags = tag_list,
+                        id = 'user-tag-list',
+                        search_state = search_state,
+                        css_class = 'post-tags tags',
+                        tag_css_class = 'post-tag'
+                    )
+                }}
+            {% endwith %}
+        </div>
+    {% endif %}
+
+
     {% if interesting_tag_names %}
         {{ user_profile_macros.tag_selection(interesting_tag_names, 'interesting') }}
     {% endif %}
@@ -64,39 +64,6 @@
     {% endif %}
     {% if subscribed_tag_names %}
         {{ user_profile_macros.tag_selection(subscribed_tag_names, 'subscribed') }}
-    {% endif %}
-    {% if settings.BADGES_MODE == 'public' %}
-    <a name="badges"></a>
-    {% filter trim %}
-    <h2>{% trans counter=total_badges %}<span class="count">{{counter}}</span> Badge{% pluralize %}<span class="count">{{counter}}</span> Badges{% endtrans %}</h2>
-    {% endfilter %}
-    <div class="user-stats-table badges">
-        {% for badge, badge_user_awards in badges %}
-            <a
-                href="{{badge.get_absolute_url()}}"
-                title="{% trans description=badge.get_description() %}{{description}}{% endtrans %}"
-                class="medal"
-            ><span class="{{ badge.get_css_class() }}">&#9679;</span>&nbsp;{% trans name=badge.get_name() %}{{name}}{% endtrans %}
-            </a>&nbsp;
-            <span class="tag-number">&#215;
-                <span class="badge-context-toggle">{{ badge_user_awards|length|intcomma }}</span>
-            </span>
-            <ul id="badge-context-{{ badge.id }}" class="badge-context-list" style="display:none">
-                {% for award in badge_user_awards %}
-                    {% if award.content_object and award.content_object_is_post %}
-                    <li>
-                        <a
-                            href="{{ award.content_object.get_absolute_url() }}"
-                        >{% if award.content_type.post_type == 'answer' %}{% trans %}Answer to:{% endtrans %}{% endif %} {{ award.content_object.thread.title|escape }}</a>
-                    </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-            {% if loop.index is divisibleby 3 %}
-                <br/>
-            {% endif %}
-        {% endfor %}
-    </div>
     {% endif %}
 {% endblock %}
 {% block endjs %}

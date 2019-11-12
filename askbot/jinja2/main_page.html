@@ -12,7 +12,10 @@
 {% block forejs %}
     {% include "main_page/custom_head_javascript.html" ignore missing %}
 {% endblock %}
-{% block title %}{% filter trim %}{% trans %}Questions{% endtrans %}{% endfilter %}{% endblock %}
+{% block title %}Dog Questions & Answers{% endblock %}
+{% block meta_description %}
+    <meta name="description" content="The Rover.com dog forum is a community of dog lovers where you can ask and answer dog care and puppy care questions with other dog parents just like you.">
+{% endblock %}
 {% block content %}
     {% include "main_page/tab_bar.html" %}
     {% include "main_page/headline.html" %}

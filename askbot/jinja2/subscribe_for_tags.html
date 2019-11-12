@@ -1,9 +1,9 @@
 {% extends "two_column_body.html" %}
 {% import "macros.html" as macros %}
-{% block title %}{% trans %}Subscribe for tags{% endtrans %}{% endblock %}
+{% block title %}{% trans tags=settings.WORDS_TAG_PLURAL|lower %}Subscribe for {{ tags }}{% endtrans %}{% endblock %}
 {% block content %}
-<h1>{% trans %}Subscribe for tags{% endtrans %}</h1>
-<p>{% trans %}Please, subscribe for the following tags:{% endtrans %}</p>
+<h1>{% trans tags=settings.WORDS_TAG_PLURAL|lower %}Subscribe for {{ tags }}{% endtrans %}</h1>
+<p>{% trans tags=settings.WORDS_TAG_PLURAL|lower %}Please, subscribe for the following {{ tags }}:{% endtrans %}</p>
 {{ macros.tag_list_widget(tags, is_link=False) }}
 <div>
     <form method="post" action="{{ url('subscribe_for_tags') }}">{{ csrf_input }}

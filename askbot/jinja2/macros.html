@@ -8,7 +8,7 @@
 <div class="message-details" data-message-id="{{ message.id }}">
     <input type="checkbox" />
     {{ gravatar(message.user, 16) }}
-    <a class="username" href="{{ message.user.get_absolute_url() }}">{{ message.user.username|escape }}</a>
+    <a class="username" href="{{ message.user.get_absolute_url() }}">{{ message.user.display_name|escape }}</a>
     <a class="forum-post-link" href="{{ message.url }}">{{ message.message_type }}</a>
     ({{ timeago(message.timestamp) }})
     {#<div class="snippet">{{ message.snippet }}</div>#}
@@ -85,16 +85,13 @@
             style="float:left"
         />
         {% set wiki_min_rep = settings.MIN_REP_TO_EDIT_WIKI %}
-        <p class="tip">{% trans %}This post is a wiki.
-        Anyone with karma &gt;{{wiki_min_rep}} is welcome to improve it.{% endtrans %}</p>
+        <p class="tip">{% trans karma=settings.WORDS_KARMA_PLURAL %}This post is a wiki.
+        Anyone with &gt;{{wiki_min_rep}} {{ karma }} is welcome to improve it.{% endtrans %}</p>
     </div>
     {% else %}
         {% set first_rev = post.get_earliest_revision() %}
         {% set last_rev = post.get_latest_revision() %}
         {{ post_contributor_info(first_rev, "original_author") }}
-        {% if first_rev != last_rev %}
-            {{ post_contributor_info(last_rev, "last_updater") }}
-        {% endif %}
     {% endif %}
 {%- endmacro -%}
 
@@ -116,15 +113,6 @@
     {% else %}
         {% set original_author = None %}
     {% endif %}
-    <p style="line-height:12px;">
-        <a
-        {% if revision.post.post_type == 'question' %}
-            href="{{ url('question_revisions',  revision.post.id ) }}"
-        {% else %}
-            href="{{ url('answer_revisions',  revision.post.id ) }}"
-        {% endif %}
-        ><strong>{{ timeago(revision.revised_at, action_performed=action_label) }}</strong></a>
-    </p>
     {% set show_user_info = (contributor_type == 'original_author' or
         (contributor_type == 'last_updater' and
         original_author != revision.author ))
@@ -162,6 +150,7 @@
         make_links=True,
         search_state=None,
         css_class=None,
+        tag_css_class=None,
         truncate_long_tags=False
     )
 -%}
@@ -176,7 +165,8 @@
                 deletable=deletable,
                 is_link=make_links,
                 search_state=search_state,
-                truncate_long_tag=False
+                truncate_long_tag=False,
+                css_class=tag_css_class
             )}}
         </li>
         {% endfor %}
@@ -336,14 +326,17 @@ for the purposes of the AJAX comment editor #}
         {% endif %}
         <a class="js-load-comments-btn">
             {% if settings.COMMENTS_REVERSED %}
-                {% trans %}load older comments{% endtrans %}
+                {% trans %}<span>Load Older Comments</span>{% endtrans %}
             {% else %}
-                {% trans %}see more comments{% endtrans %}
+                {% trans %}<span>See more Comments</span>{% endtrans %}
             {% endif %}
         </a>
     {% else %}
         {% if settings.COMMENTS_REVERSED == False %}
-            <a class="js-open-editor-btn">{% trans %}add a comment{% endtrans %}</a>
+            <a class="js-open-editor-btn add-comment-button rover-btn rover-btn-default">
+                <i class="rover-icon rover-icon-add-comment"></i>
+                <span>{% trans %}Add A Comment{% endtrans %}</span>
+            </a>
         {% endif %}
     {% endif %}
 {%- endmacro -%}
@@ -385,7 +378,7 @@ for the purposes of the AJAX comment editor #}
                 <a
                     class="author"
                     href="{{ comment.author.get_profile_url() }}"
-                >{{ comment.author.username|escape }}</a>
+                    >{{ comment.author.display_name|escape }}</a>
                 <span class="age">&nbsp;({{ timeago(comment.added_at) }})</span>
                 <a
                     id="post-{{ comment.id }}-edit"
@@ -542,7 +535,7 @@ for the purposes of the AJAX comment editor #}
                 endtrans %}"
             title="{% trans
                     country=user.country.name,
-                    person=user.username|escape %}{{person}} is from {{country}}{%
+                    person=user.display_name|escape %}{{person}} is from {{country}}{%
                  endtrans %}"
         />
     {% endif %}
@@ -578,8 +571,8 @@ for the purposes of the AJAX comment editor #}
 ><img class="js-avatar gravatar"
     width="{{size}}" height="{{size}}"
     src="{{ user.get_avatar_url(size) }}"
-    title="{{user.username|escape}}"
-    alt="{% trans username=user.username|escape %}{{username}} gravatar image{% endtrans %}"
+    title="{{user.display_name|escape}}"
+    alt="{% trans username=user.display_name|escape %}{{username}}'s profile image{% endtrans %}"
 /></a>
 {% endfilter %}
 {%- endmacro -%}
@@ -588,7 +581,7 @@ for the purposes of the AJAX comment editor #}
     {% if user.website and (force_show or (not (user.is_blocked() or user.is_watched()))) %}
         <a
             href="{{user.website|escape}}"
-            title="{% trans username=user.username|escape, url=user.website|escape %}{{username}}'s website is {{url}}{% endtrans %}"
+            title="{% trans username=user.display_name|escape, url=user.website|escape %}{{username}}'s website is {{url}}{% endtrans %}"
             {% if user.can_have_strong_url() == False %}
             rel="nofollow"
             {% endif %}
@@ -708,7 +701,7 @@ for the purposes of the AJAX comment editor #}
     {% if user.new_response_count %}
     <a id='ab-responses' href="{{user.get_absolute_url()}}?sort=inbox&section=forum">
         <img
-            alt="{% trans username=user.username|escape %}responses for {{username}}{% endtrans %}"
+            alt="{% trans username=user.display_name|escape %}responses for {{username}}{% endtrans %}"
             src="{{ "/images/mail-envelope-full.png"|media }}"
             title="{% trans response_count=user.new_response_count %}you have {{response_count}} new response{% pluralize %}you have {{response_count}} new responses{% endtrans %}"
         />

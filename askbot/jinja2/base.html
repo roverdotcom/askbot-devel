@@ -1,11 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>{% block title %}{% endblock %} - {{ settings.APP_TITLE|escape }}</title>
+        <title>{% block title %}{% endblock %} | {{ settings.APP_TITLE|escape }}</title>
         {% block meta_description %}
         <meta name="description" content="{{settings.APP_DESCRIPTION|escape}}" />
         {% endblock %}
         {% include "meta/html_head_meta.html" %}
+        {% block meta_addl %}{% endblock %}
         {% if settings.SITE_FAVICON %}
         <link rel="shortcut icon" href="{{ settings.SITE_FAVICON|media }}" />
         {% endif %}
@@ -24,7 +25,8 @@
             {{ settings.CUSTOM_HTML_HEAD }}
         {% endif %}
     </head>
-    <body class="{% block body_class %}{% endblock %}{% if user_messages %} user-messages{% endif %}{% if page_class %} {{page_class}}{% endif %}{% if request.user.is_anonymous %} anon{% endif %} lang-{{ current_language_code }}">
+    <body class="new-design {% block body_class %}{% endblock %}{% if user_messages %} user-messages{% endif %}{% if page_class %} {{page_class}}{% endif %}{% if request.user.is_anonymous() %} anon{% endif %} lang-{{ current_language_code }}">
+        {% include "rover_assets/header.html" %}
         {% include "widgets/system_messages.html" %}
         {% include "debug_header.html" %}
         {% include "custom_header.html" ignore missing %}
@@ -40,7 +42,7 @@
             {{ settings.LEADING_SIDEBAR }}
         </div>
         {% endif %}
-        <div class="content-wrapper">
+        <div class="content-wrapper disclaimer-wrapper">
             {% block body %}
             {% endblock %}
         </div>

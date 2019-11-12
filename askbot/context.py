@@ -75,6 +75,7 @@ def application_settings(request):
     my_settings['USING_RUNSERVER'] = 'runserver' in sys.argv
     my_settings['ASKBOT_VERSION'] = askbot.get_version()
     my_settings['LOGIN_URL'] = url_utils.get_login_url()
+    my_settings['ROVER_LOGIN_URL'] = getattr(settings, 'ROVER_LOGIN_URL', '')
     my_settings['LOGOUT_URL'] = url_utils.get_logout_url()
 
     if my_settings['EDITOR_TYPE'] == 'tinymce':

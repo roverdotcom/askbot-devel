@@ -16,6 +16,5 @@
         />
     </form>
 {% else %}
-    <a href="{{ settings.LOGIN_URL }}?next={{ request.path|clean_login_url|escape }}"
-    >{% trans %}Hi there! Please sign in{% endtrans %}</a>
+    <a href="{{ settings.ROVER_LOGIN_URL }}?action=sign_in&amp;next={{ request.get_full_path()|urlencode }}">{% trans %}Hi there! Please sign in.{% endtrans %}</a>
 {% endif %}

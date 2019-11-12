@@ -98,6 +98,7 @@ def add_profile_properties(cls):
         'twitter_access_token',
         'twitter_handle',
         'website',
+        'display_name'
     )
     for name in names:
         add_profile_property(cls, name)
@@ -179,6 +180,17 @@ class UserProfile(models.Model):
                                 default=const.SHARE_NOTHING,
                                 choices=const.SOCIAL_SHARING_MODE_CHOICES
                             )
+
+    @property
+    def display_name(self):
+        """Return first name and last initial, separated by a space."""
+        display_name = self.auth_user_ptr.first_name
+        if self.auth_user_ptr.last_name:
+            display_name = ' '.join([
+                display_name,
+                self.auth_user_ptr.last_name[0] + '.'
+            ])
+        return display_name
 
     class Meta:
         app_label = 'askbot'

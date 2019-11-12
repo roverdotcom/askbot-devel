@@ -6,6 +6,10 @@
 {% import "macros.html" as macros %}
 <!-- users.html -->
 {% block title %}{% filter trim %}{% trans %}Users{% endtrans %}{% endfilter %}{% endblock %}
+{% block meta_description %}
+    {{ super() }}
+    <meta name="robots" content="noindex">
+{% endblock %}
 {% block forestyle %}
     <link rel="stylesheet" type="text/css" href="{{ '/wmd/wmd.css'|media }}" />
 {% endblock %}
@@ -30,7 +34,7 @@
                 ><span>{{ a_group.name|replace('-',' ')|escape }}</span></a>
             {% endfor %}
         {% else %#}
-            <span class="label">{% trans %}Sort by &raquo;{% endtrans %}</span>
+            <span class="label">{% trans %}Sort by{% endtrans %}</span>
         {#% endif %#}
             {% if settings.KARMA_MODE == 'public' %}
             <a
@@ -38,7 +42,7 @@
                 href="{{ request.path|escape }}?sort=reputation"
                 {% if tab_id == 'reputation' %}class="on"{% endif %}
                 title="{% trans %}see people with the highest reputation{% endtrans %}"
-            ><span>{% trans %}karma{% endtrans %}</span></a>
+            ><span>{% trans karma=settings.WORDS_KARMA_PLURAL|lower %}{{ karma }}{% endtrans %}</span></a>
             {% endif %}
             <a
                 id="sort_newest"

@@ -1,6 +1,9 @@
-{% extends "one_column_body.html" %}
+{% extends "two_column_body.html" %}
 <!-- user.html -->
 {% block title %}{% filter trim %}{{ page_title }}{% endfilter %}{% endblock %}
+{% block meta_addl %}
+    <meta name="robots" content="noindex, follow" />
+{% endblock %}
 {% block forestyle %}
 <style type="text/css">
     .history-table td { padding: 5px; }
@@ -8,11 +11,11 @@
 <link rel="stylesheet" type="text/css" href="{{ '/wmd/wmd.css'|media }}" />
 {% endblock %}
 {% block content %}
-    <h1 class="section-title">
+    <h3 class="section-title">
         {% filter trim %}
-        {% trans username=view_user.username|escape %}{{username}}'s profile{% endtrans %} - {% block profilesection %}{% endblock %}
+        {% trans username=view_user.display_name|escape %}{{username}}'s profile{% endtrans %}
         {% endfilter %}
-    </h1>
+    </h3>
     {% include "user_profile/user_tabs.html" %}
     <div>
         {% block usercontent %}
@@ -21,7 +24,7 @@
 {% endblock %}<!-- end user.html -->
 {% block endjs %}
     <script type="text/javascript">
-        askbot['data']['viewUserName'] = '{{ view_user.username|escape }}';
+        askbot['data']['viewUserName'] = '{{ view_user.display_name|escape }}';
         askbot['data']['viewUserId'] = {{ view_user.id }};
         askbot['data']['isExportingData'] = {{ exporting|as_js_bool }};
         askbot['urls']['edit_group_membership'] = '{{ url('edit_group_membership') }}';
@@ -68,8 +71,11 @@
 {% endblock %}
 {% block sidebar %}
     {% if 'SIDEBAR_PROFILE'|show_block_to(request.user) %}
-    <div class="box">
-        {{ settings.SIDEBAR_PROFILE }}
+    <div class="sidebar-content-block book-on-rover-sidebar">
+        <h6 class="landing-message-header">Book With Rover</h6>
+        <p class="landing-message">Premier pet insurance</p>
+        <p class="landing-message">Our reservation guarantee</p>
+        <p class="landing-message padding-bottom-x2">24/7 customer support</p>
     </div>
     {% endif %}
 {% endblock %}

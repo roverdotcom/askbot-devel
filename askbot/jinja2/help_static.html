@@ -1,57 +1,39 @@
 {% extends "two_column_body.html" %}
-{% block title %}{% trans %}Help{% endtrans %}{% endblock %}
+{% block title %}{% trans %}Getting Started{% endtrans %}{% endblock %}
+{% block meta_description %}
+    {{ super() }}
+    <meta name="robots" content="noindex">
+{% endblock %}
 {% block content %}
-<h1 class='section-title'>{% trans %}Help{% endtrans %}</h1>
-<p>
-    {% if request.user.is_authenticated %}
-        {% trans username = request.user.username|escape %}Welcome {{username}},{% endtrans %}
-    {% else %}
-        {% trans %}Welcome,{% endtrans %}
-    {% endif %}
-</p>
-<p>
-    {% trans %}Thank you for using {{app_name}}, here is how it works.{% endtrans %}
-</p>
-<a name="content"></a>
-<h2>{% trans %}How questions, answers and comments work{% endtrans %}</h2>
-<p>
-    {% trans %}This site is for asking and answering questions, not for open-ended discussions.{% endtrans %}
-    {% trans %}We encourage everyone to use “question” space for asking and “answer” for answering.{% endtrans %}
-</p>
-<p>
-    {% trans %}Despite that, each question and answer can be commented – 
-    the comments are good for the limited discussions.{% endtrans %}
-</p>
-<a name="search"></a>
-<h2>{% trans %}Please search before asking your questions{% endtrans %}</h2>
-<p>{% trans %}Type your question in the search bar and see whether a similar question has been asked before{% endtrans %}.
-</p>
-<p>{% trans %}Search has advanced capabilities:{% endtrans %}</p>
+<h1 class='section-title'>{% trans %}Getting Started{% endtrans %}</h1>
+<h2>Community Guidelines</h2>
+<em>Questions or answers that don’t meet the guidelines below are subject to removal by Rover.com moderators.</em>
+<h3>General conduct</h3>
+<p>This is a supportive and useful community for dog lovers. Be nice to one another and do your best to ask for and offer helpful tips. Use respectful language and refrain from putting others down.</p>
+<h3>Content</h3>
+<p>Posts in this community must be on the topic of dogs or pet sitting. We will not tolerate objectionable language or images.</p>
+<h3>Support questions</h3>
+<p>Looking for information on Rover.com? If you have a customer support inquiry, please visit our help center <a href="https://support.rover.com/hc/en-us">here</a>. This community does not offer customer support for Rover.com.</p>
+<h3>Spam and solicitation</h3>
+<p>Please refrain from spamming or soliciting in this community.</p>
+
+<p>Note: To report abuse, please click flag offensive under the question to alert our moderation team.</p>
+
+<h2>How it Works</h2>
+<h3>How questions, answers, and comments work</h3>
+<p>This is the perfect place to ask and answer questions about dogs. Please keep your questions and answers succinct and to the point—and do your best to avoid long or open-ended discussions. We encourage everyone to use “question” space for asking and “answer” space for answering.</p>
+<p>You’re also welcome to comment on any questions or answers. Your comments may be just what a Q&A needs to become helpful!</p>
+<h3>Please search before asking your questions</h3>
+<p>Good news: Your question may already have an answer! Type your question in the search bar to see whether a similar question has been asked before.</p>
 <ul>
-    <li>{% trans %}to search in title - enter [title: your text]{% endtrans %}</li>
-    <li>{% trans %}to search by tags - enter [tag: sometag] or #sometag{% endtrans %}</li>
-    <li>{% trans %}to search by user - enter [user: somename] or @somename or @"some name"{% endtrans %}</li>
+    <li>To search by title, enter [title: your text]</li>
+    <li>To search by tag, enter [tag: sometag] or #sometag</li>
+    <li>To search by user, enter [user: somename], @somename, or @"some name"</li>
 </ul>
-<p>{% trans %}In addition, it is possible to click on tags to add them to the search query.{% endtrans %}
-{% if settings.TAG_SEARCH_INPUT_ENABLED %}
-    {% trans %}Finally, a separate tag search box is available in the side bar of the main page, where the search tags can be entered as well{% endtrans %}
-{% endif %}
-</p>
-<p>{% trans %}<em>Important!!!</em> All search terms are combined with a logical "AND" expression - to narrow the search by adding new terms.{% endtrans %}</p>
-<a name="voting"></a>
-<h2>{% trans %}Voting{% endtrans %}</h2>
-<p>
-    {% trans %}Voting in {{app_name}} helps to select best answers and thank most helpful users.{% endtrans %}
-</p>
-<p>
-    {% trans %}Please vote when you find helpful information,
-    it really helps the {{app_name}} community.{% endtrans %}
-</p>
-<a name="other"></a>
-<h2>{% trans %}Other topics{% endtrans %}</h2>
-<p>
-    {% trans %}You can @mention users anywhere in the text to point their attention,
-    follow users and conversations and report inappropriate content by flagging it.{% endtrans %}
-</p>
-<p>{% trans %}Enjoy.{% endtrans %}</p>
+<p>It’s also possible to click on specific <a href="{% url 'tags' %}">tags</a> to help search for questions and answers related to your preferred topic.</p>
+<h3>Voting</h3>
+<p>Voting helps us select the best answers and thank our most helpful contributors. Please vote when you find useful information! It’s a huge help for our community.</p>
+<h3>Other topics</h3>
+<p>You can mention other users anywhere in the text by adding @ before their username. You’re also encouraged to follow users and conversations. Please report any inappropriate discussions by flagging them for our moderator.</p>
+<p>Thank you! Enjoy the community!</p>
 {% endblock %}

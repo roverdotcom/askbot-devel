@@ -69,7 +69,6 @@ from askbot.utils.functions import generate_random_key
 from askbot.utils.decorators import auto_now_timestamp
 from askbot.utils.decorators import reject_forbidden_phrases
 from askbot.utils.markup import URL_RE
-from askbot.utils.slug import slugify, ascii_slugify
 from askbot.utils.transaction import defer_celery_task
 from askbot.utils.translation import get_language
 from askbot.utils.html import replace_links_with_text
@@ -253,7 +252,7 @@ def user_get_profile_url(self, profile_section=None, language_code=None):
 
     url = reverse(
             'user_profile',
-            kwargs={'id': self.id, 'slug': slugify(self.username)}
+            kwargs={'id': self.id}
         )
 
     if language_code and cur_lang != language_code:
@@ -924,7 +923,8 @@ def user_assert_can_post_text(self, text):
         min_rep = askbot_settings.MIN_REP_TO_SUGGEST_LINK
         if self.is_authenticated and self.reputation < min_rep:
             message = _(
-                'Could not post, because your karma is insufficient to publish links'
+                'Could not post: you do not have enough {} to publish'
+                ' links'.format(askbot_settings.WORDS_KARMA_PLURAL)
             )
             raise django_exceptions.PermissionDenied(message)
 
@@ -2804,7 +2804,7 @@ def user_get_languages(self):
 
 def get_profile_link(self, text=None):
     profile_link = '<a href="%s">%s</a>' \
-        % (self.get_profile_url(), escape(text or self.username))
+        % (self.get_profile_url(), escape(text or self.display_name))
 
     return mark_safe(profile_link)
 
@@ -2970,8 +2970,17 @@ def user_get_groups_membership_info(self, groups):
 def user_get_karma_summary(self):
     """returns human readable sentence about
     status of user's karma"""
-    return _("%(username)s karma is %(reputation)s") % \
-            {'username': self.username, 'reputation': self.reputation}
+    return _(
+        "{username} has {reputation} {karma}".format(
+            username=self.display_name,
+            reputation=self.reputation,
+            karma=ungettext(
+                askbot_settings.WORDS_KARMA_SINGULAR,
+                askbot_settings.WORDS_KARMA_PLURAL,
+                self.reputation
+            )
+        )
+    )
 
 def user_get_badge_summary(self):
     """returns human readable sentence about
@@ -3010,7 +3019,7 @@ def user_get_badge_summary(self):
         badge_str = ', '.join(badge_bits)
         badge_str = _('%(item1)s and %(item2)s') % \
                     {'item1': badge_str, 'item2': last_bit}
-    return _("%(user)s has %(badges)s") % {'user': self.username, 'badges':badge_str}
+    return _("%(user)s has %(badges)s") % {'user': self.display_name, 'badges':badge_str}
 
 #series of methods for user vote-type commands
 #same call signature func(self, post, timestamp=None, cancel=None)
@@ -3156,10 +3165,17 @@ def user_fix_html_links(self, text):
         result = replace_links_with_text(text)
         if result != text:
             message = ungettext(
-                'At least %d karma point is required to post links',
-                'At least %d karma points is required to post links',
+                'At least {} {} is required to post links',
+                'At least {} {} are required to post links',
                 askbot_settings.MIN_REP_TO_INSERT_LINK
-            ) % askbot_settings.MIN_REP_TO_INSERT_LINK
+            ).format(
+                askbot_settings.MIN_REP_TO_INSERT_LINK,
+                ungettext(
+                    askbot_settings.WORDS_KARMA_SINGULAR,
+                    askbot_settings.WORDS_KARMA_PLURAL,
+                    askbot_settings.MIN_REP_TO_INSERT_LINK
+                )
+            )
             self.message_set.create(message=message)
             return result
     return text

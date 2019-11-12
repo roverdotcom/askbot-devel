@@ -8,7 +8,7 @@
       href="{{user.get_absolute_url()}}?sort=reputation"
       data-fetch-data-url="{{ url('get_perms_data') }}"
       data-url="{{ url('get_perms_data') }}"
-    >{% trans %}karma:{% endtrans %} {{ user.get_localized_profile().get_reputation() }}</a>{% if settings.BADGES_MODE == 'public' and have_badges %}, {% endif -%}
+    >{% trans karma=settings.WORDS_KARMA_PLURAL|lower %}{{ karma }}{% endtrans %}: {{user.reputation}}</a>{% if badges_mode == 'public' and have_badges %}, {% endif -%}
     {%- endif -%}
     {%- if settings.BADGES_MODE == 'public' and have_badges -%}
       <a class="user-micro-info"

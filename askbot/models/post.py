@@ -10,6 +10,7 @@ from django.db import models
 from django.utils import html as html_utils
 from django.utils import timezone
 from django.utils.text import Truncator
+from django.utils.html import escape
 from django.utils.translation import activate as activate_language
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
@@ -2306,7 +2307,7 @@ class PostRevision(models.Model):
 
         if self.post.is_question():
             return sanitize_html(self.QUESTION_REVISION_TEMPLATE_NO_TAGS % {
-                'title': self.title,
+                'title': escape(self.title),
                 'html': sanitized_html
             })
         else:
@@ -2314,7 +2315,7 @@ class PostRevision(models.Model):
 
     def get_snippet(self, max_length=120):
         """a little simpler than as Post.get_snippet"""
-        return '<p>' + html_utils.strip_tags(self.html)[:max_length] + '</p>'
+        return '<p>' + escape(html_utils.strip_tags(self.html)[:max_length] + '...') + '</p>'
 
 
 class PostFlagReason(models.Model):
