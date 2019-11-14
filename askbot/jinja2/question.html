@@ -1,6 +1,6 @@
 {% extends "two_column_body.html" %}
 <!-- question.html -->
-{% block title %}{% filter trim %}{{ question.get_question_title()|truncate(34)|escape }}{% endsfilter %}{% endblock %}
+{% block title %}{% filter trim %}{{ question.get_question_title()|truncate(34)|escape }}{% endfilter %}{% endblock %}
 {% block meta_description %}
     <meta name="description" content="{{ question.summary|striptags|escape }}" />
 {% endblock %}

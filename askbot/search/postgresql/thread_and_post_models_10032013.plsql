@@ -51,7 +51,7 @@ $$
 DECLARE
     onerow record;
 BEGIN
-    FOR onerow IN SELECT * FROM pg_proc WHERE proname = 'concat_tsvectors' AND proisagg LOOP
+    FOR onerow IN SELECT * FROM pg_proc WHERE proname = 'concat_tsvectors' AND prokind = 'a' LOOP
         DROP AGGREGATE concat_tsvectors(tsvector);
     END LOOP;
     CREATE AGGREGATE concat_tsvectors (

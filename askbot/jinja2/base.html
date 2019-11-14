@@ -51,7 +51,7 @@
         {% elif settings.FOOTER_MODE == 'customize' %}
             {{ settings.CUSTOM_FOOTER }}
         {% endif %}
-        {% include "custom_footer.html" ignore missing %}
+        {% include "rover_assets/footer.html" ignore missing %}
         {% include "meta/bottom_scripts.html" %}
         {% filter trim %}
         <div class="js-templates" style="display: none;">
