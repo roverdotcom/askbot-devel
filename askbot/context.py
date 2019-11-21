@@ -43,11 +43,6 @@ def application_settings(request):
                                         'ASKBOT_CSS_DEVEL',
                                         False
                                     )
-    my_settings['USE_LOCAL_FONTS'] = getattr(
-                                        settings,
-                                        'ASKBOT_USE_LOCAL_FONTS',
-                                        False
-                                    )
     my_settings['CSRF_COOKIE_NAME'] = settings.CSRF_COOKIE_NAME
     my_settings['DEBUG'] = settings.DEBUG
     my_settings['USING_RUNSERVER'] = 'runserver' in sys.argv
@@ -64,7 +59,7 @@ def application_settings(request):
     my_settings['LOGOUT_REDIRECT_URL'] = url_utils.get_logout_redirect_url()
     my_settings['USE_ASKBOT_LOGIN_SYSTEM'] = 'askbot.deps.django_authopenid' \
         in settings.INSTALLED_APPS
-    
+
     current_language = get_language()
 
     #for some languages we will start searching for shorter words
@@ -72,7 +67,7 @@ def application_settings(request):
         #we need to open the search box and show info message about
         #the japanese lang search
         min_search_word_length = 1
-    else:   
+    else:
         min_search_word_length = my_settings['MIN_SEARCH_WORD_LENGTH']
 
     context = {
