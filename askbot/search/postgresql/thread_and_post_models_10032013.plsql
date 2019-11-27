@@ -1,14 +1,14 @@
 /* function testing for existence of a column in a table
    if table does not exists, function will return "false" */
 CREATE OR REPLACE FUNCTION column_exists(colname text, tablename text)
-RETURNS boolean AS 
+RETURNS boolean AS
 $$
 DECLARE
     q text;
     onerow record;
 BEGIN
 
-    q = 'SELECT attname FROM pg_attribute WHERE attrelid = ( SELECT oid FROM pg_class WHERE relname = '''||tablename||''') AND attname = '''||colname||''''; 
+    q = 'SELECT attname FROM pg_attribute WHERE attrelid = ( SELECT oid FROM pg_class WHERE relname = '''||tablename||''') AND attname = '''||colname||'''';
 
     FOR onerow IN EXECUTE q LOOP
         RETURN true;
@@ -51,7 +51,7 @@ $$
 DECLARE
     onerow record;
 BEGIN
-    FOR onerow IN SELECT * FROM pg_proc WHERE proname = 'concat_tsvectors' AND prokind = 'a' LOOP
+    FOR onerow IN SELECT * FROM pg_proc WHERE proname = 'concat_tsvectors' AND proisagg LOOP
         DROP AGGREGATE concat_tsvectors(tsvector);
     END LOOP;
     CREATE AGGREGATE concat_tsvectors (
@@ -181,7 +181,7 @@ DECLARE
     onerow record;
 BEGIN
     query = 'SELECT concat_tsvectors(text_search_vector), count(*) FROM askbot_post' ||
-        ' WHERE parent_id=' || parent_id || 
+        ' WHERE parent_id=' || parent_id ||
         ' AND post_type=''comment'' AND deleted=false';
     FOR onerow IN EXECUTE query LOOP
         IF onerow.count = 0 THEN
@@ -258,7 +258,7 @@ BEGIN
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
-CREATE TRIGGER thread_search_vector_update_trigger 
+CREATE TRIGGER thread_search_vector_update_trigger
 BEFORE UPDATE ON askbot_thread FOR EACH ROW EXECUTE PROCEDURE thread_update_trigger();
 
 CREATE OR REPLACE FUNCTION thread_insert_trigger() RETURNS trigger AS
@@ -282,7 +282,7 @@ BEGIN
                                         new.post_type,
                                         new.language_code
                                     );
-        UPDATE askbot_thread SET text_search_vector=text_search_vector || 
+        UPDATE askbot_thread SET text_search_vector=text_search_vector ||
                                     new.text_search_vector WHERE id=new.thread_id;
     ELSIF new.post_type = 'comment' THEN
         new.text_search_vector = get_post_tsv(
@@ -296,7 +296,7 @@ BEGIN
     return new;
 END;
 $$ LANGUAGE plpgsql;
-CREATE TRIGGER post_search_vector_update_trigger 
+CREATE TRIGGER post_search_vector_update_trigger
 BEFORE INSERT OR UPDATE ON askbot_post FOR EACH ROW EXECUTE PROCEDURE post_trigger();
 
 COMMIT;
