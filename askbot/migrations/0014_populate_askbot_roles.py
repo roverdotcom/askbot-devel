@@ -13,12 +13,14 @@ ADMIN_ROLES = ('terminate_accounts',
 def populate_askbot_roles(apps, schema_editor):
     Role = apps.get_model('askbot', 'Role')
     UserProfile = apps.get_model('askbot', 'UserProfile')
+    User = apps.get_model('auth', "User")
     profiles = UserProfile.objects.filter(status__in=('m', 'd'))
     count = profiles.count()
     message = 'Assigning roles {} to the admins and the moderators'
     message = message.format(', '.join(MOD_ROLES + ADMIN_ROLES))
     for profile in ProgressBar(profiles.iterator(), count, message):
-        user = profile.auth_user_ptr
+        user = User.objects.get(askbot_profile__auth_user_ptr=profile.pk)
+
         if profile.status == 'd':
             for role in ADMIN_ROLES + MOD_ROLES:
                 Role.objects.create(user=user, role=role)
