@@ -5,7 +5,7 @@
         <iframe scrolling="no" src="{{ settings.NEW_FEATURE_HEADER_URL }}" class="new-feature-header"></iframe>
     </div>
 {% endif %}
-<div 
+<div
     id="header"
     class="{% if settings.SHOW_LOGO %}with-logo{% else %}without-logo{% endif %} header-custom"
 >
@@ -19,7 +19,7 @@
         {% endif %}
         <div class="margin-v-x5 padding-bottom-x5">
             <div id="userToolsNav">
-                {% include "widgets/user_navigation.html" %}
+                {% include "askrover/widgets/user_navigation.html" %}
             </div>
             {% if settings.SHOW_LOGO %}
                 {% include "widgets/logo.html" %}
