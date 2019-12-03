@@ -72,7 +72,8 @@
 {% if not users.object_list %}
     <p><span>{% trans %}No users found.{% endtrans %}</span></p>
 {% endif %}
-{{ macros.user_list(users.object_list) }}
+{% from "macros.html" import user_list with context %}
+{{ user_list(users.object_list) }}
 <div class="pager">
     {{ macros.paginator(paginator_context) }}
 </div>

@@ -1,5 +1,6 @@
 {% extends "user_profile/user.html" %}
 {% import "macros.html" as macros %}
+{% from "macros.html" import user_list with context %}
 <!-- user_network.html -->
 {% block profilesection %}
     {% trans %}network{% endtrans %}
@@ -8,11 +9,11 @@
     {% if followed_users or followers %}
         {% if followers %}
             <h3>{% trans count=followers|length %}Followed by {{count}} person{% pluralize count %}Followed by {{count}} people{% endtrans %}</h3>
-            {{ macros.user_list(followers) }}
+            {{ user_list(followers) }}
         {% endif %}
         {% if followed_users %}
             <h3>{% trans count=followed_users|length %}Following {{count}} person{% pluralize count %}Following {{count}} people{% endtrans %}</h3>
-            {{ macros.user_list(followed_users) }}
+            {{ user_list(followed_users) }}
         {% endif %}
     {% else %}
         <div class="padding-x6">

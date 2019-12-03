@@ -147,7 +147,6 @@ def moderation_queue(request):
     memo_set = memo_set.select_related(
                     'activity',
                     'activity__content_type',
-                    'activity__object_id',
                     'activity__question__thread',
                     'activity__user'
                 ).order_by(
