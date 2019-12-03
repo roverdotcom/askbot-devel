@@ -21,6 +21,7 @@ from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.template.loader import get_template
 from django.template import Context, RequestContext
 import simplejson
+from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.html import escape
 from django.utils.translation import ugettext as _
@@ -65,6 +66,8 @@ from askbot.models import Post, Vote
 #index, unanswered, questions, search, tag
 #should we dry them up?
 #related topics - information drill-down, search refinement
+from askrover.utils import user_card_service_container_html
+
 
 def index(request):#generates front page - shows listing of questions sorted in various ways
     """index view mapped to the root url of the Q&A site
@@ -686,7 +689,6 @@ def question(request, id):#refactor - long subroutine. display question body, an
 
     extra = context.get_extra('ASKBOT_QUESTION_PAGE_EXTRA_CONTEXT', request, data)
     data.update(extra)
-
     return render(request, 'question.html', data)
     #print 'generated in ', timezone.now() - before
     #return res
