@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name='Role',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('role', models.CharField(max_length=64, choices=[(b'recv_feedback', b"Receive user's feedback email"), (b'recv_mod_alerts', b'Receive moderation alert emails'), (b'terminate_accounts', b'Terminate user accounts'), (b'download_user_data', b'Download user data')])),
+                ('role', models.CharField(max_length=64, choices=[('recv_feedback', "Receive user's feedback email") , ('recv_mod_alerts', 'Receive moderation alert emails'), ('terminate_accounts', 'Terminate user accounts'), ('download_user_data', 'Download user data')])),
                 ('user', models.ForeignKey(related_name='askbot_roles', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='emailfeedsetting',
             name='frequency',
-            field=models.CharField(default=b'n', max_length=8, choices=[(b'i', 'instantly'), (b'd', 'daily'), (b'w', 'weekly'), (b'n', 'never')]),
+            field=models.CharField(default='n', max_length=8, choices=[('i', 'instantly'), ('d', 'daily'), ('w', 'weekly'), ('n', 'never')]),
         ),
         migrations.AlterUniqueTogether(
             name='role',

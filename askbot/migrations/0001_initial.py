@@ -21,11 +21,11 @@ class Migration(migrations.Migration):
             name='Activity',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('activity_type', models.SmallIntegerField(db_index=True, choices=[(1, 'asked a question'), (2, 'answered a question'), (3, 'commented question'), (4, 'commented answer'), (5, 'edited question'), (6, 'edited answer'), (7, 'received badge'), (8, 'marked best answer'), (9, 'upvoted'), (10, 'downvoted'), (11, 'canceled vote'), (12, 'deleted question'), (13, 'deleted answer'), (14, 'marked offensive'), (15, 'updated tags'), (16, 'selected favorite'), (17, 'completed user profile'), (18, 'email update sent to user'), (29, 'a post was shared'), (20, 'reminder about unanswered questions sent'), (21, 'reminder about accepting the best answer sent'), (19, 'mentioned in the post'), (22, 'created tag description'), (23, 'updated tag description'), (24, 'made a new post'), (25, 'made an edit'), (26, 'created post reject reason'), (27, 'updated post reject reason'), (28, b'sent email address validation message'), (31, b'sent moderation alert')])),
+                ('activity_type', models.SmallIntegerField(db_index=True, choices=[(1, 'asked a question'), (2, 'answered a question'), (3, 'commented question'), (4, 'commented answer'), (5, 'edited question'), (6, 'edited answer'), (7, 'received badge'), (8, 'marked best answer'), (9, 'upvoted'), (10, 'downvoted'), (11, 'canceled vote'), (12, 'deleted question'), (13, 'deleted answer'), (14, 'marked offensive'), (15, 'updated tags'), (16, 'selected favorite'), (17, 'completed user profile'), (18, 'email update sent to user'), (29, 'a post was shared'), (20, 'reminder about unanswered questions sent'), (21, 'reminder about accepting the best answer sent'), (19, 'mentioned in the post'), (22, 'created tag description'), (23, 'updated tag description'), (24, 'made a new post'), (25, 'made an edit'), (26, 'created post reject reason'), (27, 'updated post reject reason'), (28, 'sent email address validation message'), (31, 'sent moderation alert')])),
                 ('active_at', models.DateTimeField(default=django.utils.timezone.now)),
                 ('object_id', models.PositiveIntegerField(db_index=True)),
                 ('is_auditted', models.BooleanField(default=False)),
-                ('summary', models.TextField(default=b'')),
+                ('summary', models.TextField(default='')),
                 ('content_type', models.ForeignKey(to='contenttypes.ContentType', on_delete=models.CASCADE)),
             ],
             options={
@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
             name='ActivityAuditStatus',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('status', models.SmallIntegerField(default=0, choices=[(0, b'new'), (1, b'seen')])),
+                ('status', models.SmallIntegerField(default=0, choices=[(0, 'new'), (1, 'seen')])),
                 ('activity', models.ForeignKey(to='askbot.Activity', on_delete=models.CASCADE)),
             ],
             options={
@@ -154,8 +154,8 @@ class Migration(migrations.Migration):
             name='EmailFeedSetting',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('feed_type', models.CharField(max_length=16, choices=[(b'q_all', 'Entire forum'), (b'q_ask', 'Questions that I asked'), (b'q_ans', 'Questions that I answered'), (b'q_sel', 'Individually selected questions'), (b'm_and_c', 'Mentions and comment responses')])),
-                ('frequency', models.CharField(default=b'n', max_length=8, choices=[(b'i', 'instantly'), (b'd', 'daily'), (b'w', 'weekly'), (b'n', 'no email')])),
+                ('feed_type', models.CharField(max_length=16, choices=[('q_all', 'Entire forum'), ('q_ask', 'Questions that I asked'), ('q_ans', 'Questions that I answered'), ('q_sel', 'Individually selected questions'), ('m_and_c', 'Mentions and comment responses')])),
+                ('frequency', models.CharField(default='n', max_length=8, choices=[('i', 'instantly'), ('d', 'daily'), ('w', 'weekly'), ('n', 'no email')])),
                 ('added_at', models.DateTimeField(auto_now_add=True)),
                 ('reported_at', models.DateTimeField(null=True)),
             ],
@@ -180,11 +180,11 @@ class Migration(migrations.Migration):
                 ('group_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='auth.Group', on_delete=models.CASCADE)),
                 ('logo_url', models.URLField(null=True)),
                 ('moderate_email', models.BooleanField(default=True)),
-                ('moderate_answers_to_enquirers', models.BooleanField(default=False, help_text=b'If true, answers to outsiders questions will be shown to the enquirers only when selected by the group moderators.')),
-                ('openness', models.SmallIntegerField(default=2, choices=[(0, b'open'), (1, b'moderated'), (2, b'closed')])),
-                ('preapproved_emails', models.TextField(default=b'', null=True, blank=True)),
-                ('preapproved_email_domains', models.TextField(default=b'', null=True, blank=True)),
-                ('is_vip', models.BooleanField(default=False, help_text=b'Check to make members of this group site moderators')),
+                ('moderate_answers_to_enquirers', models.BooleanField(default=False, help_text='If true, answers to outsiders questions will be shown to the enquirers only when selected by the group moderators.')),
+                ('openness', models.SmallIntegerField(default=2, choices=[(0, 'open'), (1, 'moderated'), (2, 'closed')])),
+                ('preapproved_emails', models.TextField(default='', null=True, blank=True)),
+                ('preapproved_email_domains', models.TextField(default='', null=True, blank=True)),
+                ('is_vip', models.BooleanField(default=False, help_text='Check to make members of this group site moderators')),
                 ('read_only', models.BooleanField(default=False)),
             ],
             options={
@@ -196,7 +196,7 @@ class Migration(migrations.Migration):
             name='GroupMembership',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('level', models.SmallIntegerField(default=1, choices=[(0, b'pending'), (1, b'full')])),
+                ('level', models.SmallIntegerField(default=1, choices=[(0, 'pending'), (1, 'full')])),
                 ('group', models.ForeignKey(related_name='user_membership', to='auth.Group', on_delete=models.CASCADE)),
             ],
             options={
@@ -207,10 +207,10 @@ class Migration(migrations.Migration):
             name='ImportedObjectInfo',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('old_id', models.IntegerField(help_text=b'Old object id in the source database')),
-                ('new_id', models.IntegerField(help_text=b'New object id in the current database')),
-                ('model', models.CharField(default=b'', help_text=b'dotted python path to model', max_length=255)),
-                ('extra_info', picklefield.fields.PickledObjectField(help_text=b'to hold dictionary for various data', editable=False)),
+                ('old_id', models.IntegerField(help_text='Old object id in the source database')),
+                ('new_id', models.IntegerField(help_text='New object id in the current database')),
+                ('model', models.CharField(default='', help_text='dotted python path to model', max_length=255)),
+                ('extra_info', picklefield.fields.PickledObjectField(help_text='to hold dictionary for various data', editable=False)),
             ],
             options={
             },
@@ -220,7 +220,7 @@ class Migration(migrations.Migration):
             name='ImportRun',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('command', models.TextField(default=b'')),
+                ('command', models.TextField(default='')),
                 ('timestamp', models.DateTimeField(auto_now_add=True)),
             ],
             options={
@@ -231,7 +231,7 @@ class Migration(migrations.Migration):
             name='MarkedTag',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('reason', models.CharField(max_length=16, choices=[(b'good', 'interesting'), (b'bad', 'ignored'), (b'subscribed', 'subscribed')])),
+                ('reason', models.CharField(max_length=16, choices=[('good', 'interesting'), ('bad', 'ignored'), ('subscribed', 'subscribed')])),
             ],
             options={
             },
@@ -274,7 +274,7 @@ class Migration(migrations.Migration):
                 ('last_edited_at', models.DateTimeField(null=True, blank=True)),
                 ('html', models.TextField(null=True)),
                 ('text', models.TextField(null=True)),
-                ('language_code', models.CharField(default=b'en', max_length=16, choices=[(b'af', b'Afrikaans'), (b'ar', b'Arabic'), (b'ast', b'Asturian'), (b'az', b'Azerbaijani'), (b'bg', b'Bulgarian'), (b'be', b'Belarusian'), (b'bn', b'Bengali'), (b'br', b'Breton'), (b'bs', b'Bosnian'), (b'ca', b'Catalan'), (b'cs', b'Czech'), (b'cy', b'Welsh'), (b'da', b'Danish'), (b'de', b'German'), (b'el', b'Greek'), (b'en', b'English'), (b'en-au', b'Australian English'), (b'en-gb', b'British English'), (b'eo', b'Esperanto'), (b'es', b'Spanish'), (b'es-ar', b'Argentinian Spanish'), (b'es-mx', b'Mexican Spanish'), (b'es-ni', b'Nicaraguan Spanish'), (b'es-ve', b'Venezuelan Spanish'), (b'et', b'Estonian'), (b'eu', b'Basque'), (b'fa', b'Persian'), (b'fi', b'Finnish'), (b'fr', b'French'), (b'fy', b'Frisian'), (b'ga', b'Irish'), (b'gl', b'Galician'), (b'he', b'Hebrew'), (b'hi', b'Hindi'), (b'hr', b'Croatian'), (b'hu', b'Hungarian'), (b'ia', b'Interlingua'), (b'id', b'Indonesian'), (b'io', b'Ido'), (b'is', b'Icelandic'), (b'it', b'Italian'), (b'ja', b'Japanese'), (b'ka', b'Georgian'), (b'kk', b'Kazakh'), (b'km', b'Khmer'), (b'kn', b'Kannada'), (b'ko', b'Korean'), (b'lb', b'Luxembourgish'), (b'lt', b'Lithuanian'), (b'lv', b'Latvian'), (b'mk', b'Macedonian'), (b'ml', b'Malayalam'), (b'mn', b'Mongolian'), (b'mr', b'Marathi'), (b'my', b'Burmese'), (b'nb', b'Norwegian Bokmal'), (b'ne', b'Nepali'), (b'nl', b'Dutch'), (b'nn', b'Norwegian Nynorsk'), (b'os', b'Ossetic'), (b'pa', b'Punjabi'), (b'pl', b'Polish'), (b'pt', b'Portuguese'), (b'pt-br', b'Brazilian Portuguese'), (b'ro', b'Romanian'), (b'ru', b'Russian'), (b'sk', b'Slovak'), (b'sl', b'Slovenian'), (b'sq', b'Albanian'), (b'sr', b'Serbian'), (b'sr-latn', b'Serbian Latin'), (b'sv', b'Swedish'), (b'sw', b'Swahili'), (b'ta', b'Tamil'), (b'te', b'Telugu'), (b'th', b'Thai'), (b'tr', b'Turkish'), (b'tt', b'Tatar'), (b'udm', b'Udmurt'), (b'uk', b'Ukrainian'), (b'ur', b'Urdu'), (b'vi', b'Vietnamese'), (b'zh-cn', b'Simplified Chinese'), (b'zh-hans', b'Simplified Chinese'), (b'zh-hant', b'Traditional Chinese'), (b'zh-tw', b'Traditional Chinese')])),
+                ('language_code', models.CharField(default='en', max_length=16, choices=[('af', 'Afrikaans'), ('ar', 'Arabic'), ('ast', 'Asturian'), ('az', 'Azerbaijani'), ('bg', 'Bulgarian'), ('be', 'Belarusian'), ('bn', 'Bengali'), ('br', 'Breton'), ('bs', 'Bosnian'), ('ca', 'Catalan'), ('cs', 'Czech'), ('cy', 'Welsh'), ('da', 'Danish'), ('de', 'German'), ('el', 'Greek'), ('en', 'English'), ('en-au', 'Australian English'), ('en-gb', 'British English'), ('eo', 'Esperanto'), ('es', 'Spanish'), ('es-ar', 'Argentinian Spanish'), ('es-mx', 'Mexican Spanish'), ('es-ni', 'Nicaraguan Spanish'), ('es-ve', 'Venezuelan Spanish'), ('et', 'Estonian'), ('eu', 'Basque'), ('fa', 'Persian'), ('fi', 'Finnish'), ('fr', 'French'), ('fy', 'Frisian'), ('ga', 'Irish'), ('gl', 'Galician'), ('he', 'Hebrew'), ('hi', 'Hindi'), ('hr', 'Croatian'), ('hu', 'Hungarian'), ('ia', 'Interlingua'), ('id', 'Indonesian'), ('io', 'Ido'), ('is', 'Icelandic'), ('it', 'Italian'), ('ja', 'Japanese'), ('ka', 'Georgian'), ('kk', 'Kazakh'), ('km', 'Khmer'), ('kn', 'Kannada'), ('ko', 'Korean'), ('lb', 'Luxembourgish'), ('lt', 'Lithuanian'), ('lv', 'Latvian'), ('mk', 'Macedonian'), ('ml', 'Malayalam'), ('mn', 'Mongolian'), ('mr', 'Marathi'), ('my', 'Burmese'), ('nb', 'Norwegian Bokmal'), ('ne', 'Nepali'), ('nl', 'Dutch'), ('nn', 'Norwegian Nynorsk'), ('os', 'Ossetic'), ('pa', 'Punjabi'), ('pl', 'Polish'), ('pt', 'Portuguese'), ('pt-br', 'Brazilian Portuguese'), ('ro', 'Romanian'), ('ru', 'Russian'), ('sk', 'Slovak'), ('sl', 'Slovenian'), ('sq', 'Albanian'), ('sr', 'Serbian'), ('sr-latn', 'Serbian Latin'), ('sv', 'Swedish'), ('sw', 'Swahili'), ('ta', 'Tamil'), ('te', 'Telugu'), ('th', 'Thai'), ('tr', 'Turkish'), ('tt', 'Tatar'), ('udm', 'Udmurt'), ('uk', 'Ukrainian'), ('ur', 'Urdu'), ('vi', 'Vietnamese'), ('zh-cn', 'Simplified Chinese'), ('zh-hans', 'Simplified Chinese'), ('zh-hant', 'Traditional Chinese'), ('zh-tw', 'Traditional Chinese')])),
                 ('summary', models.TextField(null=True)),
                 ('is_anonymous', models.BooleanField(default=False)),
             ],
@@ -306,10 +306,10 @@ class Migration(migrations.Migration):
                 ('approved_at', models.DateTimeField(null=True, blank=True)),
                 ('by_email', models.BooleanField(default=False)),
                 ('email_address', models.EmailField(max_length=75, null=True, blank=True)),
-                ('title', models.CharField(default=b'', max_length=300, blank=True)),
-                ('tagnames', models.CharField(default=b'', max_length=125, blank=True)),
+                ('title', models.CharField(default='', max_length=300, blank=True)),
+                ('tagnames', models.CharField(default='', max_length=125, blank=True)),
                 ('is_anonymous', models.BooleanField(default=False)),
-                ('ip_addr', models.GenericIPAddressField(default=b'0.0.0.0', db_index=True)),
+                ('ip_addr', models.GenericIPAddressField(default='0.0.0.0', db_index=True)),
             ],
             options={
                 'ordering': ('-revision',),
@@ -346,8 +346,8 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=100)),
                 ('question_number', models.PositiveIntegerField(default=7)),
                 ('tagnames', models.CharField(max_length=50, verbose_name='tags')),
-                ('search_query', models.CharField(default=b'', max_length=50, null=True, blank=True)),
-                ('order_by', models.CharField(default=b'-added_at', max_length=18, choices=[(b'-added_at', 'date descendant'), (b'added_at', 'date ascendant'), (b'-last_activity_at', 'most recently active'), (b'last_activity_at', 'least recently active'), (b'-answer_count', 'more responses'), (b'answer_count', 'fewer responses'), (b'-points', 'more votes'), (b'points', 'less votes')])),
+                ('search_query', models.CharField(default='', max_length=50, null=True, blank=True)),
+                ('order_by', models.CharField(default='-added_at', max_length=18, choices=[('-added_at', 'date descendant'), ('added_at', 'date ascendant'), ('-last_activity_at', 'most recently active'), ('last_activity_at', 'least recently active'), ('-answer_count', 'more responses'), ('answer_count', 'fewer responses'), ('-points', 'more votes'), ('points', 'less votes')])),
                 ('style', models.TextField(default=b"\n@import url('http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:300,400,700');\nbody {\n    overflow: hidden;\n}\n\n#container {\n    width: 200px;\n    height: 350px;\n}\nul {\n    list-style: none;\n    padding: 5px;\n    margin: 5px;\n}\nli {\n    border-bottom: #CCC 1px solid;\n    padding-bottom: 5px;\n    padding-top: 5px;\n}\nli:last-child {\n    border: none;\n}\na {\n    text-decoration: none;\n    color: #464646;\n    font-family: 'Yanone Kaffeesatz', sans-serif;\n    font-size: 15px;\n}\n", verbose_name='css for the widget', blank=True)),
                 ('group', models.ForeignKey(blank=True, to='askbot.Group', null=True, on_delete=models.CASCADE)),
             ],
@@ -360,7 +360,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('address', models.CharField(unique=True, max_length=25)),
-                ('reply_action', models.CharField(default=b'auto_answer_or_comment', max_length=32, choices=[(b'post_answer', b'Post an answer'), (b'post_comment', b'Post a comment'), (b'replace_content', b'Edit post'), (b'append_content', b'Append to post'), (b'auto_answer_or_comment', b'Answer or comment, depending on the size of post'), (b'validate_email', b'Validate email and record signature')])),
+                ('reply_action', models.CharField(default='auto_answer_or_comment', max_length=32, choices=[('post_answer', 'Post an answer'), ('post_comment', 'Post a comment'), ('replace_content', 'Edit post'), ('append_content', 'Append to post'), ('auto_answer_or_comment', 'Answer or comment, depending on the size of post'), ('validate_email', 'Validate email and record signature')])),
                 ('allowed_from_email', models.EmailField(max_length=150)),
                 ('used_at', models.DateTimeField(default=None, null=True)),
                 ('post', models.ForeignKey(related_name='reply_addresses', to='askbot.Post', null=True, on_delete=models.CASCADE)),
@@ -378,7 +378,7 @@ class Migration(migrations.Migration):
                 ('positive', models.SmallIntegerField(default=0)),
                 ('negative', models.SmallIntegerField(default=0)),
                 ('reputed_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('reputation_type', models.SmallIntegerField(choices=[(1, b'gain_by_upvoted'), (2, b'gain_by_answer_accepted'), (3, b'gain_by_accepting_answer'), (4, b'gain_by_downvote_canceled'), (5, b'gain_by_canceling_downvote'), (-1, b'lose_by_canceling_accepted_answer'), (-2, b'lose_by_accepted_answer_cancled'), (-3, b'lose_by_downvoted'), (-4, b'lose_by_flagged'), (-5, b'lose_by_downvoting'), (-6, b'lose_by_flagged_lastrevision_3_times'), (-7, b'lose_by_flagged_lastrevision_5_times'), (-8, b'lose_by_upvote_canceled'), (10, b'assigned_by_moderator')])),
+                ('reputation_type', models.SmallIntegerField(choices=[(1, 'gain_by_upvoted'), (2, 'gain_by_answer_accepted'), (3, 'gain_by_accepting_answer'), (4, 'gain_by_downvote_canceled'), (5, 'gain_by_canceling_downvote'), (-1, 'lose_by_canceling_accepted_answer'), (-2, 'lose_by_accepted_answer_cancled'), (-3, 'lose_by_downvoted'), (-4, 'lose_by_flagged'), (-5, 'lose_by_downvoting'), (-6, 'lose_by_flagged_lastrevision_3_times'), (-7, 'lose_by_flagged_lastrevision_5_times'), (-8, 'lose_by_upvote_canceled'), (10, 'assigned_by_moderator')])),
                 ('reputation', models.IntegerField(default=1)),
                 ('comment', models.CharField(max_length=128, null=True)),
                 ('question', models.ForeignKey(blank=True, to='askbot.Post', null=True, on_delete=models.CASCADE)),
@@ -393,7 +393,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=255)),
-                ('language_code', models.CharField(default=b'en', max_length=16, choices=[(b'af', b'Afrikaans'), (b'ar', b'Arabic'), (b'ast', b'Asturian'), (b'az', b'Azerbaijani'), (b'bg', b'Bulgarian'), (b'be', b'Belarusian'), (b'bn', b'Bengali'), (b'br', b'Breton'), (b'bs', b'Bosnian'), (b'ca', b'Catalan'), (b'cs', b'Czech'), (b'cy', b'Welsh'), (b'da', b'Danish'), (b'de', b'German'), (b'el', b'Greek'), (b'en', b'English'), (b'en-au', b'Australian English'), (b'en-gb', b'British English'), (b'eo', b'Esperanto'), (b'es', b'Spanish'), (b'es-ar', b'Argentinian Spanish'), (b'es-mx', b'Mexican Spanish'), (b'es-ni', b'Nicaraguan Spanish'), (b'es-ve', b'Venezuelan Spanish'), (b'et', b'Estonian'), (b'eu', b'Basque'), (b'fa', b'Persian'), (b'fi', b'Finnish'), (b'fr', b'French'), (b'fy', b'Frisian'), (b'ga', b'Irish'), (b'gl', b'Galician'), (b'he', b'Hebrew'), (b'hi', b'Hindi'), (b'hr', b'Croatian'), (b'hu', b'Hungarian'), (b'ia', b'Interlingua'), (b'id', b'Indonesian'), (b'io', b'Ido'), (b'is', b'Icelandic'), (b'it', b'Italian'), (b'ja', b'Japanese'), (b'ka', b'Georgian'), (b'kk', b'Kazakh'), (b'km', b'Khmer'), (b'kn', b'Kannada'), (b'ko', b'Korean'), (b'lb', b'Luxembourgish'), (b'lt', b'Lithuanian'), (b'lv', b'Latvian'), (b'mk', b'Macedonian'), (b'ml', b'Malayalam'), (b'mn', b'Mongolian'), (b'mr', b'Marathi'), (b'my', b'Burmese'), (b'nb', b'Norwegian Bokmal'), (b'ne', b'Nepali'), (b'nl', b'Dutch'), (b'nn', b'Norwegian Nynorsk'), (b'os', b'Ossetic'), (b'pa', b'Punjabi'), (b'pl', b'Polish'), (b'pt', b'Portuguese'), (b'pt-br', b'Brazilian Portuguese'), (b'ro', b'Romanian'), (b'ru', b'Russian'), (b'sk', b'Slovak'), (b'sl', b'Slovenian'), (b'sq', b'Albanian'), (b'sr', b'Serbian'), (b'sr-latn', b'Serbian Latin'), (b'sv', b'Swedish'), (b'sw', b'Swahili'), (b'ta', b'Tamil'), (b'te', b'Telugu'), (b'th', b'Thai'), (b'tr', b'Turkish'), (b'tt', b'Tatar'), (b'udm', b'Udmurt'), (b'uk', b'Ukrainian'), (b'ur', b'Urdu'), (b'vi', b'Vietnamese'), (b'zh-cn', b'Simplified Chinese'), (b'zh-hans', b'Simplified Chinese'), (b'zh-hant', b'Traditional Chinese'), (b'zh-tw', b'Traditional Chinese')])),
+                ('language_code', models.CharField(default='en', max_length=16, choices=[('af', 'Afrikaans'), ('ar', 'Arabic'), ('ast', 'Asturian'), ('az', 'Azerbaijani'), ('bg', 'Bulgarian'), ('be', 'Belarusian'), ('bn', 'Bengali'), ('br', 'Breton'), ('bs', 'Bosnian'), ('ca', 'Catalan'), ('cs', 'Czech'), ('cy', 'Welsh'), ('da', 'Danish'), ('de', 'German'), ('el', 'Greek'), ('en', 'English'), ('en-au', 'Australian English'), ('en-gb', 'British English'), ('eo', 'Esperanto'), ('es', 'Spanish'), ('es-ar', 'Argentinian Spanish'), ('es-mx', 'Mexican Spanish'), ('es-ni', 'Nicaraguan Spanish'), ('es-ve', 'Venezuelan Spanish'), ('et', 'Estonian'), ('eu', 'Basque'), ('fa', 'Persian'), ('fi', 'Finnish'), ('fr', 'French'), ('fy', 'Frisian'), ('ga', 'Irish'), ('gl', 'Galician'), ('he', 'Hebrew'), ('hi', 'Hindi'), ('hr', 'Croatian'), ('hu', 'Hungarian'), ('ia', 'Interlingua'), ('id', 'Indonesian'), ('io', 'Ido'), ('is', 'Icelandic'), ('it', 'Italian'), ('ja', 'Japanese'), ('ka', 'Georgian'), ('kk', 'Kazakh'), ('km', 'Khmer'), ('kn', 'Kannada'), ('ko', 'Korean'), ('lb', 'Luxembourgish'), ('lt', 'Lithuanian'), ('lv', 'Latvian'), ('mk', 'Macedonian'), ('ml', 'Malayalam'), ('mn', 'Mongolian'), ('mr', 'Marathi'), ('my', 'Burmese'), ('nb', 'Norwegian Bokmal'), ('ne', 'Nepali'), ('nl', 'Dutch'), ('nn', 'Norwegian Nynorsk'), ('os', 'Ossetic'), ('pa', 'Punjabi'), ('pl', 'Polish'), ('pt', 'Portuguese'), ('pt-br', 'Brazilian Portuguese'), ('ro', 'Romanian'), ('ru', 'Russian'), ('sk', 'Slovak'), ('sl', 'Slovenian'), ('sq', 'Albanian'), ('sr', 'Serbian'), ('sr-latn', 'Serbian Latin'), ('sv', 'Swedish'), ('sw', 'Swahili'), ('ta', 'Tamil'), ('te', 'Telugu'), ('th', 'Thai'), ('tr', 'Turkish'), ('tt', 'Tatar'), ('udm', 'Udmurt'), ('uk', 'Ukrainian'), ('ur', 'Urdu'), ('vi', 'Vietnamese'), ('zh-cn', 'Simplified Chinese'), ('zh-hans', 'Simplified Chinese'), ('zh-hant', 'Traditional Chinese'), ('zh-tw', 'Traditional Chinese')])),
                 ('status', models.SmallIntegerField(default=1)),
                 ('used_count', models.PositiveIntegerField(default=0)),
                 ('deleted', models.BooleanField(default=False)),
@@ -414,7 +414,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('auto_rename_count', models.IntegerField(default=0)),
                 ('last_auto_rename_at', models.DateTimeField(auto_now=True)),
-                ('language_code', models.CharField(default=b'en', max_length=16, choices=[(b'af', b'Afrikaans'), (b'ar', b'Arabic'), (b'ast', b'Asturian'), (b'az', b'Azerbaijani'), (b'bg', b'Bulgarian'), (b'be', b'Belarusian'), (b'bn', b'Bengali'), (b'br', b'Breton'), (b'bs', b'Bosnian'), (b'ca', b'Catalan'), (b'cs', b'Czech'), (b'cy', b'Welsh'), (b'da', b'Danish'), (b'de', b'German'), (b'el', b'Greek'), (b'en', b'English'), (b'en-au', b'Australian English'), (b'en-gb', b'British English'), (b'eo', b'Esperanto'), (b'es', b'Spanish'), (b'es-ar', b'Argentinian Spanish'), (b'es-mx', b'Mexican Spanish'), (b'es-ni', b'Nicaraguan Spanish'), (b'es-ve', b'Venezuelan Spanish'), (b'et', b'Estonian'), (b'eu', b'Basque'), (b'fa', b'Persian'), (b'fi', b'Finnish'), (b'fr', b'French'), (b'fy', b'Frisian'), (b'ga', b'Irish'), (b'gl', b'Galician'), (b'he', b'Hebrew'), (b'hi', b'Hindi'), (b'hr', b'Croatian'), (b'hu', b'Hungarian'), (b'ia', b'Interlingua'), (b'id', b'Indonesian'), (b'io', b'Ido'), (b'is', b'Icelandic'), (b'it', b'Italian'), (b'ja', b'Japanese'), (b'ka', b'Georgian'), (b'kk', b'Kazakh'), (b'km', b'Khmer'), (b'kn', b'Kannada'), (b'ko', b'Korean'), (b'lb', b'Luxembourgish'), (b'lt', b'Lithuanian'), (b'lv', b'Latvian'), (b'mk', b'Macedonian'), (b'ml', b'Malayalam'), (b'mn', b'Mongolian'), (b'mr', b'Marathi'), (b'my', b'Burmese'), (b'nb', b'Norwegian Bokmal'), (b'ne', b'Nepali'), (b'nl', b'Dutch'), (b'nn', b'Norwegian Nynorsk'), (b'os', b'Ossetic'), (b'pa', b'Punjabi'), (b'pl', b'Polish'), (b'pt', b'Portuguese'), (b'pt-br', b'Brazilian Portuguese'), (b'ro', b'Romanian'), (b'ru', b'Russian'), (b'sk', b'Slovak'), (b'sl', b'Slovenian'), (b'sq', b'Albanian'), (b'sr', b'Serbian'), (b'sr-latn', b'Serbian Latin'), (b'sv', b'Swedish'), (b'sw', b'Swahili'), (b'ta', b'Tamil'), (b'te', b'Telugu'), (b'th', b'Thai'), (b'tr', b'Turkish'), (b'tt', b'Tatar'), (b'udm', b'Udmurt'), (b'uk', b'Ukrainian'), (b'ur', b'Urdu'), (b'vi', b'Vietnamese'), (b'zh-cn', b'Simplified Chinese'), (b'zh-hans', b'Simplified Chinese'), (b'zh-hant', b'Traditional Chinese'), (b'zh-tw', b'Traditional Chinese')])),
+                ('language_code', models.CharField(default='en', max_length=16, choices=[('af', 'Afrikaans'), ('ar', 'Arabic'), ('ast', 'Asturian'), ('az', 'Azerbaijani'), ('bg', 'Bulgarian'), ('be', 'Belarusian'), ('bn', 'Bengali'), ('br', 'Breton'), ('bs', 'Bosnian'), ('ca', 'Catalan'), ('cs', 'Czech'), ('cy', 'Welsh'), ('da', 'Danish'), ('de', 'German'), ('el', 'Greek'), ('en', 'English'), ('en-au', 'Australian English'), ('en-gb', 'British English'), ('eo', 'Esperanto'), ('es', 'Spanish'), ('es-ar', 'Argentinian Spanish'), ('es-mx', 'Mexican Spanish'), ('es-ni', 'Nicaraguan Spanish'), ('es-ve', 'Venezuelan Spanish'), ('et', 'Estonian'), ('eu', 'Basque'), ('fa', 'Persian'), ('fi', 'Finnish'), ('fr', 'French'), ('fy', 'Frisian'), ('ga', 'Irish'), ('gl', 'Galician'), ('he', 'Hebrew'), ('hi', 'Hindi'), ('hr', 'Croatian'), ('hu', 'Hungarian'), ('ia', 'Interlingua'), ('id', 'Indonesian'), ('io', 'Ido'), ('is', 'Icelandic'), ('it', 'Italian'), ('ja', 'Japanese'), ('ka', 'Georgian'), ('kk', 'Kazakh'), ('km', 'Khmer'), ('kn', 'Kannada'), ('ko', 'Korean'), ('lb', 'Luxembourgish'), ('lt', 'Lithuanian'), ('lv', 'Latvian'), ('mk', 'Macedonian'), ('ml', 'Malayalam'), ('mn', 'Mongolian'), ('mr', 'Marathi'), ('my', 'Burmese'), ('nb', 'Norwegian Bokmal'), ('ne', 'Nepali'), ('nl', 'Dutch'), ('nn', 'Norwegian Nynorsk'), ('os', 'Ossetic'), ('pa', 'Punjabi'), ('pl', 'Polish'), ('pt', 'Portuguese'), ('pt-br', 'Brazilian Portuguese'), ('ro', 'Romanian'), ('ru', 'Russian'), ('sk', 'Slovak'), ('sl', 'Slovenian'), ('sq', 'Albanian'), ('sr', 'Serbian'), ('sr-latn', 'Serbian Latin'), ('sv', 'Swedish'), ('sw', 'Swahili'), ('ta', 'Tamil'), ('te', 'Telugu'), ('th', 'Thai'), ('tr', 'Turkish'), ('tt', 'Tatar'), ('udm', 'Udmurt'), ('uk', 'Ukrainian'), ('ur', 'Urdu'), ('vi', 'Vietnamese'), ('zh-cn', 'Simplified Chinese'), ('zh-hans', 'Simplified Chinese'), ('zh-hant', 'Traditional Chinese'), ('zh-tw', 'Traditional Chinese')])),
             ],
             options={
             },
@@ -430,7 +430,7 @@ class Migration(migrations.Migration):
                 ('favourite_count', models.PositiveIntegerField(default=0)),
                 ('answer_count', models.PositiveIntegerField(default=0)),
                 ('last_activity_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('language_code', models.CharField(default=b'en', max_length=16, choices=[(b'af', b'Afrikaans'), (b'ar', b'Arabic'), (b'ast', b'Asturian'), (b'az', b'Azerbaijani'), (b'bg', b'Bulgarian'), (b'be', b'Belarusian'), (b'bn', b'Bengali'), (b'br', b'Breton'), (b'bs', b'Bosnian'), (b'ca', b'Catalan'), (b'cs', b'Czech'), (b'cy', b'Welsh'), (b'da', b'Danish'), (b'de', b'German'), (b'el', b'Greek'), (b'en', b'English'), (b'en-au', b'Australian English'), (b'en-gb', b'British English'), (b'eo', b'Esperanto'), (b'es', b'Spanish'), (b'es-ar', b'Argentinian Spanish'), (b'es-mx', b'Mexican Spanish'), (b'es-ni', b'Nicaraguan Spanish'), (b'es-ve', b'Venezuelan Spanish'), (b'et', b'Estonian'), (b'eu', b'Basque'), (b'fa', b'Persian'), (b'fi', b'Finnish'), (b'fr', b'French'), (b'fy', b'Frisian'), (b'ga', b'Irish'), (b'gl', b'Galician'), (b'he', b'Hebrew'), (b'hi', b'Hindi'), (b'hr', b'Croatian'), (b'hu', b'Hungarian'), (b'ia', b'Interlingua'), (b'id', b'Indonesian'), (b'io', b'Ido'), (b'is', b'Icelandic'), (b'it', b'Italian'), (b'ja', b'Japanese'), (b'ka', b'Georgian'), (b'kk', b'Kazakh'), (b'km', b'Khmer'), (b'kn', b'Kannada'), (b'ko', b'Korean'), (b'lb', b'Luxembourgish'), (b'lt', b'Lithuanian'), (b'lv', b'Latvian'), (b'mk', b'Macedonian'), (b'ml', b'Malayalam'), (b'mn', b'Mongolian'), (b'mr', b'Marathi'), (b'my', b'Burmese'), (b'nb', b'Norwegian Bokmal'), (b'ne', b'Nepali'), (b'nl', b'Dutch'), (b'nn', b'Norwegian Nynorsk'), (b'os', b'Ossetic'), (b'pa', b'Punjabi'), (b'pl', b'Polish'), (b'pt', b'Portuguese'), (b'pt-br', b'Brazilian Portuguese'), (b'ro', b'Romanian'), (b'ru', b'Russian'), (b'sk', b'Slovak'), (b'sl', b'Slovenian'), (b'sq', b'Albanian'), (b'sr', b'Serbian'), (b'sr-latn', b'Serbian Latin'), (b'sv', b'Swedish'), (b'sw', b'Swahili'), (b'ta', b'Tamil'), (b'te', b'Telugu'), (b'th', b'Thai'), (b'tr', b'Turkish'), (b'tt', b'Tatar'), (b'udm', b'Udmurt'), (b'uk', b'Ukrainian'), (b'ur', b'Urdu'), (b'vi', b'Vietnamese'), (b'zh-cn', b'Simplified Chinese'), (b'zh-hans', b'Simplified Chinese'), (b'zh-hant', b'Traditional Chinese'), (b'zh-tw', b'Traditional Chinese')])),
+                ('language_code', models.CharField(default='en', max_length=16, choices=[('af', 'Afrikaans'), ('ar', 'Arabic'), ('ast', 'Asturian'), ('az', 'Azerbaijani'), ('bg', 'Bulgarian'), ('be', 'Belarusian'), ('bn', 'Bengali'), ('br', 'Breton'), ('bs', 'Bosnian'), ('ca', 'Catalan'), ('cs', 'Czech'), ('cy', 'Welsh'), ('da', 'Danish'), ('de', 'German'), ('el', 'Greek'), ('en', 'English'), ('en-au', 'Australian English'), ('en-gb', 'British English'), ('eo', 'Esperanto'), ('es', 'Spanish'), ('es-ar', 'Argentinian Spanish'), ('es-mx', 'Mexican Spanish'), ('es-ni', 'Nicaraguan Spanish'), ('es-ve', 'Venezuelan Spanish'), ('et', 'Estonian'), ('eu', 'Basque'), ('fa', 'Persian'), ('fi', 'Finnish'), ('fr', 'French'), ('fy', 'Frisian'), ('ga', 'Irish'), ('gl', 'Galician'), ('he', 'Hebrew'), ('hi', 'Hindi'), ('hr', 'Croatian'), ('hu', 'Hungarian'), ('ia', 'Interlingua'), ('id', 'Indonesian'), ('io', 'Ido'), ('is', 'Icelandic'), ('it', 'Italian'), ('ja', 'Japanese'), ('ka', 'Georgian'), ('kk', 'Kazakh'), ('km', 'Khmer'), ('kn', 'Kannada'), ('ko', 'Korean'), ('lb', 'Luxembourgish'), ('lt', 'Lithuanian'), ('lv', 'Latvian'), ('mk', 'Macedonian'), ('ml', 'Malayalam'), ('mn', 'Mongolian'), ('mr', 'Marathi'), ('my', 'Burmese'), ('nb', 'Norwegian Bokmal'), ('ne', 'Nepali'), ('nl', 'Dutch'), ('nn', 'Norwegian Nynorsk'), ('os', 'Ossetic'), ('pa', 'Punjabi'), ('pl', 'Polish'), ('pt', 'Portuguese'), ('pt-br', 'Brazilian Portuguese'), ('ro', 'Romanian'), ('ru', 'Russian'), ('sk', 'Slovak'), ('sl', 'Slovenian'), ('sq', 'Albanian'), ('sr', 'Serbian'), ('sr-latn', 'Serbian Latin'), ('sv', 'Swedish'), ('sw', 'Swahili'), ('ta', 'Tamil'), ('te', 'Telugu'), ('th', 'Thai'), ('tr', 'Turkish'), ('tt', 'Tatar'), ('udm', 'Udmurt'), ('uk', 'Ukrainian'), ('ur', 'Urdu'), ('vi', 'Vietnamese'), ('zh-cn', 'Simplified Chinese'), ('zh-hans', 'Simplified Chinese'), ('zh-hant', 'Traditional Chinese'), ('zh-tw', 'Traditional Chinese')])),
                 ('closed', models.BooleanField(default=False)),
                 ('closed_at', models.DateTimeField(null=True, blank=True)),
                 ('close_reason', models.SmallIntegerField(blank=True, null=True, choices=[(1, 'duplicate question'), (2, 'question is off-topic or not relevant'), (3, 'too subjective and argumentative'), (4, 'not a real question'), (5, 'the question is answered, right answer was accepted'), (6, 'question is not relevant or outdated'), (7, 'question contains offensive or malicious remarks'), (8, 'spam or advertising'), (9, 'too localized')])),
@@ -448,7 +448,7 @@ class Migration(migrations.Migration):
             name='ThreadToGroup',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('visibility', models.SmallIntegerField(default=1, choices=[(0, b'show only published responses'), (1, b'show all responses')])),
+                ('visibility', models.SmallIntegerField(default=1, choices=[(0, 'show only published responses'), (1, 'show all responses')])),
                 ('group', models.ForeignKey(to='askbot.Group', on_delete=models.CASCADE)),
                 ('thread', models.ForeignKey(to='askbot.Thread', on_delete=models.CASCADE)),
             ],
@@ -462,13 +462,13 @@ class Migration(migrations.Migration):
             fields=[
                 ('auth_user_ptr', models.OneToOneField(parent_link=True, related_name='askbot_profile', primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
                 ('avatar_urls', jsonfield.fields.JSONField(default={})),
-                ('status', models.CharField(default=b'w', max_length=2, choices=[(b'd', 'administrator'), (b'm', 'moderator'), (b'a', 'approved'), (b'w', 'watched'), (b's', 'suspended'), (b'b', 'blocked')])),
+                ('status', models.CharField(default='w', max_length=2, choices=[('d', 'administrator'), ('m', 'moderator'), ('a', 'approved'), ('w', 'watched'), ('s', 'suspended'), ('b', 'blocked')])),
                 ('is_fake', models.BooleanField(default=False)),
                 ('email_isvalid', models.BooleanField(default=False)),
                 ('email_key', models.CharField(max_length=32, null=True)),
                 ('reputation', models.PositiveIntegerField(default=1)),
                 ('gravatar', models.CharField(max_length=32)),
-                ('avatar_type', models.CharField(default=b'n', max_length=1, choices=[(b'n', 'Default avatar'), (b'g', 'Gravatar'), (b'a', 'Uploaded Avatar')])),
+                ('avatar_type', models.CharField(default='n', max_length=1, choices=[('n', 'Default avatar'), ('g', 'Gravatar'), ('a', 'Uploaded Avatar')])),
                 ('gold', models.SmallIntegerField(default=0)),
                 ('silver', models.SmallIntegerField(default=0)),
                 ('bronze', models.SmallIntegerField(default=0)),
@@ -490,9 +490,9 @@ class Migration(migrations.Migration):
                 ('new_response_count', models.IntegerField(default=0)),
                 ('seen_response_count', models.IntegerField(default=0)),
                 ('consecutive_days_visit_count', models.IntegerField(default=0)),
-                ('languages', models.CharField(default=b'en', max_length=128)),
-                ('twitter_access_token', models.CharField(default=b'', max_length=256)),
-                ('twitter_handle', models.CharField(default=b'', max_length=32)),
+                ('languages', models.CharField(default='en', max_length=128)),
+                ('twitter_access_token', models.CharField(default='', max_length=256)),
+                ('twitter_handle', models.CharField(default='', max_length=32)),
                 ('social_sharing_mode', models.IntegerField(default=0, choices=[(0, 'disable sharing'), (1, 'my posts'), (2, 'all posts')])),
             ],
             options={
@@ -578,7 +578,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='tag',
             name='suggested_by',
-            field=models.ManyToManyField(help_text=b'Works only for suggested tags for tag moderation', related_name='suggested_tags', to=settings.AUTH_USER_MODEL),
+            field=models.ManyToManyField(help_text='Works only for suggested tags for tag moderation', related_name='suggested_tags', to=settings.AUTH_USER_MODEL),
             preserve_default=True,
         ),
         migrations.AddField(

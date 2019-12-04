@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('openid_url', models.CharField(max_length=255)),
-                ('provider_name', models.CharField(default=b'unknown', max_length=64)),
+                ('provider_name', models.CharField(default='unknown', max_length=64)),
                 ('last_used_timestamp', models.DateTimeField(null=True)),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],

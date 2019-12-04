@@ -15,13 +15,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='localizeduserprofile',
             name='is_claimed',
-            field=models.BooleanField(default=False, help_text=b'True, if user selects this language', db_index=True),
+            field=models.BooleanField(default=False, help_text='True, if user selects this language', db_index=True),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='localizeduserprofile',
             name='language_code',
-            field=askbot.models.fields.LanguageCodeField(default=b'en', max_length=16, db_index=True, choices=[(b'en', b'English'), (b'de', b'Deutsch')]),
+            field=askbot.models.fields.LanguageCodeField(default='en', max_length=16, db_index=True, choices=[('en', 'English'), ('de', 'Deutsch')]),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='userprofile',
             name='primary_language',
-            field=models.CharField(default=b'en', max_length=16, choices=[(b'en', b'English'), (b'de', b'Deutsch')]),
+            field=models.CharField(default='en', max_length=16, choices=[('en', 'English'), ('de', 'Deutsch')]),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='userprofile',
             name='status',
-            field=models.CharField(default=b'w', max_length=2, db_index=True, choices=[(b'd', 'administrator'), (b'm', 'moderator'), (b'a', 'approved'), (b'w', 'watched'), (b's', 'suspended'), (b'b', 'blocked')]),
+            field=models.CharField(default='w', max_length=2, db_index=True, choices=[('d', 'administrator'), ('m', 'moderator'), ('a', 'approved'), ('w', 'watched'), ('s', 'suspended'), ('b', 'blocked')]),
             preserve_default=True,
         ),
     ]
