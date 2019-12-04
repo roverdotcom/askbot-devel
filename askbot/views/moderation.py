@@ -198,7 +198,7 @@ def moderation_queue(request):
         'active_tab': 'users',
         'page_class': 'moderation-queue-page',
         'post_reject_reasons': reject_reasons,
-        'messages' : queue,
+        'messages_queue': queue
     }
     template = 'moderation/queue.html'
     return render(request, template, data)

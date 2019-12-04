@@ -5,7 +5,7 @@
     </div>
     <div id="reject-edit-modal-add-new">{# create new reject reason #}
         <div class="modal-body">
-            <input 
+            <input
                 class="reject-reason-title tipped-input blank"
                 type="text"
                 value="{% trans %}1) Enter a brief description of why you are rejecting the post.{% endtrans %}"
@@ -24,7 +24,7 @@
         <div class="modal-body">
             <ul class="select-box">
                 {% for reason in post_reject_reasons %}
-                <li 
+                <li
                     class="select-box-item"
                     data-original-title="{{reason.details.text|escape}}"
                     data-item-id="{{reason.id}}"

@@ -44,7 +44,7 @@
     {% include "moderation/manage_reject_reasons_dialog.html" %}
     <div class="action-status"><span></span></div>
     <div class="messages">
-    {% for message in messages %}
+    {% for message in messages_queue %}
         <div
             class="message{% if message.is_new %} highlight new{% else %} seen{% endif %}"
             data-message-id="{{ message.id }}"

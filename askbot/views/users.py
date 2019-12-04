@@ -1095,7 +1095,7 @@ def user_responses(request, user, context):
             user.display_name,
             'Responses'
         ),
-        'messages' : filtered_message_list,
+        'messages_list': filtered_message_list,
     }
     context.update(data)
     template = 'user_inbox/responses.html'
