@@ -11,10 +11,10 @@
             <a class="sel-all">{% trans %}all{% endtrans %}</a> |
             <a class="sel-none">{% trans %}none{% endtrans %}</a>
         </div>#}
-        <a class="btn approve-posts">{% trans %}approve posts{% endtrans %}</a>
-        <a class="btn approve-posts-users" id="re_approve_posts_users">{% trans %}approve posts and users{% endtrans %}</a>
+        <a class="btn approve-posts rover-btn rover-btn-default">{% trans %}approve posts{% endtrans %}</a>
+        <a class="btn approve-posts-users rover-btn rover-btn-default" id="re_approve_posts_users">{% trans %}approve posts and users{% endtrans %}</a>
         <div class="btn-group dropdown decline-reasons-menu">
-            <span class="btn btn-info dropdown-toggle">
+            <span class="btn btn-info dropdown-toggle rover-btn rover-btn-default" style="margin-top: -12px">
                 <span>{% trans %}decline and explain why{% endtrans %}</span>
                 <span class="caret"></span>
             </span>
@@ -29,12 +29,12 @@
                 </li>
             </ul>
         </div>
-        <a class="btn btn-danger decline-block-users">{% trans %}block spammers{% endtrans %}</a>
+        <a class="btn btn-danger decline-block-users rover-btn">{% trans %}block spammers{% endtrans %}</a>
         {% if settings.IP_MODERATION_ENABLED %}
         <a class="btn btn-danger decline-block-users-ips">{% trans %}block spammers and IPs{% endtrans %}</a>
         {% endif %}
     </div>
-    <ul class="mod-queue-info">
+    <ul class="mod-queue-info padding-top-x2 padding-bottom-x2">
         <li>Approval of users removes them from the queue and approves ALL of their posts.</li>
         <li>Blocking spammers denies them future access and deletes ALL their posts.</li>
         {% if settings.IP_MODERATION_ENABLED %}
