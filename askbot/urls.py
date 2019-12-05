@@ -4,6 +4,8 @@ askbot url configuraion file
 import os.path
 from django.conf import settings
 from django.contrib import admin
+from livesettings.views import export_as_python
+
 try:
     from django.conf.urls import url, include
 except ImportError:
@@ -703,7 +705,11 @@ urlpatterns = [
         name='askbot_jsi18n'
     ),
     service_url(r'^private-messages/', include('askbot.deps.group_messaging.urls')),
-    url(r'^settings/', include('livesettings.urls')),
+
+    url(r'^settings/$', views.livesettings.site_settings, name='satchmo_site_settings'),
+    url(r'^settings/export/$', export_as_python, name='settings_export'),
+    url(r'^settings/(?P<group>[^/]+)/$', views.livesettings.group_settings, name='livesettings_group'),
+
     url(r'^preview-emails/$', views.emails.list_emails, name='list_emails'),
     url(r'^preview-emails/(?P<slug>.+)/$', views.emails.preview_email, name='preview_email'),
 
