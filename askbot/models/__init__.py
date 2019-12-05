@@ -276,7 +276,7 @@ def user_get_unsubscribe_url(self):
 def user_get_subscriptions_url(self):
     return reverse(
             'user_subscriptions',
-            kwargs={'id': self.id, 'slug': slugify(self.username)}
+            kwargs={'id': self.id}
         )
 
 
