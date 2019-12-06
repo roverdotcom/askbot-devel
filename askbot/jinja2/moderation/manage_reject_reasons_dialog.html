@@ -1,4 +1,4 @@
-<div class="modal" style="display:none" id="manage-reject-reasons-modal">
+<div class="modal reasons-modal" style="display:none" id="manage-reject-reasons-modal">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">x</a>
         <h3>{% trans %}Manage post flag/reject reasons{% endtrans %}</h3>
@@ -15,8 +15,8 @@
         </div>
         <div class="modal-footer">
             <div class="btn-toolbar">
-                <a class="btn save-reason">{% trans %}Save reason{% endtrans %}</a>
-                <a class="btn">{% trans %}Cancel{% endtrans %}</a>
+                <a class="btn save-reason rover-btn rover-btn-default">{% trans %}Save reason{% endtrans %}</a>
+                <a class="btn rover-btn rover-btn-danger">{% trans %}Cancel{% endtrans %}</a>
             </div>
         </div>
     </div>
@@ -34,9 +34,9 @@
         </div>
         <div class="modal-footer">
             <div class="btn-toolbar">
-                <a class="btn edit-this-reason" style="display: none;">{% trans %}Edit this reason{% endtrans %}</a>
-                <a class="btn delete-this-reason" style="display: none;">{% trans %}Delete this reason{% endtrans %}</a>
-                <a class="btn add-new-reason">{% trans %}Add a new reason{% endtrans %}</a>
+                <a class="btn edit-this-reason rover-btn rover-btn-default" style="display: none;">{% trans %}Edit this reason{% endtrans %}</a>
+                <a class="btn delete-this-reason rover-btn rover-btn-default" style="display: none;">{% trans %}Delete this reason{% endtrans %}</a>
+                <a class="btn add-new-reason rover-btn rover-btn-default">{% trans %}Add a new reason{% endtrans %}</a>
             </div>
         </div>
     </div>
