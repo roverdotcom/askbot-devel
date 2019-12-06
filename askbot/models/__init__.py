@@ -1,4 +1,6 @@
 from askbot import startup_procedures
+from askbot.utils.slug import ascii_slugify
+
 startup_procedures.run()
 
 from django.contrib.auth.models import User
@@ -134,8 +136,8 @@ def get_users_by_text_query(search_query, users_query_set = None):
             return postgresql.run_user_search(users_query_set, search_query)
         else:
             return users_query_set.filter(
-                models.Q(username__icontains=search_query) |
-                models.Q(localized_askbot_profiles__about__icontains=search_query)
+                Q(username__icontains=search_query) |
+                Q(localized_askbot_profiles__about__icontains=search_query)
             )
         #if askbot.get_database_engine_name().endswith('mysql') \
         #    and mysql.supports_full_text_search():
@@ -2740,8 +2742,8 @@ def user_get_tag_filtered_questions(self, questions = None):
 
         selected_by_wildcards = Tag.objects.get_by_wildcards(wk)
 
-        tag_filter = models.Q(thread__tags__in = list(selected_tags)) \
-                    | models.Q(thread__tags__in = list(selected_by_wildcards))
+        tag_filter = Q(thread__tags__in = list(selected_tags)) \
+                    | Q(thread__tags__in = list(selected_by_wildcards))
 
         return questions.filter( tag_filter ).distinct()
     else:

@@ -149,7 +149,6 @@ class BaseEmail(object):
                 raise_on_failure=raise_on_failure,
                 attachments=attachments or self.get_attachments()
             )
-            LOG.warning("SUCCESFULLY SENT EMAIL")
         else:
             LOG.warning(
                 'Attempting to send disabled email "%s"',
