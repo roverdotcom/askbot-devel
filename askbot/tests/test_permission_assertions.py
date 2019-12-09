@@ -2,7 +2,6 @@ import datetime
 from django.test.client import Client
 from django.urls import reverse
 from django.conf import settings
-from django.test import TestCase
 from django.core import exceptions
 from django.utils import timezone
 from askbot.tests import utils

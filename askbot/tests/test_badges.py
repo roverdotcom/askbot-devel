@@ -178,18 +178,18 @@ class BadgeTests(AskbotTestCase):
 
         url = question.get_absolute_url()
 
-        self.client.login(method='force', user_id=self.u2.id)
+        self.client.force_login(self.u2)
         self.client.get(url)
         self.assert_have_badge('popular-question', recipient=self.u1)
 
-        self.client.login(method='force', user_id=self.u3.id)
+        self.client.force_login(self.u3)
         self.client.get(url)
         self.assert_have_badge('popular-question', recipient=self.u1, expected_count=1)
 
         question2 = self.post_question(user=self.u1)
         question2.thread.view_count = min_views - 1
         question2.thread.save()
-        self.client.login(method='force', user_id=self.u2.id)
+        self.client.force_login(self.u2)
         self.client.get(question2.get_absolute_url())
         self.assert_have_badge('popular-question', recipient=self.u1, expected_count=2)
 
@@ -504,7 +504,7 @@ class BadgeTests(AskbotTestCase):
         self.u1.consecutive_days_visit_count = prev_visit_count
         self.u1.save()
         self.assert_have_badge('enthusiast', self.u1, 0)
-        self.client.login(method = 'force', user_id = self.u1.id)
+        self.client.force_login(self.u1)
         self.client.get(reverse('questions'))
         self.assert_have_badge('enthusiast', self.u1, 1)
 

@@ -19,7 +19,7 @@ class PrivateQuestionViewsTests(AskbotTestCase):
             'title': 'test question title?',
             'text': 'test question text',
         }
-        self.client.login(user_id=self.user.id, method='force')
+        self.client.force_login(self.user)
 
     def tearDown(self):
         askbot_settings.update('GROUPS_ENABLED', self._backup)
@@ -124,7 +124,7 @@ class PrivateAnswerViewsTests(AskbotTestCase):
         )
         self.user.join_group(group)
         self.question = self.post_question(user=self.user)
-        self.client.login(user_id=self.user.id, method='force')
+        self.client.force_login(self.user)
 
     def tearDown(self):
         askbot_settings.update('GROUPS_ENABLED', self._backup)

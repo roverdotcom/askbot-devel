@@ -1,6 +1,8 @@
 """utility functions used by Askbot test cases
 """
 from functools import wraps
+
+from django.conf import settings
 from markdown2 import Markdown
 from django.apps import apps
 from django.contrib.auth.management import create_permissions
@@ -14,6 +16,9 @@ from django.db.models.signals import post_migrate
 from django.test import TestCase
 from askbot import models
 from askbot import signals
+from django.db.models.signals import post_save
+from django.contrib.auth.models import User
+from askbot.models.user_profile import update_user_profile, get_profile_from_db, UserProfile
 
 def with_settings(**settings_dict):
     """a decorator that will run function with settings
@@ -102,6 +107,36 @@ def create_user(username=None,
     return user
 
 
+def remove_cache():
+    post_save.disconnect(update_user_profile, User, dispatch_uid='update_profile_on_authuser_save')
+
+    def update_user_profile_test(instance, **kwargs):
+        profile = get_profile_from_db(instance)
+        setattr(instance, 'askbot_profile', profile)
+        profile.save()
+
+    post_save.connect(update_user_profile_test, User, dispatch_uid='update_profile_on_authuser_save')
+
+    def user_profile_property(field_name):
+        """returns property that will access Askbot UserProfile
+        of auth_user by field name"""
+
+        def getter(user):
+            profile = get_profile_from_db(user)
+            return getattr(profile, field_name)
+
+        def setter(user, value):
+            profile = get_profile_from_db(user)
+            setattr(profile, field_name, value)
+            UserProfile.objects.filter(pk=profile.pk).update(**{field_name: value})
+            profile.update_cache()
+
+        return property(getter, setter)
+
+    prop = user_profile_property('status')
+    User.add_to_class('status', prop)
+
+
 class AskbotTestCase(TestCase):
     """adds some askbot-specific methods
     to django TestCase class
@@ -129,6 +164,7 @@ class AskbotTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         cache.clear()
+        remove_cache()
         super(AskbotTestCase, cls).setUpClass()
 
     def create_user(

@@ -712,7 +712,7 @@ class CommandViewTests(AskbotTestCase):
         group = models.Group(name='somegroup')
         group.save()
         admin = self.create_user('admin', status='d')
-        self.client.login(user_id=admin.id, method='force')
+        self.client.force_login(admin)
         post_data = {
             'object_id': group.id,
             'model_name': 'Group',
@@ -755,7 +755,7 @@ class CommandViewTests(AskbotTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.content, b'')
 
-        self.client.login(user_id=user.id, method='force')
+        self.client.force_login(user)
 
         from askbot import conf
         values = list(dict(conf.get_tag_email_filter_strategy_choices()).keys())
