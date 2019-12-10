@@ -4,7 +4,7 @@
     {% trans %}notifications{% endtrans %}
 {% endblock %}
 {% block inbox_content %}
-    {% if messages %}
+    {% if messages_list %}
     <div class="js-manage-messages">
         <a class="js-mark-as-seen">{% trans %}mark seen{% endtrans %}</a> |
         <a class="js-delete">{% trans %}delete{% endtrans %}</a>

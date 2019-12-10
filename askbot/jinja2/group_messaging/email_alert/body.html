@@ -2,7 +2,7 @@
 {% from "email/macros.html" import start_quote, end_quote %}
 {% block content %}
     {% set level = 0 %}
-    {% for message in messages %}
+    {% for message in messages_list %}
         {{ start_quote(level) }}
             <p>{% trans author=message.sender %}{{ author }} wrote:{% endtrans %}</p>
             {{ message.html|escape }}

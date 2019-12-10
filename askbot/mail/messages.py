@@ -828,7 +828,7 @@ class GroupMessagingEmailAlert(BaseEmail):
             return None
         message = messages[0]
         return {
-            'messages': message.get_timeline(),
+            'messages_list': message.get_timeline(),
             'message': message,
             'recipient_user': get_user()
         }
