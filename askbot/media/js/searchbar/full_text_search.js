@@ -492,6 +492,7 @@ FullTextSearch.prototype.decorate = function (element) {
     this._element = element;/* this is a bit artificial we don't use _element */
     this._query = element;
     this._xButton = $('input[name=reset_query]');
+    this._sButton = $('.searchBtn');
     this._prevText = this.getSearchQuery();
     this._tag_warning_box = new TagWarningBox();
 
