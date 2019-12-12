@@ -4,7 +4,8 @@
 </p>
 {% if search_state.query or search_state.tags or search_state.author %}
 <p class="evenMore" style="text-align:center">
-    {% if 'support' in search_state.tags or 'sitter' in search_state.tags %}
+    {% if ('support' in search_state.tags or 'sitter' in search_state.tags) and 
+        not request.user.is_authenticated %}
         <strong>Please <a href="{{ settings.ROVER_LOGIN_URL }}?action=sign_in&amp;next={{ request.get_full_path()|urlencode }}">sign in</a> to view these questions.</strong>
     {% else %}
         {% trans %}You can expand your search by {% endtrans %}
