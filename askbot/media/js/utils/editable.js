@@ -159,7 +159,7 @@ Editable.prototype.saveText = function () {
     }
     this.setContent(editorText);
     this.setState('display');
-    
+
     var data = this._saveTextUrlParams;
     editorText = this._editor.getText();
     data[this._saveTextParamName] = editorText;
@@ -187,7 +187,7 @@ Editable.prototype.decorate = function(element){
         <div class="js-editable"
             id="js-<something>" //here "something" must be unique enough
             // 1. urls below are parsed and parameters added as part of request
-            //    this way url parameter input is more compact and comes with the 
+            //    this way url parameter input is more compact and comes with the
             //    corresponding url
             // 2. the getTextUrl is optional - if absent, text will be taken as
             //    displayed in the html. This feature won't work with the markdown editor
@@ -207,7 +207,7 @@ Editable.prototype.decorate = function(element){
             //this item must be inside of js-editable
             <div class="js-editable-content">some text which will be editable</div>
             // the button as shown below does not have to be inside of js-editable.
-            // we find the button by the Id, which starts with js-edit-btn and 
+            // we find the button by the Id, which starts with js-edit-btn and
             // ends the same as id of the .js-editable
             // Also, the html elements of button and the container are not important,
             // only ids, class names and "data" parameters on the .js-editable

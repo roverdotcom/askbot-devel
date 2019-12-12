@@ -7,17 +7,15 @@ is not always very clean.
 """
 import logging
 from bs4 import BeautifulSoup
-from django.conf import settings as django_settings
 from django.core import exceptions
 #from django.core.management import call_command
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.http import HttpResponse
-from django.http import HttpResponseBadRequest
 from django.http import HttpResponseRedirect
 from django.http import HttpResponseForbidden
-from django.forms import ValidationError, IntegerField, CharField
+from django.forms import IntegerField, CharField
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.template.loader import get_template
@@ -25,16 +23,14 @@ from django.views.decorators import csrf
 import simplejson
 from django.utils import timezone
 from django.utils import translation
-from django.utils.encoding import force_text
 from django.utils.html import escape
 from django.utils.translation import ugettext as _
-from django.utils.translation import ungettext
+
 from askbot.utils.slug import slugify
 from askbot import models
 from askbot import forms
 from askbot import conf
 from askbot import const
-from askbot import mail
 from askbot.conf import settings as askbot_settings
 from askbot.utils import category_tree
 from askbot.utils import decorators
@@ -43,7 +39,6 @@ from askbot.utils.forms import get_db_object_or_404
 from askbot.utils.functions import decode_and_loads
 from askbot.utils.html import get_login_link
 from askbot.utils.akismet_utils import akismet_check_spam
-from django.template import RequestContext
 from askbot.skins.shortcuts import render_into_skin_as_string
 from askbot.skins.shortcuts import render_text_into_skin
 from askbot.models.tag import get_tags_by_names
@@ -641,6 +636,7 @@ def set_question_title(request):
         message = _('Spam was detected on your post, sorry if it was a mistake')
         raise exceptions.PermissionDenied(message)
 
+    forms.TitleField().clean(title)
     user = request.user
     user.edit_question(question, title=title)
     return {'title': title}
