@@ -548,5 +548,9 @@ FullTextSearch.prototype.decorate = function (element) {
 
     this.activateTagSearchInput();
 
+    this._sButton.click(function() {
+        $('form#searchForm').submit();
+    });
+
     $('form#searchForm').submit(me.makeFormSubmitHandler());
 };
