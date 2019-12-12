@@ -1229,7 +1229,8 @@ class Thread(models.Model):
             # pass through only deleted question posts
             if post.deleted and post.post_type != 'question':
                 continue
-            if not post.is_approved():  # hide posts on the moderation queue
+            author = post.author
+            if not post.is_approved() and (author.is_watched() or author.is_suspended()):  # hide posts on the moderation queue
                 continue
 
             post_to_author[post.id] = post.author_id
