@@ -123,7 +123,7 @@ class TagQuerySet(models.query.QuerySet):
     def update_use_counts(self, tags):
         """Updates the given Tags with their current use counts."""
         for tag in tags:
-            tag.used_count = tag.threads.filter(deleted=False).count()
+            tag.used_count = tag.threads.filter(deleted=False, approved=True).count()
             tag.save()
 
     def mark_undeleted(self):
