@@ -31,14 +31,14 @@
             </div>
         </div>
         <div class="votes
-                    {% if question.score == 0 -%}
+                    {% if thread.score == 0 -%}
                         no-votes
                     {% else -%}
                         some-votes
                     {%- endif -%}">
-            <span class="item-count">{{question.score|humanize_counter}}</span>
+            <span class="item-count">{{thread.score|humanize_counter}}</span>
             <div>
-            {% trans cnt=question.score %}vote{% pluralize %}votes{% endtrans %}
+            {% trans cnt=thread.score %}vote{% pluralize %}votes{% endtrans %}
             </div>
         </div>
         <div class="clearfix"></div>
