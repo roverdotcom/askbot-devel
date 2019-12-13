@@ -43,7 +43,7 @@
         </div>
         <div class="clearfix"></div>
         <div class="userinfo">
-            {{ timeago(thread.last_activity_at) }}
+            {{ timeago(thread.added_at) }}
             {% set latest_revision = thread.get_latest_revision(user=visitor) %}
             {% if latest_revision and latest_revision.is_anonymous %}
                 <span class="anonymous">{{ thread.last_activity_by.get_anonymous_name() }}</span>
