@@ -1,6 +1,8 @@
 """Forms, custom form fields and related utility functions
 used in AskBot"""
 import regex as re #todo: make explicit import
+from django.forms.widgets import ChoiceWidget
+
 import askbot
 import unicodedata
 from collections import OrderedDict
@@ -1005,6 +1007,18 @@ class AskForm(PostAsSomeoneForm, PostPrivatelyForm):
     in the cleaned data, and will evaluate to False if the
     settings forbids anonymous asking
     """
+    REQUIRED_TAG_CHOICES = [
+        ('dogs', 'General dog question'),
+        ('sitter', 'Sitter-to-Sitter question'),
+        ('support', 'Rover.com question')
+    ]
+
+    class InlineRadioSelect(ChoiceWidget):
+        input_type = 'radio'
+        template_name = 'askrover/widget.html'
+
+    required_tag = forms.ChoiceField(choices=REQUIRED_TAG_CHOICES, label="What type of question is this?",
+                                     widget=InlineRadioSelect(attrs={'class': 'required-tag-container'}))
     wiki = WikiField()
     group_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     openid = forms.CharField(

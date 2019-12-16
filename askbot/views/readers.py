@@ -95,15 +95,9 @@ def questions(request, **kwargs):
                         request_user=request.user, search_state=search_state
                     )
 
-    is_specific_search = any([
-        kwargs['author'],
-        kwargs['tags'],
-        kwargs['query']
-    ])
-
     # remove support and sitter tagged questions from non-specific searches
     # or for anonymous users
-    if not is_specific_search or not request.user.is_authenticated:
+    if not request.user.is_authenticated:
         qs = qs.exclude(tags__name__in=['support', 'sitter'])
 
     if meta_data['non_existing_tags']:

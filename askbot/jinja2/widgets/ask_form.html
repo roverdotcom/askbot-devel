@@ -10,18 +10,11 @@
             value="{% if form.initial.title %}{{form.initial.title|escape}}{% endif %}"/>
         <span class="form-error">{{ form.title.errors }}</span>
     </div>
+
+
     <div class="form-group">
-        <label for="id_required_tag">What type of question is this?</label>
         <div class="required-tag-container">
-            <label class="radio-inline">
-              <input type="radio" name="required_tag" value="dogs" required>General dog question
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="required_tag" value="sitter">Sitter-to-Sitter question
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="required_tag" value="support">Rover.com question
-            </label>
+            {{ form.required_tag }}
         </div>
     </div>
 
