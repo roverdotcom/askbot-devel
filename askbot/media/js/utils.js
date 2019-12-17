@@ -376,7 +376,9 @@ var setCheckBoxesIn = function (selector, value) {
 };
 
 var slugify = function (text) {
-    return text.replace(/[^\w\s-]/g, '')
+    return text
+        .normalize('NFKD')
+        .replace(/[^\w\s-]/g, '')
         .replace(/[|&;$%@"<>()+,]/g, '')
         .toLowerCase()
         .replace(/[-\s]+/g, '-');
