@@ -1029,11 +1029,6 @@ class AskForm(PostAsSomeoneForm, PostPrivatelyForm):
         user = kwargs.get('user', None)
         data = args[0] if args else kwargs.get('data', None)
         if data:
-            data = data.copy()
-            data['tags'] = '{} {}'.format(
-                data.get('tags', ''),
-                data.get('required_tag', '')
-            )
             if args:
                 args = list(args)
                 args[0] = data
@@ -1063,6 +1058,14 @@ class AskForm(PostAsSomeoneForm, PostPrivatelyForm):
 
         if should_use_recaptcha(user):
             self.fields['recaptcha'] = AskbotReCaptchaField()
+
+    def _post_clean(self):
+        super(AskForm, self)._post_clean()
+        if not self.errors:
+            self.cleaned_data['tags'] = '{} {}'.format(
+                self.cleaned_data.get('tags', ''),
+                self.cleaned_data.get('required_tag', '')
+            )
 
     def clean_ask_anonymously(self):
         """returns false if anonymous asking is not allowed
