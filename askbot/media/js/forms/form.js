@@ -66,7 +66,7 @@ Form.prototype.validateField = function (fieldName) {
     } catch (error) {
         this.setFieldError(fieldName, error);
     }
-}
+};
 
 Form.prototype.decorateField = function (fieldName) {
     //get validator

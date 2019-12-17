@@ -64,7 +64,7 @@ def slugify(input_text, max_length=150):
         input_text = unidecode(input_text)
 
     if isinstance(input_text, str):
-        slug = unicode_slugify(input_text)
+        slug = unicode_slugify(input_text, ok='-')
     else:
         slug = defaultfilters.slugify(input_text)
     while len(slug) > max_length:

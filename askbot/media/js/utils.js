@@ -375,6 +375,13 @@ var setCheckBoxesIn = function (selector, value) {
     return $(selector + '> input[type=checkbox]').attr('checked', value);
 };
 
+var slugify = function (text) {
+    return text.replace(/[^\w\s-]/g, '')
+        .replace(/[|&;$%@"<>()+,]/g, '')
+        .toLowerCase()
+        .replace(/[-\s]+/g, '-');
+};
+
 /*
  * Old style notify handler
  */

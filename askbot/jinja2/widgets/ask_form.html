@@ -8,7 +8,7 @@
         <label for="id_title" class="title-label">What is your question?</label>
         <input id="id_title" class="form-control" name="title" autocomplete="off"
             value="{% if form.initial.title %}{{form.initial.title|escape}}{% endif %}"/>
-        <span class="form-error">{{ form.title.errors }}</span>
+        <span class="form-error js-title-error">{{ form.title.errors }}</span>
     </div>
 
 
