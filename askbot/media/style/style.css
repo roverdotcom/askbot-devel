@@ -1387,6 +1387,7 @@ ul#searchTags {
   margin-bottom: 7px;
   display: block;
   font-family: 'Raleway', Arial, sans-serif;
+  word-break: break-word;
 }
 .short-summary a {
   color: #464646;
@@ -2275,6 +2276,7 @@ tr.mceLast {
 .question-page h1 .js-editable-controls,
 .question-page h1 .js-editable-content {
   display: inline;
+  word-break: break-word;
 }
 .question-page h1 .btn-link {
   background-image: none;
