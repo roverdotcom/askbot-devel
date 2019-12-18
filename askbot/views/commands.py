@@ -677,8 +677,8 @@ def set_post_body(request):
         message = _('Spam was detected on your post, sorry if it was a mistake')
         raise exceptions.PermissionDenied(message)
 
-    request.user.edit_post(post, body_text=body_text)
-    return {'body_html': post.html}
+    rev = request.user.edit_post(post, body_text=body_text)
+    return {'body_html': rev.text}
 
 
 @decorators.moderators_only

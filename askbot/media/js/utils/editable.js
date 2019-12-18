@@ -99,25 +99,8 @@ Editable.prototype.startEditingText = function (text) {
  */
 Editable.prototype.startActivatingEditor = function (evt) {
     evt.preventDefault();
-    var editor = this._editor;
 
-    if (this._editorType == 'tinymce') {//take shortcut.
-        this.startEditingText(this._content.html());
-        return false;
-    }
-
-    var me = this;
-    var paramName = this._saveTextParamName;
-
-    $.ajax({
-        type: 'GET',
-        url: this._getTextUrl,
-        data: this._getTextUrlParams,
-        cache: false,
-        success: function(data){
-            me.startEditingText(data[paramName]);
-        }
-    });
+    this.startEditingText(this._content.text());
     return false;
 };
 
