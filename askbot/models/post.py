@@ -1510,10 +1510,13 @@ class Post(models.Model):
     def cache_latest_revision(self, rev):
         setattr(self, '_last_rev_cache', rev)
 
-    def get_latest_revision(self):
+    def get_latest_revision(self, moderate=False):
         if hasattr(self, '_last_rev_cache'):
             return self._last_rev_cache
-        rev = self.revisions.order_by('-revision')[0]
+        revision_query = self.revisions.order_by('-revision')
+        if moderate:
+            revision_query = (self.revisions.filter(revision=0) or revision_query)
+        rev = revision_query[0]
         self.cache_latest_revision(rev)
         return rev
 #       # TODO: remove this method
@@ -1814,7 +1817,7 @@ class Post(models.Model):
                     suppress_email=False,
                     ip_addr=None,
                 ):
-        latest_rev = self.get_latest_revision()
+        latest_rev = self.get_latest_revision(moderate=True)
 
         if text is None:
             text = latest_rev.text
