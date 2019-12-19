@@ -58,7 +58,7 @@
             askbot['data']['userId']
         );
 
-        if ((askbot['data']['threadIsClosed'] === false) && askbot['data']['userIsAuthenticated']) {
+        if (askbot['data']['threadIsClosed'] === false) {
             initEditor();
         }
 

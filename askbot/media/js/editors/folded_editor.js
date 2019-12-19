@@ -36,6 +36,11 @@ FoldedEditor.prototype.getOpenHandler = function () {
     return function () {
         if (askbot.data.userIsReadOnly === true) {
             notify.show(gettext('Sorry, you have only read access'));
+        } else if (!askbot.data.userIsAuthenticated) {
+            var message = gettext(
+                'please sign in or register to post comments'
+            );
+            showMessage(promptBox, message, 'before');
         } else {
             promptBox.hide();
             editorBox.show();

@@ -302,7 +302,10 @@ var showMessage = function (element, msg, where) {
 
     if (where === 'parent') {
         element.parent().append(div);
-    } else {
+    } else if (where === 'before') {
+        element.before(div);
+    }
+    else {
         element.after(div);
     }
 
