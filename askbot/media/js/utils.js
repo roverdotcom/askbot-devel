@@ -379,8 +379,7 @@ var setCheckBoxesIn = function (selector, value) {
 };
 
 var slugify = function (text) {
-    return text
-        .normalize('NFKD')
+    return unorm.nfkd(text).replace(/[\u0300-\u036F]/g, '')
         .replace(/[^\w\s-]/g, '')
         .replace(/[|&;$%@"<>()+,]/g, '')
         .toLowerCase()
