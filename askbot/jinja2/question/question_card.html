@@ -42,6 +42,8 @@
                 data-save-text-param-name="body_text"
                 data-validated-text-param-name="body_html"
                 data-min-lines="10"
+                data-markdown-text="{{ question.text }}"
+                data-refresh-url="/community/question/{{ question.pk }}"
                 data-editor-type="{{ settings.EDITOR_TYPE }}"
                 data-validator="askbot.validators.questionDetailsValidator"
             >

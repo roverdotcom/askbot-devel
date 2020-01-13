@@ -100,7 +100,11 @@ Editable.prototype.startEditingText = function (text) {
 Editable.prototype.startActivatingEditor = function (evt) {
     evt.preventDefault();
 
-    this.startEditingText(this._content.text());
+    if (this._markdownText)
+        this.startEditingText(this._markdownText);
+    else
+        this.startEditingText(this._content.text());
+
     return false;
 };
 
@@ -157,6 +161,9 @@ Editable.prototype.saveText = function () {
         success: function(data){
             if (data['success']){
                 me.setContent(data[validatedParamName]);
+                if (me._refreshUrl) {
+                    window.location.replace(me._refreshUrl);
+                }
             } else {
                 me.setState('edit');
                 showMessage(me.getElement(), data['message']);
@@ -256,6 +263,9 @@ Editable.prototype.decorate = function(element){
     this._content.after(editorBox);
     this._editorBox = editorBox;
 
+    //refresh url
+    this._refreshUrl = element.data('refreshUrl');
+
     //create editor
     var editorType = element.data('editorType') || askbot['settings']['editorType'];
     var minLines = element.data('minLines') || 1;
@@ -266,6 +276,8 @@ Editable.prototype.decorate = function(element){
             editor.setEnabledButtons('bold italic link code ol ul');
         }
         var preview = element.data('previewerEnabled');
+        this._markdownText = element.data('markdownText')
+        element.attr('data-markdown-text', '')
         editor.setPreviewerEnabled(preview);
     } else if (editorType === 'tinymce') {
         if (this._useCompactEditor) {

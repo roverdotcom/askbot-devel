@@ -33,6 +33,8 @@
                 data-save-text-param-name="body_text"
                 data-validated-text-param-name="body_html"
                 data-min-lines="10"
+                data-markdown-text="{{ answer.text }}"
+                data-refresh-url="/community/question/{{ answer.thread._question_post().pk }}/?answer={{answer.pk}}#post-id-{{answer.pk}}"
                 data-editor-type="{{ settings.EDITOR_TYPE }}"
                 data-validator="askbot.validators.answerValidator"
             >
