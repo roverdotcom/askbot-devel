@@ -1579,7 +1579,6 @@ class ClosedForumTests(utils.AskbotTestCase):
         self.question = self.post_question()
         self.test_url = self.question.get_absolute_url()
         self.redirect_to = settings.LOGIN_URL
-        self.client = Client()
         askbot_settings.update('ASKBOT_CLOSED_FORUM_MODE', True)
 
     def tearDown(self):
@@ -1605,6 +1604,6 @@ class ClosedForumTests(utils.AskbotTestCase):
         not in settings.MIDDLEWARE,
         'no ForumModeMiddleware set')
     def test_authenticated_access(self):
-        self.client.login(username=self.other_user.username, password=self.password)
+        self.client.force_login(self.other_user)
         response = self.client.get(self.test_url)
         self.assertEqual(response.status_code, 200)
