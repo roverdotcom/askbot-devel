@@ -33,13 +33,13 @@ EMAIL_CASES = (
 # Test fails if second item is None
 SUBJECT_LINE_CASES = (
     (
-        ' [ tag1;long  tag, another] question title',
-        ('tag1 long-tag another', 'question title')
+        ' [ tag1;long  tag, another] question title?',
+        ('tag1 long-tag another', 'question title?')
     ),
-    ('[] question title', None),
-    ('question title', None),
-    ('   [question title', None),
-    ('] question title', None),
+    ('[] question title?', None),
+    ('question title?', None),
+    ('   [question title?', None),
+    ('] question title?', None),
 )
 
 
@@ -51,6 +51,7 @@ class AskByEmailFormTests(AskbotTestCase):
         self.data = {
             'sender': 'someone@example.com',
             'subject': '[tag-one] where is titanic?',
+            'required_tag': 'dogs',
             'body_text': 'where is titanic?'
         }
 
@@ -195,7 +196,7 @@ class EditQuestionAnonymouslyFormTests(AskbotTestCase):
         data = {
             'tags': 'tag1 tag2',
             'text': 'ostaousohuosuh',
-            'title': 'stahosetuhaoeudhuh'
+            'title': 'stahosetuhaoeudhuh?'
         }
         if box_checked:
             data['reveal_identity'] = 'on'

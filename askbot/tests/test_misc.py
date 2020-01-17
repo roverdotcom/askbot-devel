@@ -26,7 +26,7 @@ class ContentConvertionTests(AskbotTestCase):
                                                     parent_post=self.another_answer)
 
     def test_convert_comment_to_answer(self):
-        self.client.login(username='user1', password='password')
+        self.client.force_login(self.u1)
         old_parent_comment_count = self.another_answer.comment_count
         answer_count = self.question.thread.answer_count
         self.client.post(reverse('comment_to_answer'),
@@ -58,7 +58,7 @@ class ContentConvertionTests(AskbotTestCase):
         comment_count += self.answer_to_convert.comment_count
 
         answer_count = self.question.thread.answer_count
-        self.client.login(username='user1', password='password')
+        self.client.force_login(self.u1)
         self.client.post(reverse('repost_answer_as_comment_under_question'),
                          {'answer_id': self.answer_to_convert.id})
         converted_comment = self.reload_object(self.answer_to_convert)

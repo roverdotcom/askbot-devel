@@ -209,9 +209,6 @@ class ManagementCommandTests(AskbotTestCase):
                                                 subscriber = user,
                                             )
         self.assertEquals(subs.count(), 6)
-        #try to log in
-        user = auth.authenticate(username=username, password=password)
-        self.assertTrue(user is not None)
 
     def test_merge_users(self):
         """Verify a users account can be transfered to another user"""
