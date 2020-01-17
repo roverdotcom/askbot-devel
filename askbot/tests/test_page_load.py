@@ -713,6 +713,7 @@ class CommandViewTests(AskbotTestCase):
         group.save()
         admin = self.create_user('admin', status='d')
         self.client.force_login(admin)
+
         post_data = {
             'object_id': group.id,
             'model_name': 'Group',

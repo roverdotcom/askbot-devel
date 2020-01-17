@@ -439,7 +439,7 @@ class ThreadRenderCacheUpdateTests(AskbotTestCase):
         self.create_user()
         self.user.set_password('pswd')
         self.user.save()
-        assert self.client.login(username=self.user.username, password='pswd')
+        self.client.force_login(self.user)
 
         self.create_user(username='user2')
         self.user2.set_password('pswd')
@@ -467,17 +467,18 @@ class ThreadRenderCacheUpdateTests(AskbotTestCase):
     def test_post_question(self):
         self.assertEqual(0, Post.objects.count())
         response = self.client.post(reverse('ask'), data={
-            'title': 'test question title',
+            'title': 'test question title?',
             'text': 'test body text',
+            'required_tag': 'dogs',
             'tags': 'tag1 tag2',
         })
         self.assertEqual(1, Post.objects.count())
         question = Post.objects.all()[0]
         self.assertRedirects(response=response, expected_url=question.get_absolute_url())
 
-        self.assertEqual('test question title', question.thread.title)
+        self.assertEqual('test question title?', question.thread.title)
         self.assertEqual('test body text', question.text)
-        self.assertCountEqual(['tag1', 'tag2'], list(question.thread.tags.values_list('name', flat=True)))
+        self.assertCountEqual(['tag1', 'tag2', 'dogs'], list(question.thread.tags.values_list('name', flat=True)))
         self.assertEqual(0, question.thread.answer_count)
 
         self.assertTrue(question.thread.summary_html_cached())  # <<< make sure that caching backend is set up properly (i.e. it's not dummy)
@@ -498,9 +499,10 @@ class ThreadRenderCacheUpdateTests(AskbotTestCase):
         response = self.client.post(
             reverse('edit_question', kwargs={'id': question.id}),
             data={
-                'title': 'edited title',
+                'title': 'edited title?',
                 'text': 'edited body text',
                 'tags': 'tag1 tag2',
+                'required_tag': 'dogs',
                 'summary': 'just some edit',
                 'select_revision': 'false'
             }
@@ -552,7 +554,7 @@ class ThreadRenderCacheUpdateTests(AskbotTestCase):
         self.assertEqual(thread.last_activity_by, question.author)
 
         self.client.logout()
-        self.client.login(username='user2', password='pswd')
+        self.client.force_login(self.user2)
         time.sleep(1.5) # compensate for 1-sec time resolution in some databases
         response = self.client.post(reverse('answer', kwargs={'id': question.id}), data={
             'text': 'answer longer than 10 chars',
@@ -589,7 +591,7 @@ class ThreadRenderCacheUpdateTests(AskbotTestCase):
 
         time.sleep(1.5)  # compensate for 1-sec time resolution in some databases
         self.client.logout()
-        self.client.login(username='user2', password='pswd')
+        self.client.force_login(self.user2)
         response = self.client.post(
             reverse(
                 'edit_answer',
@@ -644,7 +646,7 @@ class ThreadRenderCacheUpdateTests(AskbotTestCase):
         question.save()
 
         self.client.logout()
-        self.client.login(username='user2', password='pswd')
+        self.client.force_login(self.user2)
         response = self.client.post(
             reverse('vote'),
             data={'type': '1', 'postId': question.id},
@@ -686,7 +688,7 @@ class ThreadRenderCacheUpdateTests(AskbotTestCase):
         answer = self.post_answer(question=question)
 
         self.client.logout()
-        self.client.login(username='user2', password='pswd')
+        self.client.force_login(self.user2)
         response = self.client.post(
             reverse('vote'),
             data={'type': '0', 'postId': answer.id},

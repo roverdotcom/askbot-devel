@@ -19,6 +19,8 @@ from askbot import signals
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from askbot.models.user_profile import update_user_profile, get_profile_from_db, UserProfile
+from django.test.client import Client
+
 
 def with_settings(**settings_dict):
     """a decorator that will run function with settings
@@ -137,10 +139,24 @@ def remove_cache():
     User.add_to_class('status', prop)
 
 
+class AskRoverClient(Client):
+    def force_login(self, user, backend=None):
+        super().force_login(user, backend)
+        # set the sso cookie
+        self.cookies['rli'] = ''
+
+    def login(self, **credentials):
+        super().login(**credentials)
+        # set the sso cookie
+        self.cookies['rli'] = ''
+
+
 class AskbotTestCase(TestCase):
     """adds some askbot-specific methods
     to django TestCase class
     """
+
+    client_class = AskRoverClient
 
     def _fixture_setup(self):
         super(AskbotTestCase, self)._fixture_setup()
