@@ -129,6 +129,7 @@ class PrivateAnswerViewsTests(AskbotTestCase):
         self.user.join_group(group)
         self.question = self.post_question(user=self.user)
         self.client.force_login(self.user)
+        self.client.cookies['rli'] = ''
 
     def tearDown(self):
         askbot_settings.update('GROUPS_ENABLED', self._backup)
