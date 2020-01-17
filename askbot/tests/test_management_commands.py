@@ -17,6 +17,8 @@ from askbot.tests.utils import with_settings
 from askbot import (const, models)
 from askbot import models
 from askbot.models import LocalizedUserProfile, UserProfile
+from askbot.conf import settings as askbot_settings
+
 
 class ExportUserDataTests(AskbotTestCase):
 
@@ -62,11 +64,11 @@ class ExportUserDataTests(AskbotTestCase):
         from askbot.management.commands.askbot_export_user_data import Command
         paths = Command.extract_upfile_paths_from_text(text)
         self.assertEqual(len(paths), 5)
-        expected = ('/upfiles/somefile1.jpg',
-                    '/upfiles/somefile2.jpg',
-                    '/upfiles/somefile3.jpg',
-                    '/upfiles/somefile4.jpg',
-                    '/upfiles/somefile5.jpg')
+        expected = (f'{django_settings.MEDIA_URL}somefile1.jpg',
+                    f'{django_settings.MEDIA_URL}somefile2.jpg',
+                    f'{django_settings.MEDIA_URL}somefile3.jpg',
+                    f'{django_settings.MEDIA_URL}somefile4.jpg',
+                    f'{django_settings.MEDIA_URL}somefile5.jpg')
 
         self.assertEqual(set(paths), set(expected))
 
@@ -167,12 +169,12 @@ class ExportUserDataTests(AskbotTestCase):
         self.assertEqual(user_data['username'], user.username)
         lang_data = user_data['localized_profiles']
 
-        profile_url_tpl = site_url('/{}/users/{}/bob/')
+        profile_url_tpl = site_url('/{}/{}users/{}/')
         self.assertEqual(lang_data[lang1]['about'], 'about me')
-        lang1_url = profile_url_tpl.format('en', user.pk)
+        lang1_url = profile_url_tpl.format('en', askbot_settings.URL, user.pk)
         self.assertEqual(lang_data[lang1]['profile_url'], lang1_url)
         self.assertEqual(lang_data[lang2]['about'], 'sobre mi')
-        lang2_url = profile_url_tpl.format('es', user.pk)
+        lang2_url = profile_url_tpl.format('es', askbot_settings.URL, user.pk)
         self.assertEqual(lang_data[lang2]['profile_url'], lang2_url)
 
         self.assertEqual(user_data['email'], user.email)
@@ -185,6 +187,7 @@ class ExportUserDataTests(AskbotTestCase):
             self.assertTrue(os.path.isfile(extracted_path))
 
         shutil.rmtree(test_dir)
+
 
 class ManagementCommandTests(AskbotTestCase):
     def test_askbot_add_user(self):

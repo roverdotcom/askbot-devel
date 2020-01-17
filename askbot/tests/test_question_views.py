@@ -17,6 +17,7 @@ class PrivateQuestionViewsTests(AskbotTestCase):
         self.user.join_group(self.group)
         self.qdata = {
             'title': 'test question title?',
+            'required_tag': 'dogs',
             'text': 'test question text',
         }
         self.client.force_login(self.user)
@@ -39,7 +40,7 @@ class PrivateQuestionViewsTests(AskbotTestCase):
         #private question is not accessible to unauthorized users
         self.client.logout()
         response = self.client.get(question._question_post().get_absolute_url())
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 301)
         self.assertEqual(response.content, b'')
         #private question link is not shown on the main page
         #to unauthorized users
