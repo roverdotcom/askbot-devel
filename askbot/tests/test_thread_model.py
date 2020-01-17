@@ -102,7 +102,7 @@ class ThreadModelTestsWithGroupsEnabled(AskbotTestCase):
         self.assertEqual(len(answer_groups & user_groups), 0)
 
         #publish the answer
-        self.client.login(user_id=self.admin.id, method='force')
+        self.client.force_login(self.admin)
         self.client.post(
             reverse('publish_answer'),
             data={'answer_id': answer.id},

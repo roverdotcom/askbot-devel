@@ -52,6 +52,6 @@ class SettingsTests(AskbotTestCase):
 
     def test_settings_get(self):
         self.admin = self.create_user('admin', status='d')
-        self.client.login(user_id=self.admin.id, method='force')
+        self.client.force_login(self.admin)
         response = self.client.get(reverse('satchmo_site_settings'))
         self.assertEqual(response.status_code, 200)
