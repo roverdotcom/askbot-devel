@@ -15,7 +15,6 @@ class BadgeTests(AskbotTestCase):
         self.u1 = self.create_user(username = 'user1')
         self.u2 = self.create_user(username = 'user2')
         self.u3 = self.create_user(username = 'user3')
-        self.client = Client()
 
     def assert_have_badge(self, badge_key, recipient = None, expected_count = 1):
         """note - expected_count matches total number of
