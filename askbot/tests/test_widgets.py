@@ -19,6 +19,13 @@ class WidgetViewsTests(AskbotTestCase):
         self.good_data = {'title': 'This is a title question',
                           'ask_anonymously': False}
 
+    """ 
+    #
+    # The tests below are commented out because they test the (user + password) login context
+    # In AskRover we are logging in via SSO, making these tests deprecated.
+    #
+    """
+    """
     def test_post_with_auth(self):
         self.client.login(username='user1', password='sample')
         response = self.client.post(reverse('ask_by_widget', args=(self.widget.id, )), self.good_data)
@@ -39,7 +46,7 @@ class WidgetViewsTests(AskbotTestCase):
                                  'added_at': timezone.now(),
                                  'wiki': False,
                                  'text': ' ',
-                                 'tagnames': '',
+                                 'tagnames': 'dogs',
                                  'is_anonymous': False
                                }
 
@@ -52,9 +59,10 @@ class WidgetViewsTests(AskbotTestCase):
             reverse('ask_by_widget', args=(self.widget.id, )),
             {'action': 'post-after-login'}
         )
+        print(session.__dict__)
         self.assertFalse('widget_question' in self.client.session)
         self.assertEqual(response.status_code, 302)
-        #verify posting question
+        #verify posting question """
 
     def test_render_widget_view(self):
         response = self.client.get(reverse('render_ask_widget', args=(self.widget.id, )))
@@ -62,7 +70,13 @@ class WidgetViewsTests(AskbotTestCase):
         content_type = 'text/javascript'
         self.assertTrue(content_type in response['Content-Type'])
 
-
+"""
+#
+# The tests below are commented out because they test the (user + password) login context
+# In AskRover we are logging in via SSO, making these tests deprecated.
+#
+"""
+"""
 class WidgetLoginViewTest(AskbotTestCase):
 
     def test_correct_template_loading(self):
@@ -71,7 +85,15 @@ class WidgetLoginViewTest(AskbotTestCase):
         template_name = 'authopenid/widget_signin.html'
         templates = [template.name for template in response.templates]
         self.assertTrue(template_name in templates)
+"""
 
+""" 
+#
+# The tests below are commented out because they test the (user + password) login context
+# In AskRover we are logging in via SSO, making these tests deprecated.
+#
+"""
+"""
 class WidgetCreatorViewsTests(AskbotTestCase):
 
     def setUp(self):
@@ -133,6 +155,7 @@ class WidgetCreatorViewsTests(AskbotTestCase):
     #    self.client.login(username='user1', password='testpass')
     #    response = self.client.get('/widgets/foo/create/')
     #    self.assertEquals(404, response.status_code)
+"""
 
 
 class QuestionWidgetViewsTests(AskbotTestCase):
@@ -143,7 +166,7 @@ class QuestionWidgetViewsTests(AskbotTestCase):
         self.client = Client()
         self.widget =  models.QuestionWidget.objects.create(title="foo",
                                    question_number=5, search_query='test',
-                                   tagnames='test')
+                                   tagnames='test dogs')
 
         #we post 6 questions!
         titles = (
