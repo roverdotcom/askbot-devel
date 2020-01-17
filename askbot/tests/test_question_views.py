@@ -5,6 +5,7 @@ from askbot.tests.utils import AskbotTestCase
 from askbot import models
 from django.urls import reverse
 
+
 class PrivateQuestionViewsTests(AskbotTestCase):
 
     def setUp(self):
@@ -21,6 +22,8 @@ class PrivateQuestionViewsTests(AskbotTestCase):
             'text': 'test question text',
         }
         self.client.force_login(self.user)
+        # set cookie for the SSO MIDDLEWARE
+        self.client.cookies['rli'] = ''
 
     def tearDown(self):
         askbot_settings.update('GROUPS_ENABLED', self._backup)
