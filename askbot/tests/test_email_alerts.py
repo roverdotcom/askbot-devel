@@ -280,7 +280,7 @@ class EmailAlertTests(TransactionTestCase):
                     question = question,
                     body_text = body_text,
                     timestamp = timestamp,
-                    follow = follow,
+                    follow  = follow,
                 )
 
     def check_results(self, test_key = None):

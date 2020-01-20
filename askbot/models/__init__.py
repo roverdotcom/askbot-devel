@@ -4110,7 +4110,7 @@ def greet_new_user(user, **kwargs):
         user.message_set.create(message=askbot_settings.NEW_USER_GREETING)
 
     import sys
-    if 'test' in sys.argv:
+    if 'test' in sys.argv or 'pytest' in sys.argv[0]:
         return
 
     if askbot_settings.REPLY_BY_EMAIL:#with this on we also collect signature
