@@ -1,8 +1,9 @@
+import mock
 
 from askbot.search.state_manager import SearchState
 from django.test import signals
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
+from unittest.mock import patch
 from django.urls import reverse
 from django.core import management
 from django.core.cache.backends.dummy import DummyCache
@@ -20,7 +21,6 @@ from askbot.tests.utils import AskbotTestCase
 from askbot.conf import settings as askbot_settings
 from askbot.tests.utils import skipIf
 from askbot.tests.utils import with_settings
-
 from askbot.skins.template_backends import Template as AskbotTemplate
 
 def patch_jinja2():
@@ -194,7 +194,7 @@ class PageLoadTestCase(AskbotTestCase):
         self.assertEqual(len(response_data), 0)
 
         #log in - should get the question
-        self.client.login(method='force', user_id=user.id)
+        self.client.force_login(user)
         response = self.client.get(reverse('api_get_questions'), query_data)
         response_data = simplejson.loads(response.content)
         self.assertEqual(len(response_data), 1)
@@ -215,13 +215,14 @@ class PageLoadTestCase(AskbotTestCase):
         #        'individual_question_feed',
         #        kwargs={'pk':'one-tag'},
         #        status_code=status_code)
-        self.try_url(
-                'latest_questions_feed',
-                status_code=status_code)
-        self.try_url(
-                'latest_questions_feed',
-                data={'tags':'one-tag'},
-                status_code=status_code)
+        with patch('askbot.conf.settings.RSS_ENABLED', True):
+            self.try_url(
+                    'latest_questions_feed',
+                    status_code=status_code)
+            self.try_url(
+                    'latest_questions_feed',
+                    data={'tags':'one-tag'},
+                    status_code=status_code)
         self.try_url(
                 'about',
                 status_code=status_code,
@@ -244,16 +245,11 @@ class PageLoadTestCase(AskbotTestCase):
                 'tags',
                 status_code=status_code,
                 data={'sort':'used'}, template='tags.html')
-        self.try_url(
-                'badges',
-                status_code=status_code,
-                template='badges.html')
-        self.try_url(
-                'answer_revisions',
-                status_code=status_code,
-                template='revisions.html',
-                kwargs={'id': models.Post.objects.get_answers().order_by('id')[0].id}
-            )
+        with patch('askbot.conf.settings.BADGES_MODE', 'public') as _:
+            self.try_url(
+                    'badges',
+                    status_code=status_code,
+                    template='badges.html')
         #todo: test different sort methods and scopes
         self.try_url(
             'questions',
@@ -352,22 +348,10 @@ class PageLoadTestCase(AskbotTestCase):
                 follow=True,
                 template='question.html'
             )
-        self.try_url(
-                'question_revisions',
-                status_code=status_code,
-                kwargs={'id':40},   # INFO: Hardcoded ID, might fail if DB allocates IDs in some non-continuous way
-                template='revisions.html'
-            )
         self.try_url('users',
                 status_code=status_code,
                 template='users.html'
             )
-        #self.try_url(
-        #        'widget_questions',
-        #        status_code = status_code,
-        #        data={'tags': 'tag-1-0'},
-        #        template='question_widget.html',
-        #    )
         #todo: really odd naming conventions for sort methods
         self.try_url(
                 'users',
@@ -531,7 +515,7 @@ class PageLoadTestCase(AskbotTestCase):
     def test_user_urls_logged_in(self):
         user = models.User.objects.get(id=2)   # INFO: Hardcoded ID, might fail if DB allocates IDs in some non-continuous way
         #works only with builtin django_authopenid
-        self.client.login(method = 'force', user_id = 2)   # INFO: Hardcoded ID, might fail if DB allocates IDs in some non-continuous way
+        self.client.force_login(user)   # INFO: Hardcoded ID, might fail if DB allocates IDs in some non-continuous way
         self.try_url(
             'user_subscriptions',
             kwargs = {'id': 2},   # INFO: Hardcoded ID, might fail if DB allocates IDs in some non-continuous way
@@ -556,7 +540,7 @@ class PageLoadTestCase(AskbotTestCase):
             question = question,
             body_text = 'this is the answer text'
         )
-        self.client.login(method = 'force', user_id = asker.id)
+        self.client.force_login(asker)
         self.try_url(
             'user_profile',
             kwargs={'id': asker.id},
@@ -775,41 +759,6 @@ class CommandViewTests(AskbotTestCase):
 class UserProfilePageTests(AskbotTestCase):
     def setUp(self):
         self.user = self.create_user('user')
-
-    @with_settings(EDITABLE_EMAIL=False, EDITABLE_SCREEN_NAME=True)
-    def test_user_cannot_change_email(self):
-        #log in
-        self.client.login(user_id=self.user.id, method='force')
-        email_before = self.user.email
-        response = self.client.post(
-            reverse('edit_user', kwargs={'id': self.user.id}),
-            data={
-                'username': 'edited',
-                'email': 'fake@example.com',
-                'country': 'unknown'
-            }
-        )
-        self.assertEqual(response.status_code, 302)
-        user = self.reload_object(self.user)
-        self.assertEqual(user.username, 'edited')
-        self.assertEqual(user.email, email_before)
-
-    @with_settings(EDITABLE_EMAIL=True, EDITABLE_SCREEN_NAME=True)
-    def test_user_can_change_email(self):
-        self.client.login(user_id=self.user.id, method='force')
-        email_before = self.user.email
-        response = self.client.post(
-            reverse('edit_user', kwargs={'id': self.user.id}),
-            data={
-                'username': 'edited',
-                'email': 'new@example.com',
-                'country': 'unknown'
-            }
-        )
-        self.assertEqual(response.status_code, 302)
-        user = self.reload_object(self.user)
-        self.assertEqual(user.username, 'edited')
-        self.assertEqual(user.email, 'new@example.com')
 
     def test_user_network(self):
         user2 = self.create_user('user2')

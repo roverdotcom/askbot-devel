@@ -12,7 +12,6 @@ class ContentConvertionTests(AskbotTestCase):
         self.u1.set_admin_status()
         self.u1.save()
         self.u2 = self.create_user(username='notadmin')
-        self.client = Client()
 
         #content
         self.question = self.post_question(user=self.u1)

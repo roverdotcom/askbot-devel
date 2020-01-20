@@ -145,11 +145,6 @@ class AskRoverClient(Client):
         # set the sso cookie
         self.cookies['rli'] = ''
 
-    def login(self, **credentials):
-        super().login(**credentials)
-        # set the sso cookie
-        self.cookies['rli'] = ''
-
 
 class AskbotTestCase(TestCase):
     """adds some askbot-specific methods
