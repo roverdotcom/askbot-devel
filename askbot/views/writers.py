@@ -284,7 +284,7 @@ def ask(request):#view used to ask a new question
                 )
                 return HttpResponseRedirect(settings.ROVER_LOGIN_URL + "?next={}".format(reverse('ask')))
 
-    if request.method == 'GET':
+    else:
         form = forms.AskForm(user=request.user)
         #session key used only to enable anonymous asking
         #as django will autodelete empty sessions
