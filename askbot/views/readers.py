@@ -401,10 +401,10 @@ def question(request, id):#refactor - long subroutine. display question body, an
     #process url parameters
     #todo: fix inheritance of sort method from questions
     #before = timezone.now()
-    if request.method == 'HEAD':
-        form = ShowQuestionForm(getattr(request,'GET'))
-    else:
+    if request.method == 'POST':
         form = ShowQuestionForm(getattr(request,request.method))
+    else:
+        form = ShowQuestionForm(getattr(request,'GET'))
 
     form.full_clean()#always valid
     show_answer = form.cleaned_data['show_answer']
