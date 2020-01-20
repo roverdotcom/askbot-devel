@@ -52,6 +52,7 @@ from askbot.utils.decorators import anonymous_forbidden, ajax_only, get_only
 from askbot.utils.diff import textDiff as htmldiff
 from askbot.utils.html import sanitize_html
 from askbot.utils.loading import load_module
+from askbot.utils.requests import get_request_method_arg
 from askbot.utils.translation import get_language_name
 from askbot.utils.url_utils import reverse_i18n
 from askbot.views import context
@@ -318,7 +319,7 @@ def get_top_answers(request):
 
 def tags(request):#view showing a listing of available tags - plain list
 
-    form = ShowTagsForm(getattr(request,request.method))
+    form = ShowTagsForm(get_request_method_arg(request))
     form.full_clean() #always valid
     page = form.cleaned_data['page']
     sort_method = form.cleaned_data['sort']
@@ -401,11 +402,7 @@ def question(request, id):#refactor - long subroutine. display question body, an
     #process url parameters
     #todo: fix inheritance of sort method from questions
     #before = timezone.now()
-    if request.method == 'POST':
-        form = ShowQuestionForm(request.POST)
-    else:
-        form = ShowQuestionForm(request.GET)
-
+    form = ShowQuestionForm(get_request_method_arg(request))
     form.full_clean()#always valid
     show_answer = form.cleaned_data['show_answer']
     show_comment = form.cleaned_data['show_comment']
