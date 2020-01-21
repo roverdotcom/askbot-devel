@@ -1,4 +1,7 @@
 import unittest
+
+import pytest
+
 from askbot.utils import category_tree as ct
 import simplejson
 
@@ -127,6 +130,7 @@ class CategoryTreeTests(unittest.TestCase):
             ])
         )
 
+    @pytest.mark.django_db
     def test_get_leaf_names_empty(self):
         self.assertEqual(
             set([]),

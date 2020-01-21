@@ -102,7 +102,8 @@ class Command(BaseCommand):
             'admin',
             'admin@example.com',
             first_name='admin',
-            last_name='adminson'
+            last_name='adminson',
+            id=1,
         )
         admin.set_password('admin')
         admin.save()
@@ -114,7 +115,8 @@ class Command(BaseCommand):
             'joe',
             'joe@example.com',
             first_name='joe',
-            last_name='joeson'
+            last_name='joeson',
+            id=2,
         )
         joe.set_password('joe')
         joe.save()
@@ -129,7 +131,8 @@ class Command(BaseCommand):
                 username,
                 EMAIL_TEMPLATE % s_idx,
                 first_name=FIRST_NAME_TEMPLATE % s_idx,
-                last_name=LAST_NAME_TEMPLATE % s_idx
+                last_name=LAST_NAME_TEMPLATE % s_idx,
+                id=i + 3,
             )
             user.set_password(PASSWORD_TEMPLATE % s_idx)
             user.receive_reputation(INITIAL_REPUTATION, get_language())
