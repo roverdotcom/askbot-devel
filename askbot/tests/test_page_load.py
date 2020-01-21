@@ -327,24 +327,26 @@ class PageLoadTestCase(AskbotTestCase):
             template='main_page.html'
         )
 
+        # because the ids of questions were previously hardcoded, we take them from the user
+        questions = models.User.objects.get(pk=1).posts.filter(post_type='question').order_by('added_at')
         self.try_url(
                 'question',
                 status_code=status_code,
-                kwargs={'id':1},   # INFO: Hardcoded ID, might fail if DB allocates IDs in some non-continuous way
+                kwargs={'id': questions[0].pk},   # INFO: Hardcoded ID, might fail if DB allocates IDs in some non-continuous way
                 follow=True,
                 template='question.html'
             )
         self.try_url(
                 'question',
                 status_code=status_code,
-                kwargs={'id':2},   # INFO: Hardcoded ID, might fail if DB allocates IDs in some non-continuous way
+                kwargs={'id': questions[1].pk},   # INFO: Hardcoded ID, might fail if DB allocates IDs in some non-continuous way
                 follow=True,
                 template='question.html'
             )
         self.try_url(
                 'question',
                 status_code=status_code,
-                kwargs={'id':3},   # INFO: Hardcoded ID, might fail if DB allocates IDs in some non-continuous way
+                kwargs={'id': questions[2].pk},   # INFO: Hardcoded ID, might fail if DB allocates IDs in some non-continuous way
                 follow=True,
                 template='question.html'
             )
