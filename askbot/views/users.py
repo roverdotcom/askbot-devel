@@ -39,6 +39,7 @@ from django.utils import timezone
 from django.utils.html import strip_tags as strip_all_tags
 from django.views.decorators import csrf
 
+from askbot.utils.requests import get_request_method_arg
 from askbot.utils.slug import slugify
 from askbot.utils.html import sanitize_html
 from askbot.utils.transaction import defer_celery_task
@@ -78,7 +79,7 @@ def owner_or_moderator_required(f):
                 #as this one should be accessible to all
                 return HttpResponseRedirect(request.path)
         else:
-            next_url = request.path + '?' + urllib.parse.urlencode(getattr(request,request.method))
+            next_url = request.path + '?' + urllib.parse.urlencode(get_request_method_arg(request))
             params = '?next=%s' % urllib.parse.quote(next_url)
             return HttpResponseRedirect(url_utils.get_login_url() + params)
         return f(request, profile_owner, context)
@@ -184,7 +185,7 @@ def show_users(request, by_group=False, group_id=None, group_slug=None):
 
     is_paginated = True
 
-    form = forms.ShowUsersForm(getattr(request,request.method))
+    form = forms.ShowUsersForm(get_request_method_arg(request))
     form.full_clean()#always valid
     sort_method = form.cleaned_data['sort']
     page = form.cleaned_data['page']
@@ -1309,7 +1310,7 @@ def user_select_languages(request, id=None):
 
 @csrf.csrf_protect
 def user_unsubscribe(request):
-    form = forms.UnsubscribeForm(getattr(request,request.method))
+    form = forms.UnsubscribeForm(get_request_method_arg(request))
     verified_email = ''
     if form.is_valid() == False:
         result = 'bad_input'
