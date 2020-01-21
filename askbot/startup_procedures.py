@@ -1013,7 +1013,7 @@ def run_startup_tests():
     try_import('requirements', 'requirements-parser')
     test_modules()
 
-    if 'test' in sys.argv:
+    if 'test' in sys.argv or 'pytest' in sys.argv[0]:
         extra_message="""Lamson modules are required for running tests
 and for making posts by email"""
         try_import('django_lamson', 'django-lamson',
