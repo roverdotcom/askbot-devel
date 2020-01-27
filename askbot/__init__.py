@@ -19,7 +19,7 @@ REQUIREMENTS = {
     'avatar': 'django-avatar>=4.0',
     'bs4': 'beautifulsoup4<=4.7.1',
     'compressor': 'django-compressor>=2.0,<=2.2',
-    'django': 'django>=1.11,<3.0',
+    'django': 'django>=2.2.9',
     'django_countries': 'django-countries>=3.3',
     'django_jinja': 'django-jinja>=2.0',
     'celery': 'celery>=4.0,<=5.0',
