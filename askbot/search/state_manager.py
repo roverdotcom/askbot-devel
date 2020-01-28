@@ -236,7 +236,7 @@ class SearchState(object):
     def add_tag(self, tag):
         ss = self.deepcopy()
         if tag not in ss.tags:
-            ss.tags.append(tag)
+            ss.tags = [tag]
             ss.page = 1 # state change causes page reset
         return ss
 
