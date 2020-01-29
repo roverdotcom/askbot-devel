@@ -36,9 +36,14 @@ Form.prototype.validateForm = function () {
 
 Form.prototype.getFormValidationHandler = function () {
     var me = this;
+    var submit = this._submit;
     return function () {
+        if (submit.length)
+            submit.attr('disabled', 'disabled');
         me.validateForm();
         if (me.formHasErrors()) {
+            if (submit.length)
+                submit.removeAttr('disabled');
             return false;
         }
     };
@@ -96,6 +101,7 @@ Form.prototype.decorateField = function (fieldName) {
 
 Form.prototype.decorate = function (element) {
     this._element = element;
+    this._submit = element.find('[type=submit]');
     //look for validated fields
     var fieldNames = $(element).data('validatedFields');
     fieldNames = $.trim(fieldNames).split(',');
