@@ -473,6 +473,11 @@ class ThreadManager(BaseQuerySetManager):
             'relevance-desc': '-relevance', # special Postgresql-specific ordering, 'relevance' quaso-column is added by get_for_query()
         }
 
+        # remove support and sitter tagged questions from non-specific searches
+        # or for anonymous users
+        if not request_user.is_authenticated:
+            qs = qs.extra(where=['NOT EXISTS (SELECT 1 FROM "askbot_thread_tags" U1 INNER JOIN "tag" U2 ON (U1."tag_id" = U2."id") WHERE U2."name" IN (\'support\', \'sitter\') AND U1."thread_id"="askbot_thread"."id")'])
+
         orderby = QUESTION_ORDER_BY_MAP[search_state.sort]
 
         if not (getattr(django_settings, 'ENABLE_HAYSTACK_SEARCH', False) \
