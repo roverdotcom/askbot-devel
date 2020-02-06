@@ -153,7 +153,11 @@ def feedback(request):
                 data['email'] = form.cleaned_data.get('email', None)
 
             email = FeedbackEmail(data)
-            email.send(get_users_by_role('recv_feedback'))
+            if askbot_settings.FEEDBACK_EMAILS:
+                recipients = re.split('\s*,\s*', askbot_settings.FEEDBACK_EMAILS)
+                email.send(recipients)
+            else:
+                email.send(get_users_by_role('recv_feedback'))
 
             message = _('Thanks for the feedback!')
             request.user.message_set.create(message=message)

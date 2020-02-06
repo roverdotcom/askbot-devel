@@ -2,7 +2,8 @@
 """
 import re
 from django.utils.translation import ugettext_lazy as _
-from django.core.validators import validate_email, ValidationError
+from django.core.validators import validate_email
+from django.core.validators import ValidationError
 from askbot.conf.settings_wrapper import settings
 from askbot.conf.super_groups import LOGIN_USERS_COMMUNICATION
 from livesettings import values as livesettings
@@ -57,5 +58,32 @@ settings.register(
             'Save, then <a href="http://validator.w3.org/">use HTML validator</a> '
             'on the "terms" page to check your input.'
         )
+    )
+)
+
+def feedback_emails_callback(old_value, new_value):
+    """validates the feedback emails list"""
+    emails = []
+    for value in re.split('\s*,\s*', new_value):
+        if not value:
+            continue
+        try:
+            validate_email(value)
+            emails.append(value)
+        except ValidationError:
+            raise ValueError(
+                _("'%(value)s' is not a valid email") % {'value': value})
+    return ", ".join(emails)
+
+settings.register(
+    livesettings.StringValue(
+        FEEDBACK,
+        'FEEDBACK_EMAILS',
+        description=_('Internal feedback form email recipients'),
+        help_text=_(
+                'Comma separated list of email addresses. If left empty, feedback mails are sent '
+                'to admins and moderators.'
+            ),
+        update_callback=feedback_emails_callback
     )
 )
