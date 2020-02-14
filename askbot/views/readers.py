@@ -538,10 +538,13 @@ def question(request, id):#refactor - long subroutine. display question body, an
 
     #load answers and post id's->athor_id mapping
     #posts are pre-stuffed with the correctly ordered comments
-    question_post, answers, post_to_author, published_answer_ids = thread.get_post_data_for_question_view(
+    new_question_post, answers, post_to_author, published_answer_ids = thread.get_post_data_for_question_view(
                                 sort_method=answer_sort_method,
                                 user=request.user
                             )
+    if new_question_post:
+        question_post = new_question_post
+
     user_votes = {}
     user_post_id_list = list()
     #todo: cache this query set, but again takes only 3ms!
