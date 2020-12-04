@@ -8,11 +8,11 @@
                     <span class="label">
                     {% trans %}Sort by »{% endtrans %}
                     </span>
-        <a id="oldest" href="{{ question.get_absolute_url() }}?sort=oldest#sort-top"
+        <a id="oldest" href="{{ question.get_absolute_url() }}?sort=oldest#sort-top" rel="nofollow"
         ><span>{% trans %}oldest{% endtrans %}</span></a>
-        <a id="latest" href="{{ question.get_absolute_url() }}?sort=latest#sort-top"
+        <a id="latest" href="{{ question.get_absolute_url() }}?sort=latest#sort-top" rel="nofollow"
         ><span>{% trans %}newest{% endtrans %}</span></a>
-        <a id="votes" href="{{ question.get_absolute_url() }}?sort=votes#sort-top"
+        <a id="votes" href="{{ question.get_absolute_url() }}?sort=votes#sort-top" rel="nofollow"
         ><span>{% trans %}most voted{% endtrans %}</span></a>
     </div>
 </div>

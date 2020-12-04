@@ -1,6 +1,10 @@
 {% extends "one_column_body.html" %}
 <!-- template close.html -->
 {% block title %}{% filter trim %}{{ settings.WORDS_CLOSE_QUESTION|escape }}{% endfilter %}{% endblock %}
+{% block meta_description %}
+{{ super() }}
+<meta name="robots" content="noindex, nofollow">
+{% endblock %}
 {% block content %}
 <h1>{{ settings.WORDS_CLOSE_QUESTION|escape }}</h1>
 <p>{{ settings.WORDS_CLOSE_QUESTION|escape }}:

@@ -378,6 +378,7 @@ for the purposes of the AJAX comment editor #}
                 <a
                     class="author"
                     href="{{ comment.author.get_profile_url() }}"
+                    rel="nofollow"
                     >{{ comment.author.display_name|escape }}</a>
                 <span class="age">&nbsp;({{ timeago(comment.added_at) }})</span>
                 <a
@@ -466,16 +467,19 @@ for the purposes of the AJAX comment editor #}
     {% if current_sort_method == key_name + "-asc" %}{# "worst" first #}
         <a id="by_{{key_name}}"
            href="{{ search_state.change_sort(key_name+"-desc").full_url() }}"
+           rel="nofollow"
            class="rev on"
            title="{{desc_tooltip}}"><span>{{label}} &#9650;</span></a>
     {% elif current_sort_method == key_name + "-desc" %}{# "best first" #}
         <a id="by_{{key_name}}"
            href="{{ search_state.change_sort(key_name+"-asc").full_url() }}"
+           rel="nofollow"
            class="rev on"
            title="{{asc_tooltip}}"><span>{{label}} &#9660;</span></a>
     {% else %}{# default, when other button is active #}
         <a id="by_{{key_name}}"
            href="{{ search_state.change_sort(key_name+"-desc").full_url() }}"
+           rel="nofollow"
            class="off"
            title="{{desc_tooltip}}"><span>{{label}}</span></a>
     {% endif %}
@@ -603,6 +607,7 @@ for the purposes of the AJAX comment editor #}
             {% if not p.has_previous %}style="display: none"{% endif %}
         ><a href="{{p.base_url}}page={{ p.previous }}{{ anchor }}"
             title="{% trans %}previous{% endtrans %}"
+            rel="nofollow"
         >&laquo; {% trans %}previous{% endtrans %}</a></span>
 
         <span class="first-page-nav"
@@ -611,7 +616,7 @@ for the purposes of the AJAX comment editor #}
             <span class="page first-page"
                 data-page="1"
             >
-                <a href="{{p.base_url}}page={{1}}{{ anchor }}" >1</a>
+                <a href="{{p.base_url}}page={{1}}{{ anchor }}" rel="nofollow">1</a>
             </span>
             <span class="leading-sep">...</span>
         </span>
@@ -628,6 +633,7 @@ for the purposes of the AJAX comment editor #}
                     data-page="{{ num }}"
                 ><a href="{{p.base_url}}page={{ num }}{{ anchor }}"
                     title="{% trans %}page {{num}}{% endtrans %}"
+                    rel="nofollow"
                 >{{ num }}</a></span>
             {% endif %}
         {% endfor %}
@@ -641,6 +647,7 @@ for the purposes of the AJAX comment editor #}
             <span class="page last-page" data-page="{{ p.pages }}">
                 <a href="{{ p.base_url }}page={{ p.pages }}{{ anchor }}"
                     title="{% trans num=p.pages %}page {{ num }}{% endtrans %}"
+                    rel="nofollow"
                 >{{ p.pages }}</a>
             </span>
         </span>
@@ -650,6 +657,7 @@ for the purposes of the AJAX comment editor #}
             {% if not p.has_next %}style="display: none"{% endif %}
         ><a href="{{p.base_url}}page={{ p.next }}{{ anchor }}"
                 title="{% trans %}next page{% endtrans %}"
+                rel="nofollow"
         >{% trans %}next{% endtrans %} &raquo;</a>
         </span>
 

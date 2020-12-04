@@ -2,6 +2,10 @@
 {% import "macros.html" as macros %}
 <!-- question_edit.html -->
 {% block title %}{% filter trim %}{{ settings.WORDS_EDIT_QUESTION|escape }}{% endfilter %}{% endblock %}
+{% block meta_description %}
+{{ super() }}
+<meta name="robots" content="noindex, nofollow">
+{% endblock %}
 {% block forestyle %}
     <link rel="stylesheet" type="text/css" href="{{"/wmd/wmd.css"|media}}" />
 {% endblock %}

@@ -19,12 +19,14 @@
                 href="{{ url('tags') }}?sort=name{% if tag_query %}&query={{ tag_query }}{% endif %}"
                 {% if tab_id == 'name' %}class="on"{% endif %}
                 title="{% trans %}sorted alphabetically{% endtrans %}"
+                rel="nofollow"
             ><span>{% trans %}by name{% endtrans %}</span></a>
             <a
                 id="sort_used"
                 href="{{ url('tags') }}?sort=used{% if tag_query %}&query={{ tag_query }}{% endif %}"
                 {% if tab_id == 'used' %}class="on"{% endif %}
                 title="{% trans tag=settings.WORDS_TAG_SINGULAR|lower %}sorted by frequency of {{ tag }} use{% endtrans %}"
+                rel="nofollow"
             ><span>{% trans %}by popularity{% endtrans %}</span></a>
             {% if settings.ENABLE_TAG_MODERATION
                 and request.user.is_authenticated

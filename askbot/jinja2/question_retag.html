@@ -1,6 +1,10 @@
 {% extends "two_column_body.html" %}
 <!-- question_retag.html -->
 {% block title %}{% filter trim %}{{ settings.WORDS_RETAG_QUESTION|escape }}{% endfilter %}{% endblock %}
+{% block meta_description %}
+{{ super() }}
+<meta name="robots" content="noindex, nofollow">
+{% endblock %}
 {% block content %}
 <h1>{{ settings.WORDS_RETAG_QUESTION|escape }} [<a href="{{ question.get_absolute_url() }}">{% trans %}back{% endtrans %}</a>]</h1>
 <form id="fmretag" action="{{ url('retag_question',  question.id ) }}" method="post" >{{ csrf_input }}

@@ -1487,12 +1487,45 @@ def user(request, id, tab_name=None):
         user_logged_in=profile_owner.is_authenticated,
     )
 
+    question_filter = {}
+    if request.user != user:
+        question_filter['is_anonymous'] = False
+
+    if askbot_settings.CONTENT_MODERATION_MODE == 'premoderation':
+        question_filter['approved'] = True
+
+    #
+    # Questions
+    #
+    questions_qs = profile_owner.posts.get_questions(
+                    user=request.user
+                ).filter(
+                    **question_filter
+                ).order_by(
+                    '-points'#, '-thread__last_activity_at' to match sorting with ajax loads
+                ).select_related(
+                    'thread', 'thread__last_activity_by'
+                )
+
+    q_paginator = Paginator(questions_qs, const.USER_POSTS_PAGE_SIZE)
+    questions = q_paginator.page(1).object_list
+    question_count = q_paginator.count
+
+    #
+    # Top answers
+    #
+    a_paginator = profile_owner.get_top_answers_paginator(request.user)
+    top_answers = a_paginator.page(1).object_list
+    top_answer_count = a_paginator.count
+
     context = {
         'view_user': profile_owner,
         'can_show_karma': can_show_karma,
         'search_state': search_state,
         # 'user_follow_feature_on': ('followit' in django_settings.INSTALLED_APPS),
         'user_follow_feature_on': False,
+        'question_count': question_count,
+        'top_answer_count': top_answer_count,
     }
     if CUSTOM_TAB:
         context['custom_tab_name'] = CUSTOM_TAB['NAME']

@@ -2,6 +2,10 @@
 {% from "macros.html" import timeago %}
 <!-- reopen.html -->
 {% block title %}{{ settings.WORDS_REOPEN_QUESTION|escape }}{% endblock %}
+{% block meta_description %}
+{{ super() }}
+<meta name="robots" content="noindex, nofollow">
+{% endblock %}
 {% block content %}
 <h1>{{ settings.WORDS_REOPEN_QUESTION|escape }}</h1>
 <p>{% trans %}Title{% endtrans %}:
