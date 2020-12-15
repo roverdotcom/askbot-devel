@@ -1494,28 +1494,13 @@ def user(request, id, tab_name=None):
     if askbot_settings.CONTENT_MODERATION_MODE == 'premoderation':
         question_filter['approved'] = True
 
-    #
-    # Questions
-    #
-    questions_qs = profile_owner.posts.get_questions(
+    question_count = profile_owner.posts.get_questions(
                     user=request.user
                 ).filter(
                     **question_filter
-                ).order_by(
-                    '-points'#, '-thread__last_activity_at' to match sorting with ajax loads
-                ).select_related(
-                    'thread', 'thread__last_activity_by'
-                )
+                ).count()
 
-    q_paginator = Paginator(questions_qs, const.USER_POSTS_PAGE_SIZE)
-    questions = q_paginator.page(1).object_list
-    question_count = q_paginator.count
-
-    #
-    # Top answers
-    #
     a_paginator = profile_owner.get_top_answers_paginator(request.user)
-    top_answers = a_paginator.page(1).object_list
     top_answer_count = a_paginator.count
 
     context = {
