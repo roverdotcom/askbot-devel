@@ -7,7 +7,7 @@
     {{ macros.gravatar(user, 46) }}
     <div class="user-info">
         <div class="user-link-container">
-            <a class="user-link" href="{{ user.get_profile_url() }}">
+            <a class="user-link" href="{{ user.get_profile_url() }}" rel="nofollow">
                 <div>{{ user.display_name|escape }}</div>
                 {% if karma_mode == 'public' %}
                     <div>

@@ -2,7 +2,8 @@
 <!-- user.html -->
 {% block title %}{% filter trim %}{{ page_title }}{% endfilter %}{% endblock %}
 {% block meta_addl %}
-    <meta name="robots" content="noindex, follow" />
+<meta name="robots"
+    content="noindex, {% if question_count == 0 and top_answer_count == 0 %}nofollow{% else %}follow{% endif %}" />
 {% endblock %}
 {% block forestyle %}
 <style type="text/css">

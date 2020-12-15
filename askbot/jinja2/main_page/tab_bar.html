@@ -18,7 +18,8 @@
                 {% if sort == "relevance-desc" %}
                     href="{{ search_state.change_sort('relevance-desc').full_url() }}"
                     class="on"
-                    title="{{asc_relevance_tooltip}}"><span>{{relevance_label}} &#9660;</span>
+                    title="{{asc_relevance_tooltip}}"
+                    rel="nofollow"><span>{{relevance_label}} &#9660;</span>
                 {% else %}
                     href="{{ search_state.change_sort('relevance-desc').full_url() }}"
                     class="off"

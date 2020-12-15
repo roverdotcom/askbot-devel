@@ -8,6 +8,9 @@
 
     there is no html markup in this file
 #}
+{% block meta_addl %}
+{% if "sort:" in request.path %}<meta name="robots" content="noindex, nofollow" />{% endif %}
+{% endblock %}
 <!-- questions.html -->
 {% block forejs %}
     {% include "main_page/custom_head_javascript.html" ignore missing %}

@@ -2,63 +2,63 @@
 <div class="tabBar tabBar-profile {% if request.user|can_moderate_user(view_user) %}tabBar-extra-long{% endif %}">
     <div class="tabsC">
         <a id="stats" {% if tab_name=="stats" %}class="on first"{%else%}class="first"{% endif %}
-            href="{{ url('user_profile', view_user.id) }}?sort=stats"
+            href="{{ url('user_profile', view_user.id) }}?sort=stats" rel="nofollow"
         ><span>{% trans %}overview{% endtrans %}</span></a>
         {% if request.user.pk == view_user.pk or request.user|can_moderate_user(view_user) %}
             <a id="inbox" {% if tab_name=="inbox" %}class="on"{% endif %}
-                href="{{ url('user_profile', view_user.id) }}?sort=inbox"
+                href="{{ url('user_profile', view_user.id) }}?sort=inbox" rel="nofollow"
             ><span>{% trans %}notifications{% endtrans %}</span></a>
-            <a id="tags_header" href="{% if request.user|can_moderate_user(view_user) %}{{ url('list_suggested_tags') }}{% else %}{{ url('user_profile', view_user.id) }}#tags{% endif %}">
+            <a id="tags_header" href="{% if request.user|can_moderate_user(view_user) %}{{ url('list_suggested_tags') }}{% else %}{{ url('user_profile', view_user.id) }}#tags{% endif %}" rel="nofollow">
                 <span>tags</span>
             </a>
 
             {#
-            <a {% if tab_name == "messages" %} class="on"{% endif %} href="{{ request.user.get_absolute_url() }}?sort=inbox&section=messages"
+            <a {% if tab_name == "messages" %} class="on"{% endif %} href="{{ request.user.get_absolute_url() }}?sort=inbox&section=messages" rel="nofollow"
             ><span>{% trans %}private messages{% endtrans %}</span></a>
             #}
             {% if settings.MULTILINGUAL %}
             <a id="langs" {% if tab_name=="langs" %}class="on"{% endif %}
-               href="{{ url('user_select_languages', view_user.id) }}"
+               href="{{ url('user_select_languages', view_user.id) }}" rel="nofollow"
             ><span>{% trans %}languages{% endtrans %}</span></a>
             {% endif %}
             <a id="email_subscriptions" {% if tab_name=="email_subscriptions" %}class="on"{% endif %}
-                href="{{ url('user_profile', view_user.id) }}?sort=email_subscriptions"
+                href="{{ url('user_profile', view_user.id) }}?sort=email_subscriptions" rel="nofollow"
             ><span>{% trans %}email alerts{% endtrans %}</span></a>
         {% endif %}
         {% if user_follow_feature_on %}
         <a id="network" {% if tab_name=="network" %}class="on"{% endif %}
-            href="{{ url('user_profile', view_user.id) }}?sort=network"
+            href="{{ url('user_profile', view_user.id) }}?sort=network" rel="nofollow"
         ><span>{% trans %}network{% endtrans %}</span></a>
         {% endif %}
         {% if can_show_karma %}
         <a id="reputation" {% if tab_name=="reputation" %}class="on"{% endif %}
-            href="{{ url('user_profile', view_user.id) }}?sort=reputation"
+            href="{{ url('user_profile', view_user.id) }}?sort=reputation" rel="nofollow"
         ><span>{% trans karma=settings.WORDS_KARMA_PLURAL|lower %}{{ karma }}{% endtrans %}</span></a>
         {% endif %}
         <a id="favorites" {% if tab_name=="favorites" %}class="on"{% endif %}
-            href="{{ url('user_profile', view_user.id) }}?sort=favorites"
+            href="{{ url('user_profile', view_user.id) }}?sort=favorites" rel="nofollow"
         ><span>{{ settings.WORDS_FOLLOWED_QUESTIONS|escape }}</span></a>
         <a id="recent" {% if tab_name=="recent" %}class="on"{% endif %}
-            href="{{ url('user_profile', view_user.id) }}?sort=recent"
+            href="{{ url('user_profile', view_user.id) }}?sort=recent" rel="nofollow"
         ><span>{% trans %}activity{% endtrans %}</span></a>
         {% if request.user.pk == view_user.pk or request.user|can_moderate_user(view_user) %}
         <a id="votes" {% if tab_name=="votes" %}class="on"{% endif %}
-            href="{{ url('user_profile', view_user.id) }}?sort=votes"
+            href="{{ url('user_profile', view_user.id) }}?sort=votes" rel="nofollow"
         ><span>{% trans %}votes{% endtrans %}</span></a>
         {% endif %}
         {% if request.user|can_moderate_user(view_user) %}
         <a id="moderation" {% if tab_name=="moderation" %}class="on"{% endif %}
-            href="{{ url('user_profile', view_user.id) }}?sort=moderation"
+            href="{{ url('user_profile', view_user.id) }}?sort=moderation" rel="nofollow"
         ><span>{% trans %}moderation{% endtrans %}</span></a>
         {% endif %}
         {% if custom_tab_slug %}
         <a id="{{ custom_tab_slug }}" {% if tab_name == custom_tab_slug %}class="on"{% endif %}
-            href="{{ url('user_profile', view_user.id) }}?sort={{ custom_tab_slug }}"
+            href="{{ url('user_profile', view_user.id) }}?sort={{ custom_tab_slug }}" rel="nofollow"
         ><span>{{ custom_tab_name }}</span></a>
         {% endif %}
         {% if request.user.pk == view_user.pk or (request.user.is_authenticated and request.user.is_administrator()) %}
         <a id="delete-account" {% if tab_name=="manage_account" %}class="on"{% endif %}
-           href="{{ url('user_profile', view_user.id) }}?sort=manage-account"
+           href="{{ url('user_profile', view_user.id) }}?sort=manage-account" rel="nofollow"
            ><span>{% trans %}account{% endtrans %}</span></a>
         {% endif %}
     </div>

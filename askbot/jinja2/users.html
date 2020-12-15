@@ -42,6 +42,7 @@
                 href="{{ request.path|escape }}?sort=reputation"
                 {% if tab_id == 'reputation' %}class="on"{% endif %}
                 title="{% trans %}see people with the highest reputation{% endtrans %}"
+                rel="nofollow"
             ><span>{% trans karma=settings.WORDS_KARMA_PLURAL|lower %}{{ karma }}{% endtrans %}</span></a>
             {% endif %}
             <a
@@ -49,18 +50,21 @@
                 href="{{ request.path|escape }}?sort=newest"
                 {% if tab_id == 'newest' %}class="on"{% endif %}
                 class="off" title="{% trans %}see people who joined most recently{% endtrans %}"
+                rel="nofollow"
             ><span>{% trans %}recent{% endtrans %}</span></a>
             <a
                 id="sort_last"
                 href="{{ request.path|escape }}?sort=last"
                 {% if tab_id == 'last' %}class="on"{% endif %}
                 class="off" title="{% trans %}see people who joined the site first{% endtrans %}"
+                rel="nofollow"
             ><span>{% trans %}oldest{% endtrans %}</span></a>
             <a
                 id="sort_user"
                 href="{{ request.path|escape }}?sort=name"
                 {% if tab_id == 'name' %}class="on"{% endif %}
                 title="{% trans %}see people sorted by name{% endtrans %}"
+                rel="nofollow"
             ><span>{% trans %}by username{% endtrans %}</span></a>
         </div>
     </div>
